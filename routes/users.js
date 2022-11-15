@@ -8,13 +8,31 @@ const JoiValidator =require('../controllers/joiControllers')
 
 
 router.get('/register',loginController.registerView)
-router.get('/',loginController.View)  
+
+router.get('/',loginController.homeView)  
+
 router.get('/create',loginController.createView)
 
 router.post('/register',JoiValidator.validateRegister, loginController.registerUser )
+
 router.post('/',JoiValidator.validateLogin,loginController.loginUser)
 
-router.get('/home',loginController.homeView)
+router.get('/home',loginController.login)
+
 router.get('/login',loginController.loginbtnView)
+
 router.get('/logout',loginController.logoutView)
+
+router.get('/userProfile',loginController.userprofile)
+
+router.get('/cart',loginController.cartView)
+
+
+
+
+
+
+
+
+
 module.exports=router

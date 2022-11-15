@@ -63,7 +63,7 @@
             >
               <ul class="nav navbar-nav menu_nav ml-auto">
                 <li class="nav-item">
-                  <a class="nav-link" href="home.ejs">Home</a>
+                  <a class="nav-link" href="/">Home</a>
                 </li>
                 <li class="nav-item submenu dropdown">
                   <a
@@ -77,24 +77,12 @@
                   >
                   <ul class="dropdown-menu">
                     <li class="nav-item">
-                      <a class="nav-link" href="category.html">Shop Category</a>
+                      <a class="nav-link" href="/category">Shop Category</a>
                     </li>
+                    
                     <li class="nav-item">
-                      <a class="nav-link" href="single-product.html"
-                        >Product Details</a
-                      >
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="checkout.html"
+                      <a class="nav-link" href="/checkout"
                         >Product Checkout</a
-                      >
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="cart.html">Shopping Cart</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="confirmation.html"
-                        >Confirmation</a
                       >
                     </li>
                   </ul>
@@ -111,14 +99,18 @@
                   >
                   <ul class="dropdown-menu">
                     <li class="nav-item">
-                      <a class="nav-link" href="blog.html">Blog</a>
+                      <a class="nav-link" href="/blog">Blog</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="single-blog.html"
+                      <a class="nav-link" href="/blogdetailas"
                         >Blog Details</a
                       >
                     </li>
                   </ul>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/contact">Contact</a>
                 </li>
 
                 <% if (!user) { %>
@@ -135,6 +127,7 @@
                   >
                   <ul class="dropdown-menu">
                     <li class="nav-item active">
+                      
                       <a class="nav-link" href="/login">Login</a>
                     </li>
                   </ul>
@@ -153,6 +146,8 @@
                     ><%= user.name %></a
                   >
                   <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link" href="/userProfile">My Profile</a></li>
+										<li class="nav-item"><a class="nav-link" href="/myOrders">My Orders</a></li>
                     <li class="nav-item active">
                       <a class="nav-link" href="/logout">Logout</a>
                     </li>
@@ -161,13 +156,11 @@
 
                 <% } %>
 
-                <li class="nav-item">
-                  <a class="nav-link" href="contact.html">Contact</a>
-                </li>
+               
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 <li class="nav-item">
-                  <a href="#" class="cart"><span class="ti-bag"></span></a>
+                  <a href="/cart" class="cart"><span class="ti-bag"></span></a>
                 </li>
                 <li class="nav-item">
                   <button class="search">

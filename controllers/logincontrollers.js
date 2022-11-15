@@ -14,20 +14,48 @@ module.exports = {
   },
 
   ///for view
-  View: (req, res) => {
-    res.render("user/home");
-  },
+ 
 
   homeView: (req, res) => {
-    res.render("user/home", {});
+      if(req.session.loggedIn){
+        res.redirect('/home')
+      }else{
+
+        res.render("user/home",{});
+      }
+   
   },
 
   createView: (req, res) => {
     res.redirect("/register");
   },
 
+  userprofile: (req,res) =>{
+    if(req.session.loggedIn){
+    let  user = req.session.user
+      cartNum = req.session.cartNum
+      res.render('user/userProfile',{user,cartNum})
+    }else{
+      res.redirect('/')
+    }
+  },
+
+  login:(req,res)=>{
+   if(req.session.loggedIn){
+    let user = req.session.user
+    res.render('user/home',{user})
+   }else{
+    res.redirect('/')
+   }
+  },
+
   loginbtnView: (req, res) => {
-    res.render("user/login",{loginErr});
+    if(req.session.loggedIn){
+      res.redirect('/home')
+    }else{
+      
+      res.render("user/login",{loginErr});
+    }
   },
 
   logoutView: (req, res) => {
@@ -43,13 +71,13 @@ module.exports = {
     }
   },
 
-  loginSessionCheck: (req, res, next) => {
-    if (req.session.user) {
-      res.redirect("/home");
-    } else {
-      res.redirect("/");
-    }
-  },
+  // loginSessionCheck: (req, res, next) => {
+  //   if (req.session.user) {
+  //     res.redirect("/home");
+  //   } else {
+  //     res.redirect("/");
+  //   }
+  // },
 
   // post request that handils register
   registerUser: async (req, res) => {
@@ -76,7 +104,7 @@ module.exports = {
       }
     }
   },
-
+//PASPORT AUTHENTICATION
   // loginUser:async (req, res) => {
   //   const user =await User.findOne({email:req.body.email})
   //   passport.authenticate("local", {
@@ -96,6 +124,7 @@ module.exports = {
   //   req, res;
   // },
   loginUser: async (req, res) => {
+    
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       if (user.access === true) {
@@ -103,9 +132,10 @@ module.exports = {
           console.log(data);
           if (data) {
             console.log("Login Success");
-            req.session.user = user;
+            req.session.user = user
             req.session.loggedIn = true;
             res.locals.user=user || null
+            
             res.render('user/home')
           }else{
             console.log('Login Failed');
@@ -125,4 +155,12 @@ module.exports = {
       res.redirect('/login');
     }
   },
+
+  cartView: (req,res)=>{
+    if(req.session.loggedIn){
+      res.render('user/cart')
+    }else{
+      res.redirect('/login')
+    }
+  }
 };

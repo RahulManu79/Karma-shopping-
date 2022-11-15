@@ -34,10 +34,19 @@
                                 <h1>Nike New <br>Collection!</h1>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
                                     dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
-                                <div class="add-bag d-flex align-items-center">
-                                    <a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
-                                    <span class="add-text text-uppercase">Add to Bag</span>
-                                </div>
+                                  
+                                    <% if (user) { %>
+                                        <div class="add-bag d-flex align-items-center">
+                                            <a class="add-btn" href="/cart"><span class="lnr lnr-cross"></span></a>
+                                            <span class="add-text text-uppercase">Add to Bag</span>
+                                        </div>
+                                    <% }else{ %>
+                                        <div class="add-bag d-flex align-items-center">
+                                            <a class="add-btn" href="/login"><span class="lnr lnr-cross"></span></a>
+                                            <span class="add-text text-uppercase">Add to Bag</span>
+                                        </div>
+
+                                   <%}%>
                             </div>
                         </div>
                         <div class="col-lg-7">
