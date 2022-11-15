@@ -1,0 +1,112 @@
+<link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+      />
+      <!-- https://fonts.google.com/specimen/Roboto -->
+      <link rel="stylesheet" href="/css/fontawesome.min.css" />
+      <!-- https://fontawesome.com/ -->
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+      <!-- https://getbootstrap.com/ -->
+      <link rel="stylesheet" href="/css/templatemo-style.css" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+      <script src="https://kit.fontawesome.com/75bba14e81.js" crossorigin="anonymous"></script>
+      <script src="https://kit.fontawesome.com/75bba14e81.js" crossorigin="anonymous"></script>
+<%- include('includes/header.ejs') %>
+
+
+<!-- <div class="container mt-5">
+
+ 
+  <table class="table">
+    <thead>
+      <tr>
+        
+        <th scope="col">Image</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Brand</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Category</th>
+        <th scope="col">Price</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+</div> -->
+
+<div class="container mt-5">
+
+  <!-- table container -->
+  <table class="table">
+    <thead>
+      <tr>
+        
+        <th scope="col">Image</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Brand</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Category</th>
+        <th scope="col">Price</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+    <% result.forEach(function(result) { %>
+      <tr>
+        <td class="">
+        <img src="/productImages/<%= result.image[0] %>" alt="image" width="90px"/>
+        </td>
+        <td><%= result.name%></td>
+        <td><%= result.brand %></td>
+        <td> <%= result.quantity %></td>
+        <td>  <%= result.category %></td>
+        <td>  <%= result.price %></td>
+       
+      </tr>
+    <% }) %>
+      
+    </tbody>
+  </table>
+</div>
+  <%- include('includes/footer.ejs') %>
+
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- plugins:js -->
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<script src="/vendors/chart.js/Chart.min.js"></script>
+<script src="/vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<script src="/js/dataTables.select.min.js"></script>
+
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script src="/js/off-canvas.js"></script>
+<script src="/js/hoverable-collapse.js"></script>
+<script src="/js/template.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/todolist.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page-->
+<script src="/js/dashboard.js"></script>
+<script src="/js/Chart.roundedBarCharts.js"></script>
+
+
+<!-- _________________________ -->
+
+<script src="https://kit.fontawesome.com/75bba14e81.js" crossorigin="anonymous"></script>
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<!-- https://jquery.com/download/ -->
+<script src="/js/moment.min.js"></script>
+<!-- https://momentjs.com/ -->
+<script src="/js/Chart.min.js"></script>
+<!-- http://www.chartjs.org/docs/latest/ -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- https://getbootstrap.com/ -->
+<script src="/js/tooplate-scripts.js"></script>

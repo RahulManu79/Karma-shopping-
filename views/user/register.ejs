@@ -1,0 +1,100 @@
+<%- include('includes/header.ejs') %>
+<main>
+  <section class="login_box_area section_gap ml-auto">
+    <div class="container ">
+      
+        <div class="col-lg-100 ">
+          <div class="login_form_inner">
+            <h3>Register in to enter</h3>
+            <form
+              class="row login_form"
+              action="/register"
+              method="post"
+              id="contactForm"
+              novalidate="novalidate"
+
+            >
+              <div class="col-md-12 form-group">
+                <input 
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  placeholder="Enter Your Name"
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Your Name'"
+                  aria-required="true" 
+                  
+                />
+              </div>
+              <div class="col-md-12 form-group">
+                <input required
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="email"
+                  placeholder="Enter Your Email"
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Email'"
+                />
+              </div>
+              <div class="col-md-12 form-group">
+                <input required
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="location"
+                  placeholder="Your Location"
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Your Location'"
+                />
+              </div>
+              <div class="col-md-12 form-group">
+                <input required
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="password"
+                  placeholder="Enter Password"
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'password'"
+                />
+              </div>
+              <div class="col-md-12 form-group">
+                <input required
+                  type="text"
+                  class="form-control"
+                  id="confirm"
+                  name="confirm"
+                  placeholder="Confirm Your Password"
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Confirm password'"
+                />
+              </div>
+            
+              <div class="col-md-12 form-group">
+                <button type="submit" value="submit" class="primary-btn" >
+                  Register
+                </button>
+                <a href="#">Forgot Password?</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+  
+  function error (){
+    Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Something went wrong!',
+  footer: '<a href="">Why do I have this issue?</a>'
+})
+  }
+    
+</script>
+<%- include('includes/footer.ejs') %>

@@ -1,0 +1,101 @@
+<%- include('includes/header.ejs') %>
+<% let result = locals.result || null %> 
+
+<div class="container mt-5">
+  <a href="/admin/add-product" class="btn btn-warning">Add new product</a>
+
+  <!-- table container -->
+  <table class="table">
+    <thead>
+      <tr>
+        
+        <th scope="col">Image</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Brand</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Category</th>
+        <th scope="col">Price</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% result.forEach(function(result) { %>
+      <tr>
+        <td class="py-1">
+          <img src="/productImages/<%= result.image[0] %>" alt="image" width="90px" />
+        </td>
+        <td><%= result.name%></td>
+        <td><%= result.brand %></td>
+        <td> <%= result.quantity %></td>
+        <td>  <%= result.category %></td>
+        <td>  <%= result.price %></td>
+        <td>
+          <a href="/admin/edit-product/<%= result._id %>" class="btn btn-success" >Edit</a>
+          <button class="btn btn-danger"
+          onclick="alert('<%= result._id %>')"> Delete</button>
+        </td>
+      </tr>
+    <% }) %>
+      
+    </tbody>
+  </table>
+</div>
+  <%- include('includes/footer.ejs') %>
+
+
+<script>
+  function alert(proId) {
+      Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+          $.ajax({
+              url: '/admin/delProduct/' + proId,
+              method: 'post',
+              success: (response) => {
+                  if (result.isConfirmed) {
+                      Swal.fire({
+                          title: 'Deleted!',
+                          text: 'Your file has been deleted.',
+                          icon: 'success',
+                          showConfirmButton: false
+                      })
+                      setTimeout(() => {
+                          location.reload()
+                      }, 1000);
+                  }
+              }
+          })
+      })
+  }
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- plugins:js -->
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<script src="/vendors/chart.js/Chart.min.js"></script>
+<script src="/vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<script src="/js/dataTables.select.min.js"></script>
+
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script src="/js/off-canvas.js"></script>
+<script src="/js/hoverable-collapse.js"></script>
+<script src="/js/template.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/todolist.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page-->
+<script src="/js/dashboard.js"></script>
+<script src="/js/Chart.roundedBarCharts.js"></script>
+<!-- End custom js for this page-->
