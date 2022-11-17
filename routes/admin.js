@@ -17,9 +17,9 @@ router.post('/add-product',store.array('productImage',3),adminControlers.postadd
 
 router.post('/delProduct/:id',adminControlers.deletproduct)
 
-router.get('/edit-product/:id',adminControlers.getEditProducr)
+router.get('/edit-product',adminControlers.getEditProducr)
 
-router.post('/edit-product/:id',adminControlers.postEditProduct)
+router.post('/edit-product',store.array('productImage',3),adminControlers.postEditProduct)
 
 router.get('/account',adminControlers.userList)
 

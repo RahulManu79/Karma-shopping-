@@ -196,6 +196,39 @@
             </div>
             <div class="row">
                 <!-- single product -->
+                <% result.forEach((el) => { %>
+                    
+						<div class="col-lg-3 col-md-6">
+							<div class="single-product">
+								<a href="/productDetails/<%= el._id %>"><img class="img-fluid" src="productImages/<%= el.image[0] %>" alt=""></a>
+								
+								<div class="product-details">
+									<h6>
+										<%=el.name %>
+									</h6>
+									<div class="price">
+										<h6>$<%=el.price %>
+										</h6>
+									</div>
+									<div class="prd-bottom">
+										<a href="/cart/<%=el._id %>" class="social-info">
+											<span class="ti-bag"></span>
+											<p class="hover-text">add to bag</p>
+										</a>
+										<a href="" class="social-info">
+											<span class="lnr lnr-heart"></span>
+											<p class="hover-text">Wishlist</p>
+										</a>
+										<a href="/productDetails/<%=el._id %>" class="social-info">
+											<span class="lnr lnr-move"></span>
+											<p class="hover-text">view detail</p>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+                
+                <% }) %>
                 <div class="col-lg-3 col-md-6">
                     <div class="single-product">
                         <img class="img-fluid" src="img/product/p1.jpg" alt="">
@@ -960,7 +993,7 @@
                             <div class="desc">
                                 <a href="#" class="title">Black lace Heels</a>
                                 <div class="price">
-                                    <h6>$189.00</h6>
+                                    <h6>$189.00</h6>z
                                     <h6 class="l-through">$210.00</h6>
                                 </div>
                             </div>

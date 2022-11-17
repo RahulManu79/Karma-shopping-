@@ -138,34 +138,39 @@ module.exports = {
     })
   },
 
-  postEditProduct:(req,res)=>{
-    let proId = req.params.id
-    Product.findByIdAndUpdate(proId,{
+  postEditProduct:async(req,res)=>{
+    let proId = req.query.id
+    console.log(proId);
+    console.log(req.body,"body here")
+
+
+    await Product.findByIdAndUpdate(proId,{
       name: req.body.name,
       brand: req.body.brand,
       quantity: req.body.quantity,
       category: req.body.category,
       price: req.body.price,
       description: req.body.description,
-      image: req.session.body
+      image: req.body.image
     }).then((result)=>{
-    }).then((err)=>{
+     
+      res.redirect('/admin/product')
+    }).catch((err)=>{
       console.log(err);
     })
-    console.log("//////////////////////////////////");
-    res.redirect('/admin/product')
+    
   },
 
   getEditProducr: (req,res) =>{
     if(req.session.adminloggedIn){
-      let proId = req.params.id
+      let proId = req.query.id
     
       Product.find({_id:proId},function(err,data){
         if(err){
           res.send(err)
         }else{
           let result = data[0]
-          console.log(".................................");
+
           res.render("admin/editProduct",{result});
         }
       })

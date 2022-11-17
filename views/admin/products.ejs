@@ -30,7 +30,7 @@
         <td>  <%= result.category %></td>
         <td>  <%= result.price %></td>
         <td>
-          <a href="/admin/edit-product/<%= result._id %>" class="btn btn-success" >Edit</a>
+          <a href="/admin/edit-product?id=<%= result._id %>" class="btn btn-success" >Edit</a>
           <button class="btn btn-danger"
           onclick="alert('<%= result._id %>')"> Delete</button>
         </td>

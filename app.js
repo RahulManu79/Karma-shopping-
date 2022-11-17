@@ -69,9 +69,9 @@ app.use(express.urlencoded({extended:false}))
 app.use('/',usersRouter );
 app.use('/admin',adminRouter)
 
-app.use((req,res,next)=>{
-  res.status(404).render('admin/error-404')
-})
+// app.use((req,res,next)=>{
+//   res.status(404).render('admin/error-404')
+// })
 
-const PORT = process.env.PORT || 4111;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, console.log("Server has started at port " + PORT))

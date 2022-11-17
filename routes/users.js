@@ -6,6 +6,11 @@ const loginController = require('../controllers/logincontrollers');
 const router = express.Router();
 const JoiValidator =require('../controllers/joiControllers')
 
+router.use((req,res,next)=>{
+    res.locals.cartNum = req.session.cartNum
+    next()
+})
+
 
 router.get('/register',loginController.registerView)
 
@@ -26,6 +31,12 @@ router.get('/logout',loginController.logoutView)
 router.get('/userProfile',loginController.userprofile)
 
 router.get('/cart',loginController.cartView)
+
+router.get('/cart/:proId',loginController.addToCart)
+
+router.get('/quantityDec/:proid',loginController.QuantityDec)
+
+router.get('/quantityInc/:proid',loginController.QuantityInc)
 
 
 
