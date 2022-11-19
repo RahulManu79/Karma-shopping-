@@ -63,3 +63,24 @@ exports.registerSchema = joi
     status: Joi.boolean().required(),
 
   })
+
+  exports.checkout = joi.object({
+    firstName:  Joi.string().alphanum().min(3).max(25).trim(true).required(),
+
+    lastName: Joi.string().alphanum().max(25).trim(true).required(),
+
+    number : Joi.string().length(10).pattern(/^[0-9]+$/).required(),
+
+    address: Joi.string().min(8).required(),
+
+    city : Joi.string().min(4).max(25).required(),
+
+    district: Joi.string().min(3).max(20).required(),
+
+    country: Joi.string().min(1).max(28).required(),
+
+    zipcode: Joi.string().min(4).max(9).required()
+
+  
+
+  })

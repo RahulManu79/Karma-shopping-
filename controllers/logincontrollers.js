@@ -251,12 +251,14 @@ module.exports = {
 
   QuantityDec: async (req, res) => {
     let userCart = await ShopingCart.findOne({ userId: req.session.user._id })
-        let ProductIndex = userCart.products.findIndex(Product => Product._id );
-
-        let productItem = userCart.products[ProductIndex];
+        let ProductIndex = userCart.products.findIndex(Product => Product._id == req.params.proid);
+console.log(ProductIndex);
+        let arr =[...userCart.products]
+        console.log(arr);
+        let productItem = arr[ProductIndex];
         userCart.total = userCart.total - (productItem.price * productItem.quantity)
         productItem.quantity = productItem.quantity - 1;
-        userCart.products[ProductIndex] = productItem;
+        arr[ProductIndex] = productItem;
         userCart.total = userCart.total + (productItem.price * productItem.quantity)
 
         userCart.save();
@@ -265,7 +267,7 @@ module.exports = {
 
   QuantityInc: async (req, res) => {
     let userCart = await ShopingCart.findOne({ userId: req.session.user._id });
-    let productIndex = userCart.products.findIndex((product) => product._id);
+    let productIndex = userCart.products.findIndex((product) => product._id == req.params.proid);
 
     let productItem = userCart.products[productIndex];
     userCart.total = userCart.total - productItem.price * productItem.quantity;
@@ -276,4 +278,64 @@ module.exports = {
     userCart.save();
     res.json({ status: true });
   },
+
+  productDetails:async (req,res) =>{
+    if(req.session.loggedIn){
+
+      let proId = req.params.id
+      
+     let result = await Product.find({_id : proId})
+          
+     Users = req.session.user
+     cartNum = req.session.cartNum
+  
+     res.render('user/productDetails',{result,Users,cartNum})
+     
+    }else{
+      res.redirect('/login')
+    }
+
+
+  },
+
+  removeCart: async (req,res)=>{
+if(req.session.loggedIn){
+
+  let userCart = await ShopingCart.findOne({ userId: req.session.user._id });
+  let productIndex = userCart.products.findIndex((product) => product._id == req.params.id);
+
+  let productItem = userCart.products[productIndex];
+  userCart.total = userCart.total - (productItem.price * productItem.quantity)
+  userCart.products.splice(productIndex,1)
+  userCart.save();
+  res.redirect('/cart')
+
+
+}else{
+  res.redirect('/login');
+}
+
+  },
+
+  getCheckOut : (req,res)=>{
+    if(req.session.user){
+      user = req.session.user
+      ShopingCart.find({ userId: req.session.user._id }).populate('products.productId').exec().then((result) => {
+        cartNum = req.session.cartNum
+        res.render('user/checkout', { user, cartNum, session: req.session, Cart: result[0] })
+      })
+    }else{
+      res.redirect('/login')
+    }
+  },
+
+  getFavoraites:(req,res)=>{
+    if(req.session.loggedIn){
+      res.render('user/favoraites')
+    }else{
+      res.redirect('/login')
+    }
+  }
+
+
 };

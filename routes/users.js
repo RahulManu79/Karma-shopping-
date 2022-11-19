@@ -38,6 +38,13 @@ router.get('/quantityDec/:proid',loginController.QuantityDec)
 
 router.get('/quantityInc/:proid',loginController.QuantityInc)
 
+router.get('/productDetails/:id',loginController.productDetails)
+
+router.get('/removeCart/:id',loginController.removeCart)
+
+router.get('/favoraites',loginController.getFavoraites)
+
+router.get('/checkout',loginController.getCheckOut)
 
 
 

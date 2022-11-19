@@ -36,8 +36,6 @@
             </tr>
           </thead>
           <tbody>
-
-         
             <% cartProducts.products.forEach((p) => { %>
             <tr>
               <td>
@@ -45,7 +43,7 @@
                   <div class="d-flex">
                     <img
                       style="width: 100px"
-                      src="/productImages/<%= p.productId.image[0] %>"
+                      src="/productImages/<%= p.productId?.image %>"
                       alt=""
                     />
                   </div>
@@ -67,7 +65,7 @@
                     value="<%=p.quantity %>"
                     title="Quantity:"
                     class="input-text qty"
-                    disabled
+                    
                   />
                   <button
                     onclick="var result = document.getElementById('sst<%= p._id %>');QuantityInc('<%= p._id %>'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
@@ -88,12 +86,16 @@
               <td>
                 <h5>
                   $<span id="totalPrice<%= p._id %>"
-                    ><%= p.quantity*p.price %></span>
+                    ><%= p.quantity*p.price %></span
+                  >
                 </h5>
               </td>
               <td>
                 <a
-              class="btn btn-outline-danger" href="/removeCart/<%= p._id %>">Remove</a>
+                  class="btn btn-outline-danger"
+                  href="/removeCart/<%= p._id %>"
+                  >Remove</a
+                >
               </td>
             </tr>
 
@@ -175,7 +177,7 @@
 <% } %>
 <script>
   function QuantityInc(ProductId) {
-
+    console.log(ProductId,">........");
     $.ajax({
       url: "/quantityInc/" + ProductId,
       method: "get",

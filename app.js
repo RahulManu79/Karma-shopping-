@@ -22,11 +22,11 @@ mongoose.connect(database, {useUnifiedTopology: true, useNewUrlParser: true })
 
 //user static files
 app.use(express.static(path.join(__dirname,'public')));
-app.use('/css',express.static(__dirname+'/public/user/css'))
-app.use('/img',express.static(__dirname+'/public/user/img'))
-app.use('/js', express.static(__dirname+'/public/user/js'))
-app.use('/fonts', express.static(__dirname+'/public/user/fonts'))
-app.use('/scss',express.static(__dirname+'/public/user/scss'))
+// app.use('/css',express.static(__dirname+'/public/user/css'))
+// app.use('/img',express.static(__dirname+'/public/user/img'))
+// app.use('/js', express.static(__dirname+'/public/user/js'))
+// app.use('/fonts', express.static(__dirname+'/public/user/fonts'))
+// app.use('/scss',express.static(__dirname+'/public/user/scss'))
 
 // Admin static files 
 app.use('/css',express.static(__dirname+'/public/admin/css'))
