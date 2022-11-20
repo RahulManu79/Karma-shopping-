@@ -1,0 +1,36 @@
+<%- include('./includes/header.ejs') %>
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Order Success</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Order Success</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Order Details Area =================-->
+<section class="order_details section_gap text-center">
+    <div class="container">
+        <img src="/productImages/orderplaced.png" alt="">
+    </div>
+    <div class="container mt-4">
+        <h3 class="title_confirmation">Thank you. Your order has been received.</h3>
+    </div>
+    <div class="container">
+        <a class="btn btn-success mr-2" href="/orderSummary/<%= orderId %>">Order Summary</a>
+        <a class="btn btn-primary" href="/myOrders">Go to my orders</a>
+    </div>
+    <div class="container">
+
+    </div>
+</section>
+<!--================End Order Details Area =================-->
+
+
+<%- include('./includes/footer.ejs') %>

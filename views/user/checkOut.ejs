@@ -1,93 +1,318 @@
-
 <%- include('includes/header.ejs') %>
-    <!--================Checkout Area =================-->
-    <section class="checkout_area section_gap mt-5">
-        <div class="container">
-            <!-- <div class="cupon_area">
+<!--================Checkout Area =================-->
+<section class="checkout_area section_gap mt-5">
+  <div class="container">
+    <!-- <div class="cupon_area">
                 <h4>Have a coupon</h4>
                 <input type="text" placeholder="Enter coupon code">
                 <a class="tp_btn" href="#">Apply Coupon</a>
             </div> -->
-            <% if (Cart==null){%>
-                <h2>No Orders</h2>
-                <a class="genric-btn primary" href="/">Go to Home</a>
-            <% } else { %>
+    <% if (Cart==null){%>
+    <h2>No Orders</h2>
+    <a class="genric-btn primary" href="/">Go to Home</a>
+    <% } else { %>
 
-            <div class="billing_details">
-                <div class="row">
-                    <form class="row contact_form" id="checkout-form">
-                    <div class="col-lg-8">
-                        <h3>Shipping Details</h3>
-                            <div class="col-md-6 form-group">
-                                <input type="text" class="form-control" id="first" placeholder="First name" name="firstName">
-                            </div>
-                            <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="last" placeholder="Last name" name="lastName">
-                            </div>
-                            <div class="col-md-6 form-group p_star">
-                                <input type="tele" class="form-control" id="number" placeholder="Number" name="number">
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <textarea class="form-control" name="address" id="address" rows="1" placeholder="Address"></textarea>
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="city" placeholder="City" name="city">
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="district" placeholder="District" name="district">
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="country" placeholder="Country" name="country">
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <input type="tele" class="form-control" id="zip" name="zipcode" placeholder="Postcode/ZIP">
-                            </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="order_box">
-                            <h2>Your Order</h2>
-                            <ul class="list">
-                                <li><a href="#">Product <span>Total</span></a></li>
-                                <% Cart.products.forEach((p) => { %>
-                                <li><a href="#"> <span class="float-left w-50" style="display: inline-block;
-                                    width: 100px;
-                                    white-space: nowrap;
-                                    overflow: hidden !important;
-                                    text-overflow: ellipsis;"><%= p.name %></span> <span class="middle">x0<%= p.quantity%></span> <span class="last">$<%= p.productId.price %></span></a></li>
-                                <% }); %>
-                            </ul>
-                            <ul class="list list_2">
-                                <li><a href="#">Subtotal <span>$<%= Cart.total %></span></a></li>
-                            </ul>
-                            <div class="mt-3 mb-3">
-                                <input type="radio" id="onlinePayment" name="paymentMethod" value="Online Payment">
-                                <label for="onlinePayment">RAZOR PAY</label>
-                                <p>Use razorpay for contactless connection and stay healthy avoid covid spreading.</p>
-                                <br>
-                                <input type="radio" id="cashOnDelivery" name="paymentMethod"
-                                    value="Cash On Delivery">
-                                <label for="cashOnDelivery">CASH ON DELIVERY</label>
-                                <p>you can make POD and doorstep delivery is available</p>
-                                <br>
-                            </div>
-                            <input type="number" name="total" value="<%= Cart.total %>" hidden>
-                            <button class="btn primary-btn" type="submit" >Proceed to Pay</button>
-
-                        </div>
-                    </div>
-                </form>
-                </div>
+    <div class="billing_details">
+      <div class="row">
+        <form class="row contact_form" id="checkout-form">
+          <div class="col-lg-8">
+            <h3>Shipping Details</h3>
+            <div class="col-md-6 form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="first"
+                placeholder="First name"
+                name="firstName"
+              />
             </div>
-            <% } %> 
-        </div>
-    </section>
+            <div class="col-md-6 form-group p_star">
+              <input
+                type="text"
+                class="form-control"
+                id="last"
+                placeholder="Last name"
+                name="lastName"
+              />
+            </div>
+            <div class="col-md-6 form-group p_star">
+              <input
+                type="tele"
+                class="form-control"
+                id="number"
+                placeholder="Number"
+                name="number"
+              />
+            </div>
+            <div class="col-md-12 form-group">
+              <textarea
+                class="form-control"
+                name="address"
+                id="address"
+                rows="1"
+                placeholder="Address"
+              ></textarea>
+            </div>
+            <div class="col-md-12 form-group p_star">
+              <input
+                type="text"
+                class="form-control"
+                id="city"
+                placeholder="City"
+                name="city"
+              />
+            </div>
+            <div class="col-md-12 form-group p_star">
+              <input
+                type="text"
+                class="form-control"
+                id="district"
+                placeholder="District"
+                name="district"
+              />
+            </div>
+            <div class="col-md-12 form-group p_star">
+              <input
+                type="text"
+                class="form-control"
+                id="country"
+                placeholder="Country"
+                name="country"
+              />
+            </div>
+            <div class="col-md-12 form-group">
+              <input
+                type="tele"
+                class="form-control"
+                id="zip"
+                name="zipcode"
+                placeholder="Postcode/ZIP"
+              />
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="order_box">
+              <h2>Your Order</h2>
+              <ul class="list">
+                <li>
+                  <a href="#">Product <span>Total</span></a>
+                </li>
+                <% Cart.products.forEach((p) => { %>
+                <li>
+                  <a href="#">
+                    <span
+                      class="float-left w-50"
+                      style="
+                        display: inline-block;
+                        width: 100px;
+                        white-space: nowrap;
+                        overflow: hidden !important;
+                        text-overflow: ellipsis;
+                      "
+                      ><%= p.name %></span
+                    >
+                    <span class="middle">x0<%= p.quantity%></span>
+                    <span class="last">$<%= p.productId.price %></span></a
+                  >
+                </li>
+                <% }); %>
+              </ul>
+              <ul class="list list_2">
+                <li>
+                  <a href="#">Subtotal <span>$<%= Cart.total %></span></a>
+                </li>
+              </ul>
+              <div class="mt-3 mb-3">
+                <input
+                  type="radio"
+                  id="onlinePayment"
+                  name="paymentMethod"
+                  value="Online Payment"
+                />
+                <label for="onlinePayment">RAZOR PAY</label>
+                <p>
+                  Use razorpay for contactless connection and stay healthy avoid
+                  covid spreading.
+                </p>
+                <br />
+                <input
+                  type="radio"
+                  id="cashOnDelivery"
+                  name="paymentMethod"
+                  value="Cash On Delivery"
+                />
+                <label for="cashOnDelivery">CASH ON DELIVERY</label>
+                <p>you can make POD and doorstep delivery is available</p>
+                <br />
+              </div>
+              <input
+                type="number"
+                name="total"
+                value="<%= Cart.total %>"
+                hidden
+              />
+              <button class="btn primary-btn" type="submit">
+                Proceed to Pay
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+  integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+
+<!-- sweet alert -->
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  $('#checkout-form').submit((e) => {
+    e.preventDefault()
+    console.log("vannu >>>>>>>>>>>>>>>");
+      $.ajax({
+          url:'/checkout/<%= Cart._id %>',
+          method: 'post',
+          data: $('#checkout-form').serialize(),
+          success: (response) => {
+            
+
+              if(response.cashOnDelivery){
+
+                  Swal.fire({
+                      title: 'Order Placed Successfully',
+                      icon: 'success',
+                      showDenyButton: true,
+                      confirmButtonText: 'View Order',
+                      denyButtonText: `Continue Shopping`,
+                      toast: true,
+                  }).then((result)=>{
+                       /* Read more about isConfirmed, isDenied below */
+                      if(result.isConfirmed){
+                          location.href='/confirm'
+                      }else if(result.isDenied){
+                          location.href = '/'
+                      }
+                  })
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+              }else if(response.onlinePayment){
 
-    <!-- sweet alert -->
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                console.log(response,";::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+                 console.log("test ok");
+                 let razorpayoderData = Response.razorpayoderData
+                 console.log(razorpayoderData);
+                 var options = {
+                      "key": "rzp_test_PXf927XjECcoB4", // Enter the Key ID generated from the Dashboard
+                      "amount": response.razorpayOrderData.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                      "currency": "INR",
+                      "name": "Karma Shoes",
+                      "description": "Test Transaction",
+                      "image": "https://example.com/your_logo",
+                      "order_id": response.razorpayOrderData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                      "handler": function (response) {
+                          console.log(response);
+                          // alert(response.razorpay_payment_id);
+                          // alert(response.razorpay_order_id);
+                          // alert(response.razorpay_signature)
+                          verifyPayment(response,razorpayOrderData,userOrderData);
 
+                      },
+                      "prefill": {
+                          "name": "Gaurav Kumar",
+                          "email": "gaurav.kumar@example.com",
+                          "contact": "9999999999"
+                      },
+                      "notes": {
+                          "address": "Razorpay Corporate Office"
+                      },
+                      "theme": {
+                          "color": "#3399cc"
+                      }
+                  }
+
+                  var rzpl = new Razorpay(options)
+
+                  rzpl.on('payment.failed',function(response){
+                      paymentFailed(response)
+                  })
+                  rzpl.open()
+              }
+          }
+      })
+  })
+
+  function verifyPayment(payment,razorpayOrderData,userOrderData){
+      console.log(payment);
+      console.log(razorpayOrderData);
+      console.log(userOrderData);
+      $.ajax({
+          url:'/verifyPayment',
+          data:{
+              payment,
+              razorpayOrderData,
+              userOrderData
+          },
+          method: 'post',
+
+          success:(response)=>{
+            if(response.status){
+              Swal.fire({
+                      title: 'Order Placed Successfully',
+                      icon: 'success',
+                      showDenyButton: true,
+                      confirmButtonText: 'View Order',
+                      denyButtonText: `Continue Shopping`,
+                      toast: true,
+                  }).then((result) => {
+                      /* Read more about isConfirmed, isDenied below */
+                      if (result.isConfirmed) {
+                          location.href = '/confirm'
+                      } else if (result.isDenied) {
+                          location.href = '/'
+                      }
+                  })
+            }
+          }
+      })
+
+
+  }
+
+  function paymentFailed(response){
+      $.ajax({
+          url:'/paymentFailed',
+          data:response,
+          method:'post',
+          success:(response)=>{
+            if(response.status){
+
+                  Swal.fire({
+                      title: 'Payment Failed !',
+                      icon: 'error',
+                      showDenyButton: false,
+                      toast: true,
+                  }).then((result) => {
+                      /* Read more about isConfirmed, isDenied below */
+                      if (result.isConfirmed) {
+                          location.href = '/'
+                      } else if (result.isDenied) {
+                          location.href = '/'
+                      }
+                  })
+
+            }
+          }
+      })
+  }
+</script>
+<% } %>
 
 <%- include('includes/footer.ejs') %>

@@ -3,8 +3,14 @@ const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const ShopingCart = require("../models/cartModel");
 const Product = require("../models/productModel");
-
+const OrderSchema = require("../models/oderModel");
+const Razorpay = require("razorpay");
 let loginErr = null;
+
+var instance = new Razorpay({
+  key_secret: "zvcqB1phsfyXySVAZoHzObDB",
+  key_id: "rzp_test_EsWfdOrXZua8KY",
+});
 
 module.exports = {
   registerView: (req, res) => {
@@ -20,14 +26,15 @@ module.exports = {
     if (req.session.loggedIn) {
       res.redirect("/home");
     } else {
-      
-      Product.find({}).limit(8).then((result) => {
-        let user = req.session.user;
-        cartNum = req.session.cartNum
-        // const ashan = result;
-      
-        res.render("user/home", { result  });
-      })
+      Product.find({})
+        .limit(8)
+        .then((result) => {
+          let user = req.session.user;
+          cartNum = req.session.cartNum;
+          // const ashan = result;
+
+          res.render("user/home", { result });
+        });
     }
   },
 
@@ -50,23 +57,26 @@ module.exports = {
   //logged in home view
   login: async (req, res) => {
     if (req.session.loggedIn) {
-      const userId = req.session.user._id
-      const viewcart = await ShopingCart.findOne({userId:userId}).populate('products.productId').exec()
-      if (viewcart){
-        req.session.cartNum = viewcart.products.length
+      const userId = req.session.user._id;
+      const viewcart = await ShopingCart.findOne({ userId: userId })
+        .populate("products.productId")
+        .exec();
+      if (viewcart) {
+        req.session.cartNum = viewcart.products.length;
       }
 
-      Product.find({}).limit(8).then((result) => {
-        let user = req.session.user;
-        cartNum = req.session.cartNum
-        // ashan = result;
-   
-        res.render("user/home", { user, result , cartNum });
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-     
+      Product.find({})
+        .limit(8)
+        .then((result) => {
+          let user = req.session.user;
+          cartNum = req.session.cartNum;
+          // ashan = result;
+
+          res.render("user/home", { user, result, cartNum });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       res.redirect("/");
     }
@@ -153,20 +163,21 @@ module.exports = {
     if (user) {
       if (user.access === true) {
         bcrypt.compare(req.body.password, user.password).then((data) => {
-         
           if (data) {
             console.log("Login Success");
             req.session.user = user;
             req.session.loggedIn = true;
             res.locals.user = user || null;
 
-            Product.find({}).limit(8).then((result) => {
-              let user = req.session.user;
-              cartNum = req.session.cartNum
-              // ashan = result;
-            
-              res.render("user/home", { user, result , cartNum });
-            })
+            Product.find({})
+              .limit(8)
+              .then((result) => {
+                let user = req.session.user;
+                cartNum = req.session.cartNum;
+                // ashan = result;
+
+                res.render("user/home", { user, result, cartNum });
+              });
           } else {
             console.log("Login Failed");
             loginErr = "Invalid password";
@@ -191,13 +202,14 @@ module.exports = {
     if (req.session.loggedIn) {
       let user = req.session.user;
       const userId = req.session.user._id;
-      const cartView = await ShopingCart.findOne({ userId: userId }).populate('products.productId').exec()
+      const cartView = await ShopingCart.findOne({ userId: userId })
+        .populate("products.productId")
+        .exec();
       if (cartView) {
-        req.session.cartNum = cartView.products.length
+        req.session.cartNum = cartView.products.length;
       }
       cartNum = req.session.cartNum;
       res.render("user/cart", { user, cartNum, cartProducts: cartView });
-     
     } else {
       res.redirect("/login");
     }
@@ -211,15 +223,13 @@ module.exports = {
 
       const productId = req.params.proId;
       const findProduct = await Product.findById(productId);
-      const price = findProduct.price
-      const name = findProduct.name
+      const price = findProduct.price;
+      const name = findProduct.name;
       const userId = req.session.user._id;
       let cart = await ShopingCart.findOne({ userId });
       if (cart) {
-       
         let itemIndex = cart.products.findIndex(
           (p) => p.productId == productId
-          
         );
 
         if (itemIndex > -1) {
@@ -250,24 +260,28 @@ module.exports = {
   },
 
   QuantityDec: async (req, res) => {
-    let userCart = await ShopingCart.findOne({ userId: req.session.user._id })
-        let ProductIndex = userCart.products.findIndex(Product => Product._id == req.params.proid);
-console.log(ProductIndex);
-        let arr =[...userCart.products]
-        console.log(arr);
-        let productItem = arr[ProductIndex];
-        userCart.total = userCart.total - (productItem.price * productItem.quantity)
-        productItem.quantity = productItem.quantity - 1;
-        arr[ProductIndex] = productItem;
-        userCart.total = userCart.total + (productItem.price * productItem.quantity)
+    let userCart = await ShopingCart.findOne({ userId: req.session.user._id });
+    let ProductIndex = userCart.products.findIndex(
+      (Product) => Product._id == req.params.proid
+    );
+    console.log(ProductIndex);
+    let arr = [...userCart.products];
+    console.log(arr);
+    let productItem = arr[ProductIndex];
+    userCart.total = userCart.total - productItem.price * productItem.quantity;
+    productItem.quantity = productItem.quantity - 1;
+    arr[ProductIndex] = productItem;
+    userCart.total = userCart.total + productItem.price * productItem.quantity;
 
-        userCart.save();
-        res.json({ status: true })
+    userCart.save();
+    res.json({ status: true });
   },
 
   QuantityInc: async (req, res) => {
     let userCart = await ShopingCart.findOne({ userId: req.session.user._id });
-    let productIndex = userCart.products.findIndex((product) => product._id == req.params.proid);
+    let productIndex = userCart.products.findIndex(
+      (product) => product._id == req.params.proid
+    );
 
     let productItem = userCart.products[productIndex];
     userCart.total = userCart.total - productItem.price * productItem.quantity;
@@ -279,63 +293,164 @@ console.log(ProductIndex);
     res.json({ status: true });
   },
 
-  productDetails:async (req,res) =>{
-    if(req.session.loggedIn){
+  productDetails: async (req, res) => {
+    if (req.session.loggedIn) {
+      let proId = req.params.id;
 
-      let proId = req.params.id
-      
-     let result = await Product.find({_id : proId})
-          
-     Users = req.session.user
-     cartNum = req.session.cartNum
-  
-     res.render('user/productDetails',{result,Users,cartNum})
-     
-    }else{
-      res.redirect('/login')
-    }
+      let result = await Product.find({ _id: proId });
 
+      Users = req.session.user;
+      cartNum = req.session.cartNum;
 
-  },
-
-  removeCart: async (req,res)=>{
-if(req.session.loggedIn){
-
-  let userCart = await ShopingCart.findOne({ userId: req.session.user._id });
-  let productIndex = userCart.products.findIndex((product) => product._id == req.params.id);
-
-  let productItem = userCart.products[productIndex];
-  userCart.total = userCart.total - (productItem.price * productItem.quantity)
-  userCart.products.splice(productIndex,1)
-  userCart.save();
-  res.redirect('/cart')
-
-
-}else{
-  res.redirect('/login');
-}
-
-  },
-
-  getCheckOut : (req,res)=>{
-    if(req.session.user){
-      user = req.session.user
-      ShopingCart.find({ userId: req.session.user._id }).populate('products.productId').exec().then((result) => {
-        cartNum = req.session.cartNum
-        res.render('user/checkout', { user, cartNum, session: req.session, Cart: result[0] })
-      })
-    }else{
-      res.redirect('/login')
+      res.render("user/productDetails", { result, Users, cartNum });
+    } else {
+      res.redirect("/login");
     }
   },
 
-  getFavoraites:(req,res)=>{
-    if(req.session.loggedIn){
-      res.render('user/favoraites')
-    }else{
-      res.redirect('/login')
+  removeCart: async (req, res) => {
+    if (req.session.loggedIn) {
+      let userCart = await ShopingCart.findOne({
+        userId: req.session.user._id,
+      });
+      let productIndex = await userCart.products.findIndex(
+        (product) => product._id == req.params.id
+      );
+
+      let productItem = userCart.products[productIndex];
+      if (productItem != null) {
+        userCart.total =
+          userCart.total - productItem.price * productItem.quantity;
+        userCart.products.splice(productIndex, 1);
+        userCart.save();
+        res.redirect("/cart");
+      } else {
+        res.redirect("/home");
+      }
+    } else {
+      res.redirect("/login");
     }
-  }
+  },
 
+  getCheckOut: (req, res) => {
+    if (req.session.user) {
+      user = req.session.user;
+      ShopingCart.find({ userId: req.session.user._id })
+        .populate("products.productId")
+        .exec()
+        .then((result) => {
+          cartNum = req.session.cartNum;
+          res.render("user/checkout", {
+            user,
+            cartNum,
+            session: req.session,
+            Cart: result[0],
+          });
+        });
+    } else {
+      res.redirect("/login");
+    }
+  },
 
+  postCheckOut: async (req, res) => {
+    let user = req.session.user;
+    let userId = user._id;
+
+    let Cart = await ShopingCart.findById(req.params.CartId);
+    if (req.body.paymentMethod === "Cash On Delivery") {
+      let USER = await User.findById(userId);
+      address = req.body;
+      USER.address.push(address);
+
+      const newOrder = await new OrderSchema({
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString(),
+        userId: userId,
+        products: Cart.products,
+        quantity: Cart.quantity,
+        total: Cart.total,
+        address: req.body,
+        paymentStatus: "Payment Pending",
+        orderStatus: "Order Placed",
+      });
+      newOrder.save().then((result) => {
+        req.session.orderId = result._id;
+
+        ShopingCart.findOneAndRemove({ userId: result.userId }).then(
+          (result) => {
+            res.json({ cashOnDelivery: true });
+          }
+        );
+      });
+    } else if (req.body.paymentMethod === "Online Payment") {
+      const date = new Date().toLocaleDateString();
+      const time = new Date().toLocaleTimeString();
+      const userId = Cart.userId;
+      const products = Cart.products;
+      const total = Cart.total;
+      const address = req.body;
+      const paymentStatus = "Payment Pending";
+      const orderStatus = "Order Pending";
+      const newOrder = new OrderSchema({
+        date,
+        time,
+        userId,
+        products,
+        total,
+        address,
+        paymentStatus,
+        orderStatus,
+      });
+      newOrder.save().then((result) => {
+        let userOrderData = result;
+        id = result._id.toString();
+        instance.orders.create(
+          {
+            amount: result.total * 100,
+            currency: "INR",
+            receipt: id,
+          },
+          (err, order) => {
+            console.log(err);
+            let response = {
+              onlinePayment: true,
+              razorpayOrderData: order,
+              userOrderData: userOrderData,
+            };
+            res.json(response);
+          }
+        );
+        ShopingCart.findOneAndRemove({ userId: result.userId }).then(
+          (result) => {}
+        );
+      });
+    }
+  },
+
+  getConfirm: (req, res) => {
+    if (req.session.user) {
+      let user = req.session.user;
+      let cartNum = req.session.cartNum;
+      res.render("user/confirmation", {
+        user,
+        cartNum,
+        orderId: req.session.orderId,
+      });
+    } else {
+      res.redirect("/login");
+    }
+  },
+
+  getFavoraites: (req, res) => {
+    if (req.session.loggedIn) {
+      res.render("user/favoraites");
+    } else {
+      res.redirect("/login");
+    }
+  },
+  postOderSuccess: (req, res) => {
+    let result = OrderSchema.findById(req.params.orderId);
+
+    res.render("user/orderSummary", { Oder: result });
+  },
 };

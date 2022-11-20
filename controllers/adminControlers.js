@@ -223,7 +223,7 @@ module.exports = {
     if(req.session.adminloggedIn){
       Category.find({}, function (err, result){
         if (err){
-          console.log("................");
+         
           res.send(err)
         } else {
           res.render('admin/categorylist',{result,errMsg,errorMsg})

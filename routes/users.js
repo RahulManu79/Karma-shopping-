@@ -46,7 +46,11 @@ router.get('/favoraites',loginController.getFavoraites)
 
 router.get('/checkout',loginController.getCheckOut)
 
+router.post('/checkout/:CartId',loginController.postCheckOut)
 
+router.post('/orderSummary/:orderId',loginController.postOderSuccess)
+
+router.get('/confirm',loginController.getConfirm )
 
 
 
