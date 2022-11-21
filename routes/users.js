@@ -48,7 +48,11 @@ router.get('/checkout',loginController.getCheckOut)
 
 router.post('/checkout/:CartId',loginController.postCheckOut)
 
-router.post('/orderSummary/:orderId',loginController.postOderSuccess)
+router.post('/verifyPayment',loginController.postverifyPayment)
+
+router.post('/paymentFailed',loginController.postPaymentFailed)
+
+router.get('/orderSummary',loginController.postOderSuccess)
 
 router.get('/confirm',loginController.getConfirm )
 

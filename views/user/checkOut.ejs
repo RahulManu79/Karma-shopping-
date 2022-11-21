@@ -174,145 +174,133 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-  $('#checkout-form').submit((e) => {
-    e.preventDefault()
+  let userOrderData
+  $("#checkout-form").submit((e) => {
+    e.preventDefault();
     console.log("vannu >>>>>>>>>>>>>>>");
-      $.ajax({
-          url:'/checkout/<%= Cart._id %>',
-          method: 'post',
-          data: $('#checkout-form').serialize(),
-          success: (response) => {
-            
-
-              if(response.cashOnDelivery){
-
-                  Swal.fire({
-                      title: 'Order Placed Successfully',
-                      icon: 'success',
-                      showDenyButton: true,
-                      confirmButtonText: 'View Order',
-                      denyButtonText: `Continue Shopping`,
-                      toast: true,
-                  }).then((result)=>{
-                       /* Read more about isConfirmed, isDenied below */
-                      if(result.isConfirmed){
-                          location.href='/confirm'
-                      }else if(result.isDenied){
-                          location.href = '/'
-                      }
-                  })
-
-
-              }else if(response.onlinePayment){
-
-                console.log(response,";::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
-                 console.log("test ok");
-                 let razorpayoderData = Response.razorpayoderData
-                 console.log(razorpayoderData);
-                 var options = {
-                      "key": "rzp_test_EsWfdOrXZua8KY", // Enter the Key ID generated from the Dashboard
-                      "amount": response.razorpayOrderData.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                      "currency": "INR",
-                      "name": "Karma Shoes",
-                      "description": "Test Transaction",
-                      "image": "https://example.com/your_logo",
-                      "order_id": response.razorpayOrderData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                      "handler": function (response) {
-                          console.log(response);
-                          // alert(response.razorpay_payment_id);
-                          // alert(response.razorpay_order_id);
-                          // alert(response.razorpay_signature)
-                          verifyPayment(response,razorpayOrderData,userOrderData);
-
-                      },
-                      "prefill": {
-                          "name": "Gaurav Kumar",
-                          "email": "gaurav.kumar@example.com",
-                          "contact": "9999999999"
-                      },
-                      "notes": {
-                          "address": "Razorpay Corporate Office"
-                      },
-                      "theme": {
-                          "color": "#3399cc"
-                      }
-                  }
-
-                  var rzpl = new Razorpay(options)
-
-                  rzpl.on('payment.failed',function(response){
-                      paymentFailed(response)
-                  })
-                  rzpl.open()
-              }
-          }
-      })
-  })
-
-  function verifyPayment(payment,razorpayOrderData,userOrderData){
-      console.log(payment);
-      console.log(razorpayOrderData);
-      console.log(userOrderData);
-      $.ajax({
-          url:'/verifyPayment',
-          data:{
-              payment,
-              razorpayOrderData,
-              userOrderData
-          },
-          method: 'post',
-
-          success:(response)=>{
-            if(response.status){
-              Swal.fire({
-                      title: 'Order Placed Successfully',
-                      icon: 'success',
-                      showDenyButton: true,
-                      confirmButtonText: 'View Order',
-                      denyButtonText: `Continue Shopping`,
-                      toast: true,
-                  }).then((result) => {
-                      /* Read more about isConfirmed, isDenied below */
-                      if (result.isConfirmed) {
-                          location.href = '/confirm'
-                      } else if (result.isDenied) {
-                          location.href = '/'
-                      }
-                  })
+    $.ajax({
+      url: "/checkout/<%= Cart._id %>",
+      method: "post",
+      data: $("#checkout-form").serialize(),
+      success: (response) => {
+        if (response.cashOnDelivery) {
+          Swal.fire({
+            title: "Order Placed Successfully",
+            icon: "success",
+            showDenyButton: true,
+            confirmButtonText: "View Order",
+            denyButtonText: `Continue Shopping`,
+            toast: true,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              location.href = "/confirm";
+            } else if (result.isDenied) {
+              location.href = "/";
             }
-          }
-      })
+          });
+        } else if (response.onlinePayment) {
+          console.log("test ok");
+          let razorpayoderData = response.razorpayoderData;
+          userOrderData = response.userOrderData;
+          console.log(userOrderData,"<<<<<<<<<<<<<<<<<<<<<<<");
+          console.log(razorpayoderData);
+          var options = {
+            key: "rzp_test_EsWfdOrXZua8KY", // Enter the Key ID generated from the Dashboard
+            amount: response.razorpayOrderData.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: "INR",
+            name: "Karma Shoes",
+            description: "Test Transaction",
+            image: "https://example.com/your_logo",
+            order_id: response.razorpayOrderData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            handler: function (response) {
+              console.log(response, "????????????????????????????????????????");
+              alert(response.razorpay_payment_id);
+              alert(response.razorpay_order_id);
+              alert(response.razorpay_signature);
+              verifyPayment(response, );
+            },
+            prefill: {
+              name: "Gaurav Kumar",
+              email: "gaurav.kumar@example.com",
+              contact: "9999999999",
+            },
+            notes: {
+              address: "Razorpay Corporate Office",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
 
+          var rzpl = new Razorpay(options);
 
+          rzpl.on("payment.failed", function (response) {
+            paymentFailed(response);
+          });
+          rzpl.open();
+        }
+      },
+    });
+  });
+
+  function verifyPayment(payment,razorpayOrderData) {
+    console.log(razorpayOrderData);
+    console.log(userOrderData, "/////////////////////////////////");
+    $.ajax({
+      url: "/verifyPayment",
+      data: {
+        payment,
+        razorpayOrderData,
+        userOrderData,
+      },
+      method: "post",
+     
+      success: (response) => {
+        if (response.status) {
+          Swal.fire({
+            title: "Order Placed Successfully",
+            icon: "success",
+            showDenyButton: true,
+            confirmButtonText: "View Order",
+            denyButtonText: `Continue Shopping`,
+            toast: true,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              location.href = "/confirm";
+            } else if (result.isDenied) {
+              location.href = "/";
+            }
+          });
+        }
+      },
+    });
   }
 
-  function paymentFailed(response){
-      $.ajax({
-          url:'/paymentFailed',
-          data:response,
-          method:'post',
-          success:(response)=>{
-            if(response.status){
-
-                  Swal.fire({
-                      title: 'Payment Failed !',
-                      icon: 'error',
-                      showDenyButton: false,
-                      toast: true,
-                  }).then((result) => {
-                      /* Read more about isConfirmed, isDenied below */
-                      if (result.isConfirmed) {
-                          location.href = '/'
-                      } else if (result.isDenied) {
-                          location.href = '/'
-                      }
-                  })
-
+  function paymentFailed(response) {
+    $.ajax({
+      url: "/paymentFailed",
+      data: response,
+      method: "post",
+      success: (response) => {
+        if (response.status) {
+          Swal.fire({
+            title: "Payment Failed !",
+            icon: "error",
+            showDenyButton: false,
+            toast: true,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              location.href = "/";
+            } else if (result.isDenied) {
+              location.href = "/";
             }
-          }
-      })
+          });
+        }
+      },
+    });
   }
 </script>
-<% } %>
-
-<%- include('includes/footer.ejs') %>
+<% } %> <%- include('includes/footer.ejs') %>

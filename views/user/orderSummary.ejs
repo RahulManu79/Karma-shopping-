@@ -25,9 +25,9 @@
                     <h4>Order Info</h4>
                     <ul class="list">
                         <li><a href="#"><span>Order number</span> : 60235</a></li>
-                        <li><a href="#"><span>Date</span> : <%= Order.date %></a></li>
-                        <li><a href="#"><span>Total</span> : Rs<%= Order.total %></a></li>
-                        <li><a href="#"><span>Payment method</span> : <%= Order.address.paymentMethod %></a></li>
+                        <li><a href="#"><span>Date</span> : <%= id.date %></a></li>
+                        <li><a href="#"><span>Total</span> : Rs<%= id.total %></a></li>
+                        <li><a href="#"><span>Payment method</span> : <%= id.address.paymentMethod %></a></li>
                     </ul>
                 </div>
             </div>
@@ -46,10 +46,10 @@
                 <div class="details_item">
                     <h4>Shipping Address</h4>
                     <ul class="list">
-                        <li><a href="#"><span>City</span> : <%= Order.address.city %></a></li>
-                        <li><a href="#"><span>District</span> : <%= Order.address.district %></a></li>
-                        <li><a href="#"><span>Country</span> : <%= Order.address.country %></a></li>
-                        <li><a href="#"><span>Postcode </span> : <%= Order.address.zipcode %></a></li>
+                        <li><a href="#"><span>City</span> : <%= id.address?.city %></a></li>
+                        <li><a href="#"><span>District</span> : <%= id.address?.district %></a></li>
+                        <li><a href="#"><span>Country</span> : <%= id.address?.country %></a></li>
+                        <li><a href="#"><span>Postcode </span> : <%= id.address?.zipcode %></a></li>
                     </ul>
                 </div>
             </div>
@@ -66,7 +66,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% Order.products.forEach(function(result){ %>
+                        
+                            <% for( let index = 0; index <= id.products; index++ ) { %>
+                            
+                            
                         <tr>
                             <td>
                                 <p><%= result.name %></p>
@@ -78,7 +81,7 @@
                                 <p>Rs<%= result.price*result.quantity %></p>
                             </td>
                         </tr>
-                        <% }) %>
+                        <%} %>
                         <tr>
                             <td>
                                 <h4>Total</h4>
@@ -87,7 +90,7 @@
                                 <h5></h5>
                             </td>
                             <td>
-                                <p>Rs<%= Order.total %></p>
+                                <p>Rs<%= id.total %></p>
                             </td>
                         </tr>
                     </tbody>

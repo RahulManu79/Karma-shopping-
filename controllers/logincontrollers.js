@@ -5,6 +5,7 @@ const ShopingCart = require("../models/cartModel");
 const Product = require("../models/productModel");
 const OrderSchema = require("../models/oderModel");
 const Razorpay = require("razorpay");
+var { validatePaymentVerification } = require('../node_modules/razorpay/dist/utils/razorpay-utils');
 let loginErr = null;
 
 var instance = new Razorpay({
@@ -403,6 +404,7 @@ module.exports = {
       });
       newOrder.save().then((result) => {
         let userOrderData = result;
+        console.log(userOrderData);
         id = result._id.toString();
         instance.orders.create(
           {
@@ -441,6 +443,38 @@ module.exports = {
     }
   },
 
+  postverifyPayment:async(req,res)=>{
+
+    
+    
+    let razorpayOrderDataId = req.body['payment[razorpay_order_id]']
+
+    let paymentId = req.body['payment[razorpay_payment_id]'];
+
+    let paymentSignature = req.body['payment[razorpay_signature]']
+
+        let userOrderDataId = req.body['userOrderData[_id]']
+  
+        validate = validatePaymentVerification({ "order_id": razorpayOrderDataId, "payment_id": paymentId }, paymentSignature, 'zvcqB1phsfyXySVAZoHzObDB');
+        console.log(validate,"///////////////////////////////////////////////////");
+        if (validate) {
+            console.log('payment success')
+            let order = await OrderSchema.findById(userOrderDataId)
+            orderStatus = 'Order Placed'
+            paymentStatus = 'Payment Completed'
+            order.save().then((result) => {
+                res.json({ status: true })
+            })
+        }
+   
+
+  },
+
+  postPaymentFailed: (req, res) => {
+    console.log(req.body);
+    res.json({ status: true })
+  },
+
   getFavoraites: (req, res) => {
     if (req.session.loggedIn) {
       res.render("user/favoraites");
@@ -449,8 +483,11 @@ module.exports = {
     }
   },
   postOderSuccess: (req, res) => {
-    let result = OrderSchema.findById(req.params.orderId);
+   console.log(req.query.id);
+    req.session.orderId= req.query.id
+    let result = OrderSchema.findById(req.query.id);
+    console.log(result,"?????????????????????????????????????");
 
-    res.render("user/orderSummary", { Oder: result });
+    res.render("user/orderSummary", { id : result });
   },
 };
