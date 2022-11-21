@@ -4,8 +4,11 @@ const passport = require("passport");
 const ShopingCart = require("../models/cartModel");
 const Product = require("../models/productModel");
 const OrderSchema = require("../models/oderModel");
+const Address = require("../models/addressModel");
 const Razorpay = require("razorpay");
-var { validatePaymentVerification } = require('../node_modules/razorpay/dist/utils/razorpay-utils');
+var {
+  validatePaymentVerification,
+} = require("../node_modules/razorpay/dist/utils/razorpay-utils");
 let loginErr = null;
 
 var instance = new Razorpay({
@@ -362,15 +365,32 @@ module.exports = {
       let USER = await User.findById(userId);
       address = req.body;
       USER.address.push(address);
+      const paymentMethod = req.body.paymentMethod;
+      
+      const newAddress = await new Address({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        number: req.body.number,
+        homeaddress: req.body.homeaddress,
+        city: req.body.city,
+        district: req.body.city,
+        country: req.body.country,
+        zipcode: req.body.zipcode,
+        userId:userId
+      });
+      newAddress.save().then((result)=>{
+        let address = result
+     
 
-      const newOrder = await new OrderSchema({
+      const newOrder = new OrderSchema({
         date: new Date().toLocaleDateString(),
         time: new Date().toLocaleTimeString(),
         userId: userId,
         products: Cart.products,
         quantity: Cart.quantity,
         total: Cart.total,
-        address: req.body,
+        address,
+        paymentMethod,
         paymentStatus: "Payment Pending",
         orderStatus: "Order Placed",
       });
@@ -383,48 +403,66 @@ module.exports = {
           }
         );
       });
+    })
     } else if (req.body.paymentMethod === "Online Payment") {
       const date = new Date().toLocaleDateString();
       const time = new Date().toLocaleTimeString();
       const userId = Cart.userId;
       const products = Cart.products;
       const total = Cart.total;
-      const address = req.body;
-      const paymentStatus = "Payment Pending";
-      const orderStatus = "Order Pending";
-      const newOrder = new OrderSchema({
-        date,
-        time,
-        userId,
-        products,
-        total,
-        address,
-        paymentStatus,
-        orderStatus,
+      const paymentMethod = req.body.paymentMethod;
+
+      const newAddress = await new Address({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        number: req.body.number,
+        homeaddress: req.body.homeaddress,
+        city: req.body.city,
+        district: req.body.city,
+        country: req.body.country,
+        zipcode: req.body.zipcode,
+        userId:userId
       });
-      newOrder.save().then((result) => {
-        let userOrderData = result;
-        console.log(userOrderData);
-        id = result._id.toString();
-        instance.orders.create(
-          {
-            amount: result.total * 100,
-            currency: "INR",
-            receipt: id,
-          },
-          (err, order) => {
-            console.log(err);
-            let response = {
-              onlinePayment: true,
-              razorpayOrderData: order,
-              userOrderData: userOrderData,
-            };
-            res.json(response);
-          }
-        );
-        ShopingCart.findOneAndRemove({ userId: result.userId }).then(
-          (result) => {}
-        );
+      newAddress.save().then((result) => {
+        let address = result;
+
+        const paymentStatus = "Payment Pending";
+        const orderStatus = "Order Pending";
+        const newOrder = new OrderSchema({
+          date,
+          time,
+          userId,
+          products,
+          total,
+          address,
+          paymentMethod,
+          paymentStatus,
+          orderStatus,
+        });
+        newOrder.save().then((result) => {
+          let userOrderData = result;
+          console.log(userOrderData);
+          id = result._id.toString();
+          instance.orders.create(
+            {
+              amount: result.total * 100,
+              currency: "INR",
+              receipt: id,
+            },
+            (err, order) => {
+              console.log(err);
+              let response = {
+                onlinePayment: true,
+                razorpayOrderData: order,
+                userOrderData: userOrderData,
+              };
+              res.json(response);
+            }
+          );
+          ShopingCart.findOneAndRemove({ userId: result.userId }).then(
+            (result) => {}
+          );
+        });
       });
     }
   },
@@ -443,36 +481,35 @@ module.exports = {
     }
   },
 
-  postverifyPayment:async(req,res)=>{
+  postverifyPayment: async (req, res) => {
+    let razorpayOrderDataId = req.body["payment[razorpay_order_id]"];
 
-    
-    
-    let razorpayOrderDataId = req.body['payment[razorpay_order_id]']
+    let paymentId = req.body["payment[razorpay_payment_id]"];
 
-    let paymentId = req.body['payment[razorpay_payment_id]'];
+    let paymentSignature = req.body["payment[razorpay_signature]"];
 
-    let paymentSignature = req.body['payment[razorpay_signature]']
+    let userOrderDataId = req.body["userOrderData[_id]"];
 
-        let userOrderDataId = req.body['userOrderData[_id]']
-  
-        validate = validatePaymentVerification({ "order_id": razorpayOrderDataId, "payment_id": paymentId }, paymentSignature, 'zvcqB1phsfyXySVAZoHzObDB');
-        console.log(validate,"///////////////////////////////////////////////////");
-        if (validate) {
-            console.log('payment success')
-            let order = await OrderSchema.findById(userOrderDataId)
-            orderStatus = 'Order Placed'
-            paymentStatus = 'Payment Completed'
-            order.save().then((result) => {
-                res.json({ status: true })
-            })
-        }
-   
-
+    validate = validatePaymentVerification(
+      { order_id: razorpayOrderDataId, payment_id: paymentId },
+      paymentSignature,
+      "zvcqB1phsfyXySVAZoHzObDB"
+    );
+ 
+    if (validate) {
+      console.log("payment success");
+      let order = await OrderSchema.findById(userOrderDataId);
+      orderStatus = "Order Placed";
+      paymentStatus = "Payment Completed";
+      order.save().then((result) => {
+        res.json({ status: true });
+      });
+    }
   },
 
   postPaymentFailed: (req, res) => {
     console.log(req.body);
-    res.json({ status: true })
+    res.json({ status: true });
   },
 
   getFavoraites: (req, res) => {
@@ -482,12 +519,14 @@ module.exports = {
       res.redirect("/login");
     }
   },
-  postOderSuccess: (req, res) => {
-   console.log(req.query.id);
-    req.session.orderId= req.query.id
-    let result = OrderSchema.findById(req.query.id);
-    console.log(result,"?????????????????????????????????????");
+  postOderSuccess:async (req, res) => {
+    console.log(req.query.id);
+    req.session.orderId = req.query.id;
+    let result = await OrderSchema.findById(req.query.id).populate("address").populate("products")
+    // result.products.map(result.products)
+    let address= Address.findById(req.query.id)
 
-    res.render("user/orderSummary", { id : result });
+
+    res.render("user/orderSummary", { id:result ,address});
   },
 };

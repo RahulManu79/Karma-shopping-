@@ -47,7 +47,7 @@
             <div class="col-md-12 form-group">
               <textarea
                 class="form-control"
-                name="address"
+                name="homeaddress"
                 id="address"
                 rows="1"
                 placeholder="Address"
@@ -246,7 +246,7 @@
 
   function verifyPayment(payment,razorpayOrderData) {
     console.log(razorpayOrderData);
-    console.log(userOrderData, "/////////////////////////////////");
+   
     $.ajax({
       url: "/verifyPayment",
       data: {

@@ -173,11 +173,9 @@
     </div>
   </div>
 </div>
-
 <% } %>
 <script>
   function QuantityInc(ProductId) {
-    console.log(ProductId,">........");
     $.ajax({
       url: "/quantityInc/" + ProductId,
       method: "get",
