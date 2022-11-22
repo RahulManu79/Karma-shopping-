@@ -9,6 +9,7 @@ const Razorpay = require("razorpay");
 var {
   validatePaymentVerification,
 } = require("../node_modules/razorpay/dist/utils/razorpay-utils");
+const { trusted } = require("mongoose");
 let loginErr = null;
 
 var instance = new Razorpay({
@@ -512,13 +513,6 @@ module.exports = {
     res.json({ status: true });
   },
 
-  getFavoraites: (req, res) => {
-    if (req.session.loggedIn) {
-      res.render("user/favoraites");
-    } else {
-      res.redirect("/login");
-    }
-  },
   postOderSuccess:async (req, res) => {
     console.log(req.query.id);
     req.session.orderId = req.query.id;
@@ -527,6 +521,35 @@ module.exports = {
     let address= Address.findById(req.query.id)
 
 
-    res.render("user/orderSummary", { id:result ,address});
+    res.render("user/orderSummary", { id:result ,address,session:req.session});
   },
+
+  getMyOrders:async(req,res)=>{
+    if(req.session.loggedIn){
+      try{
+       let result = await OrderSchema.find({Cart:req.session.user.id}).sort({date:-1})
+        res.render('user/myOrders',{session:req.session,Orders:result})
+       
+      }catch(err){
+        console.log(err);
+      }
+
+    }else{
+      res.redirect('/login')
+    }
+  },
+
+  getCancelOrder:async(req,res)=>{
+    if(req.session.loggedIn){
+      try {
+       let orderId=req.query.id;
+       
+        let order = await OrderSchema.findByIdAndUpdate(orderId,{orderStatus:"Cancellede"})
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+  }
 };

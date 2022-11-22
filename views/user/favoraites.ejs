@@ -1,175 +1,57 @@
 
 <%- include('./includes/header.ejs') %>
 
-<div class="search_input" id="search_input_box">
+<section class="cart_area mt-5">
     <div class="container">
-        <form class="d-flex justify-content-between">
-            <input type="text" class="form-control" id="search_input" placeholder="Search Here">
-            <button type="submit" class="btn"></button>
-            <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
-        </form>
-    </div>
-</div>
-</header>
-<!-- End Header Area -->
-
-<!-- Start Banner Area -->
-<section class="banner-area organic-breadcrumb">
-<div class="container">
-    <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-        <div class="col-first">
-            <h1>Shopping Cart</h1>
-            <nav class="d-flex align-items-center">
-                <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
-                <a href="/favoraites">WishList</a>
-            </nav>
+        <h2>Wishlist</h2>
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <% if(Wishlist) { %>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Add to Cart</th>
+                            <th scope="col">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (Product of Wishlist) { %>
+                        <tr>
+                            <td>
+                                <div class="media">
+                                    <div class="d-flex">
+                                        <img height="100px" width="100px" src="productImages/<%=Product.Images[0]%>" alt="">
+                                    </div>
+                                    <div class="media-body">
+                                        <p><%=Product.ProductName%></p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <h5>Rs.<span><%=Product.Price%></span></h5>
+                            </td>
+                            <td>
+                                <a href="/addToCart/?productId=<%=Product.ProductId%>&productName=<%=Product.ProductName%>&price=<%=Product.Price%>&images=<%=Product.Images[0]%>" class="genric-btn primary medium text-dark">Add To Cart</a>
+                            </td>
+                            <td>
+                                <a href="/removeFromWishlist/?ProductId=<%=Product.ProductId%>" class="genric-btn danger medium text-dark">Remove</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                <% }else{ %>
+                    <p>Wishlist is Empty</p>
+                 <% } %>
+            </div>
         </div>
     </div>
-</div>
 </section>
-<!-- End Banner Area -->
-
-<!--================Cart Area =================-->
-<section class="cart_area">
-<div class="container">
-    <div class="cart_inner">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
-                  
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="media">
-                                <div class="d-flex">
-                                    <img src="img/cart.jpg" alt="">
-                                </div>
-                                <div class="media-body">
-                                    <p>Minimalistic shop for multipurpose use</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <h5>$360.00</h5>
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="media">
-                                <div class="d-flex">
-                                    <img src="img/cart.jpg" alt="">
-                                </div>
-                                <div class="media-body">
-                                    <p>Minimalistic shop for multipurpose use</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <h5>$360.00</h5>
-                        </td>
-                        
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="media">
-                                <div class="d-flex">
-                                    <img src="img/cart.jpg" alt="">
-                                </div>
-                                <div class="media-body">
-                                    <p>Minimalistic shop for multipurpose use</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <h5>$360.00</h5>
-                        </td>
-                        
-                    </tr>
-                    <tr class="bottom_button">
-                        <td>
-                            <a class="gray_btn" href="#">Update Cart</a>
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-
-                        </td>
-                        
-                    </tr>
-                    <tr>
-                        <td>
-
-                        </td>
-                        <td>
-
-                        </td>
-                     
-                    </tr>
-                    <tr class="shipping_area">
-                        <td>
-
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-                            <h5>Shipping</h5>
-                        </td>
-                        <td>
-                            <div class="shipping_box">
-                                <ul class="list">
-                                    <li><a href="#">Flat Rate: $5.00</a></li>
-                                    <li><a href="#">Free Shipping</a></li>
-                                    <li><a href="#">Flat Rate: $10.00</a></li>
-                                    <li class="active"><a href="#">Local Delivery: $2.00</a></li>
-                                </ul>
-                                <h6>Calculate Shipping <i class="fa fa-caret-down" aria-hidden="true"></i></h6>
-                                <select class="shipping_select">
-                                    <option value="1">Bangladesh</option>
-                                    <option value="2">India</option>
-                                    <option value="4">Pakistan</option>
-                                </select>
-                                <select class="shipping_select">
-                                    <option value="1">Select a State</option>
-                                    <option value="2">Select a State</option>
-                                    <option value="4">Select a State</option>
-                                </select>
-                                <input type="text" placeholder="Postcode/Zipcode">
-                                <a class="gray_btn" href="#">Update Details</a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="out_button_area">
-                        <td>
-
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-                            <div class="checkout_btn_inner d-flex align-items-center">
-                                <a class="gray_btn" href="#">Continue Shopping</a>
-                                <a class="primary-btn" href="#">Proceed to checkout</a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-</section>
-<!--================End Cart Area =================-->
 
 
 <%- include('./includes/footer.ejs') %>

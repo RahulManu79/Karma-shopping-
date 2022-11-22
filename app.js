@@ -41,10 +41,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 
-app.use(morgan('dev'))
 app.use(session({
     secret: 'key',
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: {maxAge:6000000000 }
   }))
@@ -55,6 +54,7 @@ app.use(session({
     );
     next();
   });
+app.use(morgan('dev'))
 
 //body parsing
 app.use(express.urlencoded({extended: false}))

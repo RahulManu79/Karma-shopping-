@@ -3,6 +3,7 @@ const { Router } = require('express');
 const express =require('express');
 const { registerUser, sessionchek, loginSessionCheck } = require('../controllers/logincontrollers');
 const loginController = require('../controllers/logincontrollers');
+const WishlistController = require('../controllers/wishListControllers')
 const router = express.Router();
 const JoiValidator =require('../controllers/joiControllers')
 
@@ -42,7 +43,9 @@ router.get('/productDetails/:id',loginController.productDetails)
 
 router.get('/removeCart/:id',loginController.removeCart)
 
-router.get('/favoraites',loginController.getFavoraites)
+router.get('/wishlist',WishlistController.getWishlist)
+
+router.get('/addToWishlist',WishlistController.getAddToWishlist)
 
 router.get('/checkout',loginController.getCheckOut)
 
@@ -56,6 +59,9 @@ router.get('/orderSummary',loginController.postOderSuccess)
 
 router.get('/confirm',loginController.getConfirm )
 
+router.get('/myOrders',loginController.getMyOrders)
+
+router.get('/cancelOrder',loginController.getCancelOrder)
 
 
 

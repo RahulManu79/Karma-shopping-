@@ -18,7 +18,12 @@
 <!--================Order Details Area =================-->
 <section class="order_details section_gap">
     <div class="container">
-        <h3 class="title_confirmation">Thank you. Your order has been received.</h3>
+        <% if (id.orderStatus=="Cancellede") { %>
+            <h3 class="title_confirmation text-danger"> Your order has been Cancelled.</h3>
+        <% } else{%>
+            
+            <h3 class="title_confirmation">Thank you. Your order has been received.</h3>
+            <% } %> 
         <div class="row order_d_inner">
             <div class="col-lg-4">
                 <div class="details_item">
@@ -77,7 +82,7 @@
                                 <h5>x0<%= id.products[i].quantity %></h5>
                             </td>
                             <td>
-                                <p>Rs<%= id.products.price*id.products.quantity %></p>
+                                <p>Rs<%= id.products[i].price*id.products[i].quantity %></p>
                             </td>
                         </tr>
                         <%} %>
@@ -97,6 +102,11 @@
             </div>
         </div>
         <div class="container text-center mt-5">
+            <% if(id.orderStatus!='Cancelled'){ %>
+                <button onclick="cancelOrder('<%=id._id%>')" class="genric-btn danger">
+                  Cancel Order
+                </button>
+              <% } %>
             <a class="btn btn-outline-primary" href="/">Go back to Home</a>
         </div>
     </div>
@@ -107,3 +117,33 @@
 
 
 <%- include('./includes/footer.ejs') %>
+
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script>
+
+function cancelOrder(orderId){
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Cancel Order!",
+      cancelButtonText : 'No'
+}).then((result) => {
+   if(result.isConfirmed) {
+    console.log(orderId);
+    $.ajax({
+          url:'/cancelOrder/?id='+orderId,
+          method:'get',
+    })
+     Swal.fire("Cancelled!", "Your orderd has been Cancelled.", "success").then(()=>{
+          window.location = "/myOrders"
+        })
+   }
+})
+}
+
+ </script> 
