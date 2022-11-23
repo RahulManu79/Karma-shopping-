@@ -36,7 +36,10 @@ const UserSchema = new mongoose.Schema({
             country: String,
             zipcode: Number
         }
-    ]
+    ],
+    wishlist:{
+        type:Array
+    }
     
    
 })

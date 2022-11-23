@@ -29,7 +29,7 @@ router.get('/login',loginController.loginbtnView)
 
 router.get('/logout',loginController.logoutView)
 
-router.get('/userProfile',loginController.userprofile)
+router.get('/userProfile',loginController.sessionchek,loginController.userprofile)
 
 router.get('/cart',loginController.cartView)
 
@@ -43,9 +43,11 @@ router.get('/productDetails/:id',loginController.productDetails)
 
 router.get('/removeCart/:id',loginController.removeCart)
 
-router.get('/wishlist',WishlistController.getWishlist)
+router.get('/wishlist',loginController.sessionchek,WishlistController.getWishlist)
 
-router.get('/addToWishlist',WishlistController.getAddToWishlist)
+router.get('/addToWishlist',loginController.sessionchek,WishlistController.getAddToWishlist)
+
+router.get('/removeWishlist',loginController.sessionchek,WishlistController.removeFromWishlist)
 
 router.get('/checkout',loginController.getCheckOut)
 

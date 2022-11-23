@@ -103,10 +103,10 @@ module.exports = {
   },
 
   sessionchek: (req, res, next) => {
-    if (req.session.user) {
+    if (req.session.loggedIn) {
       next();
     } else {
-      res.redirect("/");
+      res.redirect("/login");
     }
   },
 
@@ -227,7 +227,9 @@ module.exports = {
       let quantity = 1;
 
       const productId = req.params.proId;
+      console.log(req.params.proId)
       const findProduct = await Product.findById(productId);
+      console.log( findProduct,"//////////////////////");
       const price = findProduct.price;
       const name = findProduct.name;
       const userId = req.session.user._id;
