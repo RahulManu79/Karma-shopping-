@@ -50,13 +50,19 @@ module.exports = {
 
   //showing user profile
   userprofile: (req, res) => {
-    if (req.session.loggedIn) {
-      let user = req.session.user;
-      cartNum = req.session.cartNum;
-      res.render("user/userProfile", { user, cartNum });
-    } else {
-      res.redirect("/");
-    }
+      try {
+        Address
+          .find({ userId: req.session.user._id })
+          .then((result) => {
+            res.render("user/userProfile", {
+              session: req.session,
+              addresses: result,
+            });
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    
   },
 
   //logged in home view
