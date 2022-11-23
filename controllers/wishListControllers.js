@@ -12,7 +12,7 @@ module.exports = {
     if (userDetails.wishlist == null) {
       res.render("user/wishlist", { user, products: false });
     } else {
-      console.log(userDetails.wishlist.length);
+      
       let products = [];
       for (let i = 0; i < userDetails.wishlist.length; i++) {
         let product = await Product.findOne({ _id: userDetails.wishlist[i] });

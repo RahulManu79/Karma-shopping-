@@ -14,149 +14,169 @@
 
     <div class="billing_details">
       <div class="row">
-        <form class="row contact_form" id="checkout-form">
-          <div class="col-lg-8">
-            <h3>Shipping Details</h3>
-            <div class="col-md-6 form-group">
-              <input
-                type="text"
-                class="form-control"
-                id="first"
-                placeholder="First name"
-                name="firstName"
-              />
-            </div>
-            <div class="col-md-6 form-group p_star">
-              <input
-                type="text"
-                class="form-control"
-                id="last"
-                placeholder="Last name"
-                name="lastName"
-              />
-            </div>
-            <div class="col-md-6 form-group p_star">
-              <input
-                type="tele"
-                class="form-control"
-                id="number"
-                placeholder="Number"
-                name="number"
-              />
-            </div>
-            <div class="col-md-12 form-group">
-              <textarea
-                class="form-control"
-                name="homeaddress"
-                id="address"
-                rows="1"
-                placeholder="Address"
-              ></textarea>
-            </div>
-            <div class="col-md-12 form-group p_star">
-              <input
-                type="text"
-                class="form-control"
-                id="city"
-                placeholder="City"
-                name="city"
-              />
-            </div>
-            <div class="col-md-12 form-group p_star">
-              <input
-                type="text"
-                class="form-control"
-                id="district"
-                placeholder="District"
-                name="district"
-              />
-            </div>
-            <div class="col-md-12 form-group p_star">
-              <input
-                type="text"
-                class="form-control"
-                id="country"
-                placeholder="Country"
-                name="country"
-              />
-            </div>
-            <div class="col-md-12 form-group">
-              <input
-                type="tele"
-                class="form-control"
-                id="zip"
-                name="zipcode"
-                placeholder="Postcode/ZIP"
-              />
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="order_box">
-              <h2>Your Order</h2>
-              <ul class="list">
-                <li>
-                  <a href="#">Product <span>Total</span></a>
-                </li>
-                <% Cart.products.forEach((p) => { %>
-                <li>
-                  <a href="#">
-                    <span
-                      class="float-left w-50"
-                      style="
-                        display: inline-block;
-                        width: 100px;
-                        white-space: nowrap;
-                        overflow: hidden !important;
-                        text-overflow: ellipsis;
-                      "
-                      ><%= p.name %></span
-                    >
-                    <span class="middle">x0<%= p.quantity%></span>
-                    <span class="last">$<%= p.productId.price %></span></a
-                  >
-                </li>
-                <% }); %>
-              </ul>
-              <ul class="list list_2">
-                <li>
-                  <a href="#">Subtotal <span>$<%= Cart.total %></span></a>
-                </li>
-              </ul>
-              <div class="mt-3 mb-3">
-                <input
-                  type="radio"
-                  id="onlinePayment"
-                  name="paymentMethod"
-                  value="Online Payment"
-                />
-                <label for="onlinePayment">RAZOR PAY</label>
-                <p>
-                  Use razorpay for contactless connection and stay healthy avoid
-                  covid spreading.
-                </p>
-                <br />
-                <input
-                  type="radio"
-                  id="cashOnDelivery"
-                  name="paymentMethod"
-                  value="Cash On Delivery"
-                />
-                <label for="cashOnDelivery">CASH ON DELIVERY</label>
-                <p>you can make POD and doorstep delivery is available</p>
-                <br />
+        <form class="row contact_form" id="checkout-form" novalidate="novalidate">
+          <div class="row">
+            <div class="col-lg-6">
+              <h3>Delivery Address</h3>
+              <div class="row">
+                <% if (addresses.length==0){ %>
+                <h1 id="addressCount" hidden>0</h1>
+                <% } else { %>
+                <h1 id="addressCount" hidden><%=addresses.length%></h1>
+                  <% for (i=0;i < addresses.length ;i++) { %>
+                    <div class="col-sm-6 mb-3">
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">
+                            <%=addresses[i].firstName%> <%=addresses[i].secondName%>
+                          </h5>
+                          <p class="card-text">
+                            <%=addresses[i].houseName%>, <%=addresses[i].address%>,
+                            <%=addresses[i].city%>, <%=addresses[i].district%> ,
+                            <%=addresses[i].state%>, <%=addresses[i].country%> ,
+                            <%=addresses[i].pincode%>
+                          </p>
+                          <% if(i==0){ %>
+                          <input
+                            type="radio"
+                            class="addressSelector"
+                            name="Address"
+                            id="<%=addresses[i]._id%>"
+                            value="<%=addresses[i]._id%>"
+                            checked
+                          />
+                          <% }else{ %>
+                          <input
+                            type="radio"
+                            class="addressSelector"
+                            name="Address"
+                            id="<%=addresses[i]._id%>"
+                            value="<%=addresses[i]._id%>"
+                          />
+                          <% } %>
+                        </div>
+                      </div>
+                    </div>
+                    <% } %>
+                <% } %>
+                
+                <div class="col-sm-6">
+                  <div class="card">
+                    <a href="/editAddress" class="btn btn-primary">Add New</a>
+                  </div>
+                </div>
               </div>
-              <input
-                type="number"
-                name="total"
-                value="<%= Cart.total %>"
-                hidden
-              />
-              <button class="btn primary-btn" type="submit">
-                Proceed to Pay
-              </button>
+              <div class="mt-4">
+                <div class="row">
+                  <input
+                    class="col-8 single-input"
+                    type="text"
+                    id="couponInput"
+                    placeholder="Enter coupon code"
+                  />
+                  <button
+                    class="col-3 genric-btn primary"
+                    onclick="applyCoupon('')"
+                    type="button"
+                    id="applyBtn"
+                  >
+                    Apply Coupon
+                  </button>
+                </div>
+                <p id="CouponError"></p>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="order_box">
+                <h2>Your Order</h2>
+                <ul class="list">
+                  <li>
+                    <a href="#">Products <span>Total</span></a>
+                  </li>
+                  
+                  <% for(Product of Cart.products){ %>
+                  <li>
+                    <a href="#"
+                      ><span
+                        class="float-left w-50"
+                        style="
+                          display: inline-block;
+                          width: 180px;
+                          white-space: nowrap;
+                          overflow: hidden !important;
+                          text-overflow: ellipsis;
+                        "
+                      >
+                        <%=Product.name%> </span
+                      ><span class="float-left w-25"
+                        >x <%=Product.quantity%> </span
+                      ><span class="float-right w-25"
+                        >Rs. <%=Product.price%>
+                      </span></a
+                    >
+                  </li>
+                  <% } %>
+                </ul>
+                <ul class="list list_2">
+                  <li>
+                    <a style="color: rgb(76, 76, 76); font-size: 13px" href="#"
+                      >Total<span style="color: rgb(76, 76, 76); font-size: 13px"
+                        >RS.<span id="totalAmount">
+                          <%=Cart.total%>
+                        </span></span
+                      ></a
+                    >
+                  </li>
+                </ul>
+                <ul class="list list_2">
+                  <li>
+                    <a style="color: rgb(76, 76, 76); font-size: 13px" href="#"
+                      >Coupon Discount<span
+                        id="discountAmount"
+                        style="color: rgb(76, 76, 76); font-size: 13px"
+                        >NIL</span
+                      ></a
+                    >
+                  </li>
+                </ul>
+                <ul class="list list_2">
+                  <li>
+                    <a href="#"
+                      >Grand Total<span
+                        >RS.<span id="grandTotalAmount">
+                          <%=Cart.total%>
+                        </span></span
+                      ></a
+                    >
+                  </li>
+                </ul>
+                <hr class="mt-3 mb-3" />
+                <h2>Payment Method</h2>
+                <div class="mt-3 mb-3">
+                  <input
+                    type="radio"
+                    id="NET-BANKING"
+                    name="paymentMethod"
+                    value="Online Payment"
+                    checked
+                  />
+                  <label for="NET-BANKING">NET BANKING</label><br />
+                  <input
+                    type="radio"
+                    id="PAY-ON-DELIVERY"
+                    name="paymentMethod"
+                    value="Cash On Delivery"
+                  />
+                  <label for="PAY-ON-DELIVERY">PAY ON DELIVERY</label><br />
+                </div>
+                <button class="primary-btn w-100" type="submit">
+                  Proceed to Pay
+                </button>
+              </div>
             </div>
           </div>
         </form>
+  
       </div>
     </div>
   </div>
@@ -215,9 +235,9 @@
             order_id: response.razorpayOrderData.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             handler: function (response) {
               console.log(response, "????????????????????????????????????????");
-              alert(response.razorpay_payment_id);
-              alert(response.razorpay_order_id);
-              alert(response.razorpay_signature);
+             // alert(response.razorpay_payment_id);
+              //alert(response.razorpay_order_id);
+              //alert(response.razorpay_signature);
               verifyPayment(response, );
             },
             prefill: {

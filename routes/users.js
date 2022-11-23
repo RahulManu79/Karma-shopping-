@@ -4,6 +4,7 @@ const express =require('express');
 const { registerUser, sessionchek, loginSessionCheck } = require('../controllers/logincontrollers');
 const loginController = require('../controllers/logincontrollers');
 const WishlistController = require('../controllers/wishListControllers')
+const trackingControllers = require('../controllers/trackingControllers')
 const router = express.Router();
 const JoiValidator =require('../controllers/joiControllers')
 
@@ -67,7 +68,9 @@ router.get('/orderSummary',loginController.postOderSuccess)
 
 router.get('/confirm',loginController.getConfirm )
 
-router.get('/myOrders',loginController.getMyOrders)
+router.get('/myOrders',loginController.sessionchek,loginController.getMyOrders)
+
+router.get('/ordertracking',loginController.sessionchek,trackingControllers.getTracking)
 
 router.get('/cancelOrder',loginController.getCancelOrder)
 

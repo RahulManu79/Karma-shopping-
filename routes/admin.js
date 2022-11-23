@@ -39,6 +39,8 @@ router.get('/categorizedProducts/:category',adminControlers.getCateProduct)
 
 router.get('/adminlogout',adminControlers.adminLogout)
 
+router.get('/orders',adminControlers.getOrderlist)
+
 
 
 

@@ -15,6 +15,7 @@
                             <th scope="col">Amount</th>
                             <th scope="col">Status</th>
                             <th scope="col">View</th>
+                            <th scope="col">Track</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,6 +42,11 @@
                             </td>
                             <td>
                                 <a href="/orderSummary/?id=<%=Order.id%>" class="genric-btn primary medium text-dark">View</a>
+                            </td>
+
+                            <td>
+                                <a href="/ordertracking/?id=<%=Order.id%>" class="genric-btn primary medium text-dark">TrackOrder</a>
+
                             </td>
                         </tr>
                         <tr>

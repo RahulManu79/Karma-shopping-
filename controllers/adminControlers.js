@@ -5,6 +5,7 @@ const Category = require("../models/categoryModel")
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const Product = require("../models/productModel");
+const Order = require("../models/oderModel")
 
 let errMsg
 
@@ -289,5 +290,25 @@ module.exports = {
    } catch (error) {
     next(error)
    }
+  },
+
+  getOrderlist:async(req,res)=>{
+
+    try {
+      // let userId = req.session.user._id
+
+     let result = Order.find({})
+
+     res.render('admin/orders',{result})
+
+      
+      
+    } catch (error) {
+
+      console.log(error);
+      
+    }
+
+
   }
 };

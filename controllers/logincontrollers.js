@@ -51,10 +51,11 @@ module.exports = {
   //showing user profile
   userprofile: (req, res) => {
       try {
+        let user = req.session.user;
         Address
           .find({ userId: req.session.user._id })
           .then((result) => {
-            res.render("user/userProfile", {
+            res.render("user/userProfile", {user,
               session: req.session,
               addresses: result,
             });
@@ -67,7 +68,8 @@ module.exports = {
 
   getEditAdress:(req,res)=>{
     try {
-      res.render("user/addAdress", { session: req.session });
+      let user = req.session.user;
+      res.render("user/addAdress", {user ,session: req.session });
       
     } catch (error) {
       console.log(error);
@@ -108,6 +110,7 @@ module.exports = {
   //logged in home view
   login: async (req, res) => {
     if (req.session.loggedIn) {
+     
       const userId = req.session.user._id;
       const viewcart = await ShopingCart.findOne({ userId: userId })
         .populate("products.productId")
@@ -232,7 +235,7 @@ module.exports = {
           } else {
             console.log("Login Failed");
             loginErr = "Invalid password";
-            console.log(req.session.userlogErr);
+            
             res.redirect("/login");
           }
         });
@@ -273,9 +276,9 @@ module.exports = {
       let quantity = 1;
 
       const productId = req.params.proId;
-      console.log(req.params.proId)
+      
       const findProduct = await Product.findById(productId);
-      console.log( findProduct,"//////////////////////");
+      
       const price = findProduct.price;
       const name = findProduct.name;
       const userId = req.session.user._id;
@@ -317,9 +320,9 @@ module.exports = {
     let ProductIndex = userCart.products.findIndex(
       (Product) => Product._id == req.params.proid
     );
-    console.log(ProductIndex);
+    
     let arr = [...userCart.products];
-    console.log(arr);
+    
     let productItem = arr[ProductIndex];
     userCart.total = userCart.total - productItem.price * productItem.quantity;
     productItem.quantity = productItem.quantity - 1;
@@ -385,9 +388,12 @@ module.exports = {
     }
   },
 
-  getCheckOut: (req, res) => {
+  getCheckOut: async (req, res) => {
     if (req.session.user) {
-      user = req.session.user;
+     let user = req.session.user;
+      let addresses = await Address.find({
+        userId: req.session.user._id,
+      })
       ShopingCart.find({ userId: req.session.user._id })
         .populate("products.productId")
         .exec()
@@ -396,10 +402,11 @@ module.exports = {
           res.render("user/checkout", {
             user,
             cartNum,
+            addresses,
             session: req.session,
             Cart: result[0],
           });
-        });
+        }); 
     } else {
       res.redirect("/login");
     }
@@ -408,28 +415,15 @@ module.exports = {
   postCheckOut: async (req, res) => {
     let user = req.session.user;
     let userId = user._id;
+    let address = await Address.findById(req.body.Address)
 
     let Cart = await ShopingCart.findById(req.params.CartId);
     if (req.body.paymentMethod === "Cash On Delivery") {
-      let USER = await User.findById(userId);
-      address = req.body;
-      USER.address.push(address);
+  
+    
       const paymentMethod = req.body.paymentMethod;
-      
-      const newAddress = await new Address({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        number: req.body.number,
-        homeaddress: req.body.homeaddress,
-        city: req.body.city,
-        district: req.body.city,
-        country: req.body.country,
-        zipcode: req.body.zipcode,
-        userId:userId
-      });
-      newAddress.save().then((result)=>{
-        let address = result
-     
+    
+  
 
       const newOrder = new OrderSchema({
         date: new Date().toLocaleDateString(),
@@ -442,6 +436,7 @@ module.exports = {
         paymentMethod,
         paymentStatus: "Payment Pending",
         orderStatus: "Order Placed",
+        track:"orderconfirmed"
       });
       newOrder.save().then((result) => {
         req.session.orderId = result._id;
@@ -452,7 +447,7 @@ module.exports = {
           }
         );
       });
-    })
+    
     } else if (req.body.paymentMethod === "Online Payment") {
       const date = new Date().toLocaleDateString();
       const time = new Date().toLocaleTimeString();
@@ -460,21 +455,8 @@ module.exports = {
       const products = Cart.products;
       const total = Cart.total;
       const paymentMethod = req.body.paymentMethod;
-
-      const newAddress = await new Address({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        number: req.body.number,
-        homeaddress: req.body.homeaddress,
-        city: req.body.city,
-        district: req.body.city,
-        country: req.body.country,
-        zipcode: req.body.zipcode,
-        userId:userId
-      });
-      newAddress.save().then((result) => {
-        let address = result;
-
+      let address = await Address.findById(req.body.Address)
+        const track = "Shipped"
         const paymentStatus = "Payment Pending";
         const orderStatus = "Order Pending";
         const newOrder = new OrderSchema({
@@ -487,10 +469,11 @@ module.exports = {
           paymentMethod,
           paymentStatus,
           orderStatus,
+          track,
         });
         newOrder.save().then((result) => {
           let userOrderData = result;
-          console.log(userOrderData);
+          
           id = result._id.toString();
           instance.orders.create(
             {
@@ -512,7 +495,7 @@ module.exports = {
             (result) => {}
           );
         });
-      });
+      
     }
   },
 
@@ -546,7 +529,7 @@ module.exports = {
     );
  
     if (validate) {
-      console.log("payment success");
+      
       let order = await OrderSchema.findById(userOrderDataId);
       orderStatus = "Order Placed";
       paymentStatus = "Payment Completed";
@@ -557,26 +540,28 @@ module.exports = {
   },
 
   postPaymentFailed: (req, res) => {
-    console.log(req.body);
+  
     res.json({ status: true });
   },
 
   postOderSuccess:async (req, res) => {
-    console.log(req.query.id);
+    
+    let user = req.session.user;
     req.session.orderId = req.query.id;
     let result = await OrderSchema.findById(req.query.id).populate("address").populate("products")
     // result.products.map(result.products)
     let address= Address.findById(req.query.id)
 
 
-    res.render("user/orderSummary", { id:result ,address,session:req.session});
+    res.render("user/orderSummary", { id:result ,address,session:req.session,user});
   },
 
   getMyOrders:async(req,res)=>{
     if(req.session.loggedIn){
       try{
+        let user = req.session.user;
        let result = await OrderSchema.find({Cart:req.session.user.id}).sort({date:-1})
-        res.render('user/myOrders',{session:req.session,Orders:result})
+        res.render('user/myOrders',{ user,session:req.session,Orders:result})
        
       }catch(err){
         console.log(err);
@@ -592,7 +577,7 @@ module.exports = {
       try {
        let orderId=req.query.id;
        
-        let order = await OrderSchema.findByIdAndUpdate(orderId,{orderStatus:"Cancellede"})
+        let order = await OrderSchema.findByIdAndUpdate(orderId,{orderStatus:"Cancellede",track:"Cancellede"})
         
       } catch (error) {
         console.log(error);

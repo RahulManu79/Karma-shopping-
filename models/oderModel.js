@@ -41,6 +41,10 @@ const oderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  track:{
+    type: String,
+    
+  }
 });
 
 const OrderSchema = mongoose.model("oder", oderSchema);

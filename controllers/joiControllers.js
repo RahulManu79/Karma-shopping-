@@ -34,4 +34,17 @@ exports.validateAdmin = (req,res,next) => {
   }else{
     next();
   }
+
+
+  exports.validateAddress = (req,res,next) =>{
+    const result = JoiSchema.Address.validate(req.body)
+  if(result.error){
+    console.log(result.error.details);
+    return res.render("user/addAdress",{
+      message: result.error.details[0].message
+    });
+  }else{
+    next();
+    }
+  }
 };
