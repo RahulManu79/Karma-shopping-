@@ -1,0 +1,59 @@
+<%- include('./includes/header') %>
+<div class="container mt-5 pt-5">
+    <h2 class="mt-5 mb-5">Add Address</h2>
+<div class="col-lg-7">
+
+    <form class="row contact_form" action="/saveAddress" method="post" novalidate="novalidate">
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="first" name="firstName"
+                placeholder="First name" >
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="last" name="lastName"
+                placeholder="Last name" >
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="number" name="number"
+                placeholder="Phone number" >
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="email" class="form-control" id="email" name="email"
+                placeholder="Email Address" >
+        </div>
+        <div class="col-md-12 form-group p_star">
+            <input type="text" class="form-control" id="House-name" name="houseName"
+                placeholder="House Name/Company Name/House No."
+                >
+        </div>
+        <div class="col-md-12 form-group p_star">
+            <input type="text" class="form-control" id="address" name="address"
+                placeholder="Address" >
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="city" name="city"
+                placeholder="Town/City" >
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="district" name="district"
+                placeholder="District">
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="state" name="state" placeholder="State"
+                >
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="country" name="country"
+                placeholder="Country">
+        </div>
+        <div class="col-md-6 form-group p_star">
+            <input type="text" class="form-control" id="zip" name="pincode"
+                placeholder="Pincode/ZIP" >
+        </div>
+        <div class="col-md-12 form-group p_star">
+            <button class="genric-btn primary float-right" type="submit">Save</button>
+        </div>
+    </form>
+</div>
+</div>
+
+<%- include('./includes/footer') %>

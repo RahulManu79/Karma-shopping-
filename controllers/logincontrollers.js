@@ -65,6 +65,15 @@ module.exports = {
     
   },
 
+  getEditAdress:async(req,res)=>{
+    try {
+      res.render("user/addAdress", { session: req.session });
+      
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   //logged in home view
   login: async (req, res) => {
     if (req.session.loggedIn) {

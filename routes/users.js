@@ -31,6 +31,8 @@ router.get('/logout',loginController.logoutView)
 
 router.get('/userProfile',loginController.sessionchek,loginController.userprofile)
 
+router.get('/editAddress',loginController.sessionchek,loginController.getEditAdress)
+
 router.get('/cart',loginController.cartView)
 
 router.get('/cart/:proId',loginController.addToCart)
