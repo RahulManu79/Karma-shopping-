@@ -65,13 +65,44 @@ module.exports = {
     
   },
 
-  getEditAdress:async(req,res)=>{
+  getEditAdress:(req,res)=>{
     try {
       res.render("user/addAdress", { session: req.session });
       
     } catch (error) {
       console.log(error);
     }
+  },
+
+  postEditAdress:async(req,res)=>{
+   try {
+    const address = await Address({
+      firstName:req.body.firstName,
+      lastName:req.body.lastName,
+      number:req.body.number,
+      email:req.body.email,
+      houseName:req.body.houseName,
+      homeaddress:req.body.homeaddress,
+      city:req.body.city,
+      district:req.body.district,
+      state:req.body.state,
+      country:req.body.country,
+      zipcode:req.body.zipcode,
+      userId:req.session.user._id
+    })
+    address.save().then((result)=>{})
+    res.redirect('/userProfile')
+   } catch (error) {
+    console.log(error);
+   }
+
+  },
+
+  deleteAdress:async(req,res)=>{
+   
+    Address.deleteOne({_id : req.query.id}).then((response)=>{
+      res.redirect('/userProfile')
+    })
   },
 
   //logged in home view

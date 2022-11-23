@@ -33,6 +33,10 @@ router.get('/userProfile',loginController.sessionchek,loginController.userprofil
 
 router.get('/editAddress',loginController.sessionchek,loginController.getEditAdress)
 
+router.post('/editAddress',loginController.sessionchek,loginController.postEditAdress)
+
+router.get("/deleteAddress",loginController.sessionchek,loginController.deleteAdress)
+
 router.get('/cart',loginController.cartView)
 
 router.get('/cart/:proId',loginController.addToCart)
