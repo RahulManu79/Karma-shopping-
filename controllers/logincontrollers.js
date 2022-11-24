@@ -577,7 +577,7 @@ module.exports = {
       try {
        let orderId=req.query.id;
        
-        let order = await OrderSchema.findByIdAndUpdate(orderId,{orderStatus:"Cancellede", track:"Cancellede"})
+        let order = await OrderSchema.findByIdAndUpdate(orderId,{orderStatus:"Cancellede", track:"Cancellede"});
         
       } catch (error) {
         console.log(error);
