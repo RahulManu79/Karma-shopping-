@@ -50,11 +50,11 @@ $(document).ready(function(){
     ==================================*/
     $(".active-banner-slider").owlCarousel({
         items:1,
-        autoplay:false,
-        autoplayTimeout: 5000,
+        autoplay:true,
+        autoplayTimeout: 15000,
         loop:true,
         nav:true,
-        navText:["<img src='img/banner/prev.png'>","<img src='img/banner/next.png'>"],
+        navText:["<img src='user/img/banner/prev.png'>","<img src='user/img/banner/next.png'>"],
         dots:false
     });
 
@@ -67,7 +67,7 @@ $(document).ready(function(){
         autoplayTimeout: 5000,
         loop:true,
         nav:true,
-        navText:["<img src='img/product/prev.png'>","<img src='img/product/next.png'>"],
+        navText:["<img src='user/img/product/prev.png'>","<img src='user/img/product/next.png'>"],
         dots:false
     });
 
@@ -88,11 +88,11 @@ $(document).ready(function(){
     ==================================*/
     $(".active-exclusive-product-slider").owlCarousel({
         items:1,
-        autoplay:false,
+        autoplay:true,
         autoplayTimeout: 5000,
         loop:true,
         nav:true,
-        navText:["<img src='img/product/prev.png'>","<img src='img/product/next.png'>"],
+        navText:["<img src='user/img/product/prev.png'>","<img src='user/img/product/next.png'>"],
         dots:false
     });
 

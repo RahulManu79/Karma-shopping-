@@ -6,12 +6,24 @@ const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const Product = require("../models/productModel");
 const Order = require("../models/oderModel")
+const Address =require("../models/addressModel");
+const BannerSchema = require("../models/bannerMOdel")
+const { response } = require("express");
+const { override } = require("joi");
 
 let errMsg
 
 let errorMsg
 
 module.exports = {
+
+  adminSessionCheck:(req,res,next)=>{
+    if(req.session.adminloggedIn){
+      next()
+    }else{
+      res.redirect('/admin/')
+    }
+  },
   loginView: (req, res) => {
     if (req.session.adminloggedIn) {
       res.redirect("/admin/dashbord");
@@ -21,11 +33,8 @@ module.exports = {
   },
 
   dashbordView: (req, res) => {
-    if (req.session.adminloggedIn) {
       res.render("admin/index");
-    } else {
-      res.redirect("/admim/");
-    }
+   
   },
 
   productList: async(req, res) => {
@@ -38,7 +47,7 @@ module.exports = {
           res.locals.result = result ;
           res.render("admin/products", { result });
     } else {
-      res.redirect("/admim/");
+      res.redirect("/admin/");
     }
   },
 
@@ -46,7 +55,7 @@ module.exports = {
     if (req.session.adminloggedIn) {
       res.render("admin/accounts");
     } else {
-      res.redirect("/admim/");
+      res.redirect("/admin/");
     }
   },
 
@@ -61,7 +70,7 @@ module.exports = {
       })
     
     } else {
-      res.redirect("/admim/");
+      res.redirect("/admin/");
     }
   },
 
@@ -132,11 +141,18 @@ module.exports = {
   },
   
   deletproduct : (req,res)=>{
-    let proId = req.params.id
+    try {
+      
+      let proId = req.params.id
+  
+      Product.deleteOne({_id:proId}).then(()=>{
+        res.json({status: true})
+      })
+    } catch (error) {
 
-    Product.deleteOne({_id:proId}).then(()=>{
-      res.json({status: true})
-    })
+      res.json({status: false})
+      
+    }
   },
 
   postEditProduct:async(req,res)=>{
@@ -158,14 +174,13 @@ module.exports = {
       res.redirect('/admin/product')
     }).catch((err)=>{
       console.log(err);
+      
     })
     
   },
 
   getEditProducr: (req,res) =>{
-    if(req.session.adminloggedIn){
       let proId = req.query.id
-    
       Product.find({_id:proId},function(err,data){
         if(err){
           res.send(err)
@@ -176,15 +191,9 @@ module.exports = {
         }
       })
 
-    }else{
-    
-      res.redirect('/admin/')
-    }
   },
 
   userList: (req,res) =>{
-    if(req.session.adminloggedIn){
-
       User.find({},function(err,result){
 
         if(err){
@@ -194,10 +203,6 @@ module.exports = {
         }
 
       })
-      
-    }else{
-      res.redirect('/admin/')
-    }
   },
 
   blockUser: async(req,res) =>{
@@ -221,7 +226,6 @@ module.exports = {
   },
 
   getCategory:(req,res)=>{
-    if(req.session.adminloggedIn){
       Category.find({}, function (err, result){
         if (err){
          
@@ -231,9 +235,6 @@ module.exports = {
         }
         errMsg = null
       })
-    }else {
-      res.redirect('/admin/')
-    }
     errorMsg = null
   },
 
@@ -275,7 +276,6 @@ module.exports = {
 
   getCateProduct: (req,res)=>{
    try{
-    if (req.session.adminloggedIn){
       Product.find({category:req.params.category},function(err, result){
         if(err){
           res.send(err)
@@ -284,31 +284,78 @@ module.exports = {
          res.render('admin/catagorizedProducts',{result})
         }
       })
-    } else {
-      res.redirect('/admin/')
-    }
    } catch (error) {
     next(error)
    }
   },
 
   getOrderlist:async(req,res)=>{
+    try {
+     let result = await Order.find({}).sort({Date:-1})
+    Object.values(result)
+     res.render('admin/orders',{result})
+    } catch (error) {
+      console.log(error);  
+    }
+  },
+
+  changeTrack:async(req,res)=>{
 
     try {
-      // let userId = req.session.user._id
-
-     let result = Order.find({})
-
-     res.render('admin/orders',{result})
-
+      oid= req.body.oid
+      value= req.body.value
       
-      
+      await Order.findByIdAndUpdate(oid,{track:value,orderStatus:value}).then((response)=>{})
     } catch (error) {
 
       console.log(error);
       
     }
+  },
+
+  getBanner:async(req,res)=>{
+    try {
+      const result = await BannerSchema.find()
+      res.render('admin/banner',{result})
+    } catch (err) {
+      res.send(err)
+    }
+  },
+
+  getAddBanner:(req,res)=>{
+    res.render("admin/addBanner")
+  },
+
+  postAddBanner:(req,res)=>{
+    try {
+      const Banner = new BannerSchema({
+        Title: req.body.Title,
+        Description: req.body.Description,
+        Image:req.file.fieldname,
+        route:req.body.route
+      });
+      Banner.save().then((result)=>{})
+      res.redirect('/admin/banners')
+
+    } catch (error) {
+      res.send(error)
+      console.log(error);
+    }
+  },
+
+  deletBanner:(req,res)=>{
+    try {
+      proId=req.params.id
+   
+      BannerSchema.findByIdAndDelete({_id:proId}).then(()=>{
+           res.json({status:true})
+      })
+      
+    } catch (error) {
+      res.json({status:false})
+    }
 
 
   }
+
 };

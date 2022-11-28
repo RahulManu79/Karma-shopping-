@@ -457,7 +457,7 @@ module.exports = {
       const paymentMethod = req.body.paymentMethod;
       let address = await Address.findById(req.body.Address)
         const track = "Shipped"
-        const paymentStatus = "Payment Pending";
+        const paymentStatus = "Payment Completed";
         const orderStatus = "Order Pending";
         const newOrder = new OrderSchema({
           date,

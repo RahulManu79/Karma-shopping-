@@ -1215,7 +1215,7 @@ h1, h2, h3, h4, h5, h6 {
   .banner-area .active-banner-slider .owl-nav {
     position: absolute;
     right: 0;
-    bottom: -200px; }
+    bottom: -60px; }
     @media (max-width: 1920px) {
       .banner-area .active-banner-slider .owl-nav {
         right: -115px; } }

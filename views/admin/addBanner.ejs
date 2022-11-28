@@ -1,0 +1,138 @@
+<%- include('includes/header.ejs') %>
+
+
+
+<div class="container tm-mt-big tm-mb-big">
+    <div class="row">
+      <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
+        <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+          <div class="row">
+            <div class="col-12">
+              <h2 class="tm-block-title d-inline-block">Add Banner</h2>
+            </div>
+          </div>
+          <div class="row tm-edit-product-row">
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <form action="/admin/addBanner" method="post" onsubmit="return validate()" enctype="multipart/form-data">
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="mb-3">
+                          <label for="exampleFormControlInput1" class="form-label"
+                            >Title</label>
+                          
+                          <input
+                            name="Title"
+                            type="text"
+                            class="form-control"
+                            id="TitleInput"
+                            placeholder=""
+                          />
+                          <p id="TitleError" class="text-danger"></p>
+          
+                        
+                        </div>
+                          <label for="exampleFormControlInput1" class="form-label"
+                            >Banner Description</label>
+                          
+                          <input
+                            name="Description"
+                            type="text"
+                            class="form-control"
+                            id="DescriptionInput"
+                            placeholder=""
+                          />
+                          <p id="DescriptionError" class="text-danger"></p>
+                        
+                        </div>
+
+                    </div>
+                    <label for="exampleFormControlInput1" class="form-label"
+                      >Route</label>
+                    
+                    <input
+                      name="route"
+                      type="text"
+                      class="form-control"
+                      id="DescriptionInput"
+                      placeholder=""
+                    />
+                    <p id="DescriptionError" class="text-danger"></p>
+                  
+                  </div>
+                        <div class="row">
+                          <div class="col-6 mb-3">
+                            <label for="formFile" class="form-label">Select Image</label>
+                            <input name="Image" class="form-control" type="file" id="formFile" multiple>
+                            <p id="formFileError" class="text-danger"></p>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    
+                    <div class="col me-4 col-md-auto d-flex align-items-end justify-content-end">
+                      <div class="btn-group ms-1 w-100 w-md-auto">
+                        <button
+                          type="submit"
+                          class="btn btn-outline-warning btn-icon btn-icon-start w-100"
+                        >
+                          <i data-acorn-icon="save"></i>
+                          <span>Save</span>
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function validate(){
+    let Title = document.getElementById('TitleInput').value
+    let Description = document.getElementById('DescriptionInput').value
+    let Image = document.getElementById('formFile').value
+    
+  
+    if (Title == "") {
+      document.getElementById('TitleError').innerHTML='Fill This Field'
+      valid1=false
+    }else if(Title.length<3){
+      document.getElementById('TitleError').innerHTML='Atleast 3 characters required'
+      valid1=false
+    }else{
+      document.getElementById('TitleError').innerHTML=''
+      valid1=true
+    }
+    
+    if (Description == "") {
+      document.getElementById('DescriptionError').innerHTML='Fill This Field'
+      valid2=false
+    }else if(Description.length<3){
+      document.getElementById('DescriptionError').innerHTML='Atleast 3 characters required'
+      valid2=false
+    }else{
+      document.getElementById('DescriptionError').innerHTML=''
+      valid2=true
+    }
+  
+    if(Image==''){
+      document.getElementById('formFileError').innerHTML='Select a file'
+      valid6=false
+    }else{
+      document.getElementById('formFileError').innerHTML=''
+      valid6=true
+    }
+  
+    
+  
+    if(valid1&&valid2&&valid6){
+      return true
+    }else{
+      return false
+    }
+    }
+  </script>
+
+<%- include('includes/footer.ejs') %>

@@ -58,6 +58,7 @@
               url: '/admin/delProduct/' + proId,
               method: 'post',
               success: (response) => {
+                  
                   if (result.isConfirmed) {
                       Swal.fire({
                           title: 'Deleted!',
@@ -68,7 +69,16 @@
                       setTimeout(() => {
                           location.reload()
                       }, 1000);
-                  }
+                  }else {
+                          Swal.fire({
+                              title: 'Lookout!!!',
+                              text: 'Some thing Went Wrong',
+                              icon: 'error'
+                          }).then(() => {
+                              location.reload()
+                          })
+                      }
+               
               }
           })
       })

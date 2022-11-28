@@ -52,6 +52,11 @@ const addressSchema = new mongoose.Schema({
     ref: "users",
     required: true,
   },
+  address: {
+    type: mongoose.Schema.Types.String,
+    ref: "addresses",
+    
+  },
 });
 
 const Address = mongoose.model("address", addressSchema);

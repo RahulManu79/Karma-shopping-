@@ -10,53 +10,72 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th scope="col">Number</th>
+        <th scope="col">Order ID</th>
         <th>Name</th>
-        <th>Email</th>
+        <!-- <th>Email</th> -->
         <th>Amount</th>
         <th>Payment Mode</th>
-        <th>Tracking id</th>
-        <th>Status</th>
-        <th>Action</th>
+        <th>paymentStatus</th>
+        <!-- <th>Status</th> -->
+        <th>Track</th>
         <th></th>
+        <th>Details</th>
       </tr>
     </thead>
     <tbody id="myTable">
       
+      <% for(result of result) { %>
+             
+       
    
       <tr style="height: 50px !important;" class="text-wrap">
-        <th scope="row">
-          <a href="" class="text-white"></a></th>
-        <td>hfdx</td>
-        <td>kiyf</td>
-        <td>₹</td>
-        <td>ydt</td>
-        <td>kugy</td>
-        <td>kug</td>
-        <td>
+        <th scope="row"><%= result._id %> </th>
+        <td><%= result.address.firstName %> </td>
+        <td>₹ <%= result.products[0].quantity * result.products[0].price  %> </td>
+        <td><%= result.paymentMethod %> </td>
+        <td><%= result.paymentStatus %> </td>
+        <!-- <td>
           
           <label class="badge badge-success">Delivered</label>
           
           <label class="badge badge-danger">Cancelled</label>
           
           <label class="badge badge-warning" type="button"  data-toggle="modal" data-target="#myModal{{order.id}}" id="Modal_button">Change</button>
-        
-        </td>
+            
+          </td> -->
+          <td>
+            <select style="background-color: yellow ; text-size-adjust: 12px; "data-oid="<%= result._id %>"  name="track" id="track">     
+              
+              <% if (result.orderStatus == 'Cancellede') { %>
+                <% } else{%>
+                  <% } %> 
+                  <option value="<%= result.track %>"><%= result.track %> </option>
+              <option value="Cancellede">Cancellede</option>
+              <option value="orderconfirmed" >orderconfirmed</option>
+            <option value="Shipped"  >Shipped</option>
+            <option value="Delivered">Delivered</option>
+          </select>
+          </td>
         <td>
         
           
-          <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#cancel{{order.id}}">
-            Cancel
+          <button type="button" id="changetrack" class="btn btn-primary btn-sm" onclick="orderStatus(this)">
+            Change
           </button>         
 
           
         </td>
+      
+        <td>
+          <button class="btn btn-primary btn-sm" type="button">veiw Details</button>
+        </td>
+
       </tr>
 
       <!-- Button trigger modal -->
 
 <!-- Status Modal -->
-<div class="modal fade" id="myModal{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="myModal{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -91,13 +110,13 @@
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Save changes</button>
           </div>
-        </form>
+        </form> -->
     </div>
   </div>
 </div>
 
           <!--Cancel Modal -->
-          <div class="modal fade" id="cancel{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <!-- <div class="modal fade" id="cancel{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -118,25 +137,62 @@
           </div>
 
           
-        
-      
+         -->
+          <% } %> 
         
     </tbody>
   </table>
 </div>
 
-<nav aria-label="Page navigation example" class="mt-3">
+<!-- <nav aria-label="Page navigation example" class="mt-3">
   <ul class="pagination d-flex justify-content-center">
-    
-    <li class="page-item">
+     -->
+    <!-- <li class="page-item">
       <a class="page-link" href="?page={{ orders.previous_page_number }}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
         <span class="sr-only">Previous</span>
       </a>
-    </li>
+    </li> -->
     
-    <li class="page-item"><a class="page-link" href="?page={{ orders.number }}"></a></li>
+    <!-- <li class="page-item"><a class="page-link" href="?page={{ orders.number }}"></a></li>
     
-    <li class="page-item"><a class="page-link" href="?page={{ orders.next_page_number }}"></a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ orders.next_page_number }}"></a></li> -->
 
 <%- include('includes/footer.ejs') %>
+
+
+<script>
+  function orderStatus(e){
+  
+  const oid = $('#track').data('oid')
+  const value = $('#track').find(":selected").val();
+  alert(`oid = ${oid}`)
+  alert(`value = ${value}`)
+    
+$.ajax({
+  url:"/admin/order-status",
+  data:{
+    oid,
+    value
+  },
+  method:"post",
+  success:(response)=>{
+   if(response.status){
+
+    Swal.fire({
+  position: 'top-end',
+  icon: 'success',
+  title: 'Track statuse has been changed',
+  showConfirmButton: false,
+  timer: 1000
+})
+    
+   }
+
+  }
+
+})
+    
+}
+
+</script>

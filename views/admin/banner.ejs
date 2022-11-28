@@ -1,0 +1,92 @@
+<%- include('includes/header.ejs') %>
+
+<div class="container mt-5">
+  <a href="/admin/addBanner" class="btn btn-warning">Add new Banner </a>
+
+  <!-- table container -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Image</th>
+        <th scope="col">Title</th>
+        <th scope="col">Description</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(result of result) { %> <% console.log(result); %>
+      <tr>
+        <td class="py-1">
+          <img
+            src="/BannerImages/<%= result.Image %> %>"
+            alt="image"
+            width="90px"
+          />
+        </td>
+
+        <td><%= result.Title %></td>
+        <td><%= result.Description %></td>
+
+        <td>
+          <button class="btn btn-danger" onclick="alert('<%= result._id %>')">
+            Delete
+          </button>
+        </td>
+      </tr>
+
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function alert(proId) {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        $.ajax({
+          url: "/admin/removeBanner/" + proId,
+          method: "delete",
+          success: (response) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success",
+                showConfirmButton: false,
+              });
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
+            } else {
+              Swal.fire({
+                title: "Lookout!!!",
+                text: "Some Thing went wrong",
+                icon: "error",
+              }).then(() => {
+                location.reload();
+              });
+            }
+          },
+        });
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Lookout!!!",
+        text: "Some Thing went wrong",
+        icon: "error",
+      }).then(() => {
+        location.reload();
+      });
+    }
+  }
+</script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<%- include('includes/footer.ejs') %>
