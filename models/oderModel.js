@@ -1,3 +1,4 @@
+const { string } = require("joi");
 const mongoose = require("mongoose");
 
 const oderSchema = new mongoose.Schema({
@@ -43,8 +44,11 @@ const oderSchema = new mongoose.Schema({
   },
   track:{
     type: String,
-    
+  },
+  returnreason:{
+    trpe:String,
   }
+
 });
 
 const OrderSchema = mongoose.model("oder", oderSchema);

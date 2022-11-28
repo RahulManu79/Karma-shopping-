@@ -18,8 +18,10 @@
         <th>paymentStatus</th>
         <!-- <th>Status</th> -->
         <th>Track</th>
+         
         <th></th>
         <th>Details</th>
+
       </tr>
     </thead>
     <tbody id="myTable">
@@ -49,7 +51,7 @@
               <% if (result.orderStatus == 'Cancellede') { %>
                 <% } else{%>
                   <% } %> 
-                  <option value="<%= result.track %>"><%= result.track %> </option>
+                  <option value=""><%= result.track %> </option>
               <option value="Cancellede">Cancellede</option>
               <option value="orderconfirmed" >orderconfirmed</option>
             <option value="Shipped"  >Shipped</option>
@@ -70,74 +72,20 @@
           <button class="btn btn-primary btn-sm" type="button">veiw Details</button>
         </td>
 
+        <td>
+
+        </td>
+
       </tr>
 
-      <!-- Button trigger modal -->
 
-<!-- Status Modal -->
-<!-- <div class="modal fade" id="myModal{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5>Change Status</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="{% url 'update_order' order.id %}" method="POST">
-          
-
-          <div class="row mb-2">
-            <input class="ml-3" type="radio" name="status" value="Order Confirmed"  checked>
-            <label for="dreamweaver" class="ml-2 mt-2">Order Confirmed</label>
-          </div>
-          <div class="row mb-2">
-            <input class="ml-3" type="radio" name="status" value="Shipped">
-            <label for="dreamweaver" class="ml-2 mt-2 text-info">Shipped</label>
-          </div>
-          <div class="row mb-2">
-            <input class="ml-3" type="radio" name="status" value="Out for delivery">
-            <label for="dreamweaver" class="ml-2 mt-2 text-warning">Out for delivery</label>
-          </div>
-          <div class="row mb-2">
-            <input class="ml-3" type="radio" name="status" value="Delivered">
-            <label for="dreamweaver" class="ml-2 mt-2 text-success">Delivered</label>
-          </div>
-
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
-          </div>
-        </form> -->
     </div>
   </div>
 </div>
 
-          <!--Cancel Modal -->
-          <!-- <div class="modal fade" id="cancel{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Cancel Order</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body text-left">
-                  Are you sure to cancel the order <b>#</b>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                  <a type="button" href="{% url 'cancel_order' order.order_number %}" class="btn btn-primary">Yes</a>
-                </div>
-              </div>
-            </div>
-          </div>
 
           
-         -->
+    
           <% } %> 
         
     </tbody>

@@ -1,14 +1,18 @@
 const multer = require('multer')
 
-const BannerStorage = multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, './public/BannerImages/')
-    },
-    filename: function (req, file, callback) {
-        const unique = file.originalname.substr(file.originalname.lastIndexOf('.'))
-        callback(null, file.fieldname + '-' + Date.now() + unique)
-    }
-})
-const storeBanner = multer({ BannerStorage: BannerStorage })
 
-module.exports = storeBanner;
+try {
+    const BannerStorage = multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, './public/BannerImages/')
+      },
+      filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
+      }
+      })
+    const storeBanner = multer({ BannerStorage: BannerStorage })
+    
+    module.exports = storeBanner;
+} catch (error) {
+    console.log(error,"///////////>>>>//");
+}

@@ -10,6 +10,7 @@ var {
   validatePaymentVerification,
 } = require("../node_modules/razorpay/dist/utils/razorpay-utils");
 const { trusted } = require("mongoose");
+const { default: mongoose } = require("mongoose");
 let loginErr = null;
 
 var instance = new Razorpay({
@@ -583,6 +584,23 @@ module.exports = {
         console.log(error);
         
       }
+    }
+  },
+
+  returnOrder:async(req,res)=>{
+    try {
+      oid=  mongoose.Types.ObjectId(req.body.oid.trim())
+      value= req.body.value
+
+      console.log(oid,"///////////////");
+      
+      await OrderSchema.findByIdAndUpdate(oid,{track:"Returnd",orderStatus:"Returnd",returnreason:value}).then((response)=>{
+        res.json({status:true})
+      })
+    } catch (error) {
+
+      console.log(error);
+      
     }
   }
 };

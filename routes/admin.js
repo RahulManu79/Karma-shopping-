@@ -48,7 +48,7 @@ router.get('/banners',adminControlers.adminSessionCheck,adminControlers.getBanne
 
 router.get('/addBanner',adminControlers.adminSessionCheck,adminControlers.getAddBanner)
 
-router.post('/addBanner',adminControlers.adminSessionCheck,Bannerstorage.single('Image'),adminControlers.postAddBanner)
+router.post('/addBanner',adminControlers.adminSessionCheck,Bannerstorage.single('BannerImages'),adminControlers.postAddBanner)
 
 router.delete('/removeBanner/:id',adminControlers.deletBanner)
 

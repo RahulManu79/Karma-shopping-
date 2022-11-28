@@ -114,10 +114,12 @@
             <a class="btn btn-outline-primary" href="/">Go back to Shopping</a>
 
 
-            <!-- Button trigger modal -->
-<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Return Order
-  </button>
+      <% if ( id.orderStatus == 'Delivered') { %>
+       
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Return Order
+          </button>
+      <% } %>      <!-- Button trigger modal -->
   
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -127,22 +129,20 @@
           <h1 class="modal-title fs-5" id="exampleModalLabel">Return Order #<%= id._id %> </h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <p>Why are you retturning this order ?</p>
         <div class="modal-body">
-            <select style="background-color: yellow ; text-size-adjust: 12px; "data-oid=""  name="track" id="track">     
-                <option value=""></option>
+            <select style="background-color: yellow ; text-size-adjust: 12px; "data-oid="<%= id._id %> "  name="track" id="track">     
+                <option value="Delivery is later than expected">Delivery is later than expected</option>
             
-                     
-                
-                <option value="Cancellede">Cancellede</option>
-                <option value="orderconfirmed" >orderconfirmed</option>
-              <option value="Shipped"  >Shipped</option>
-              <option value="Delivered">Delivered</option>
+                <option value="Purchased by mistake ">Purchased by mistake </option>
+                <option value="Item no longer needed" >Item no longer needed </option>
+              <option value="Other reasons"  >Other reasons</option>
             
             </select>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-primary" onclick="orderStatus(this)">Return</button>
         </div>
       </div>
     </div>
@@ -188,5 +188,42 @@ function cancelOrder(orderId){
 }
 
  </script> 
+
+ <script>
+
+function orderStatus(e){
+  
+  const oid = $('#track').data('oid')
+  const value = $('#track').find(":selected").val();
+  alert(`oid = ${oid}`)
+  alert(`value = ${value}`)
+    
+$.ajax({
+  url:"/returnOrder",
+  data:{
+    oid,
+    value
+  },
+  method:"post",
+  success:(response)=>{
+   if(response.status){
+
+    Swal.fire({
+  position: 'top-end',
+  icon: 'success',
+  title: 'Track statuse has been changed',
+  showConfirmButton: false,
+  timer: 1000
+})
+    
+   }
+
+  }
+
+})
+    
+}
+
+ </script>
  <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>

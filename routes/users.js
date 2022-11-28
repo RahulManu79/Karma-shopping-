@@ -58,23 +58,23 @@ router.get('/removeWishlist',loginController.sessionchek,WishlistController.remo
 
 router.get('/checkout',loginController.getCheckOut)
 
-router.post('/checkout/:CartId',loginController.postCheckOut)
+router.post('/checkout/:CartId',loginController.sessionchek,loginController.postCheckOut)
 
-router.post('/verifyPayment',loginController.postverifyPayment)
+router.post('/verifyPayment',loginController.sessionchek,loginController.postverifyPayment)
 
-router.post('/paymentFailed',loginController.postPaymentFailed)
+router.post('/paymentFailed',loginController.sessionchek,loginController.postPaymentFailed)
 
-router.get('/orderSummary',loginController.postOderSuccess)
+router.get('/orderSummary',loginController.sessionchek,loginController.postOderSuccess)
 
-router.get('/confirm',loginController.getConfirm )
+router.get('/confirm',loginController.sessionchek,loginController.getConfirm )
 
 router.get('/myOrders',loginController.sessionchek,loginController.getMyOrders)
 
 router.get('/ordertracking',loginController.sessionchek,trackingControllers.getTracking)
 
-router.get('/cancelOrder',loginController.getCancelOrder)
+router.get('/cancelOrder',loginController.sessionchek,loginController.getCancelOrder)
 
-
+router.post('/returnOrder',loginController.sessionchek,loginController.returnOrder)
 
 
 

@@ -327,7 +327,13 @@ module.exports = {
   },
 
   postAddBanner:(req,res)=>{
+
+
+    console.log(req.file,"/////////////")
+    console.log(req.body)
     try {
+
+      
       const Banner = new BannerSchema({
         Title: req.body.Title,
         Description: req.body.Description,
