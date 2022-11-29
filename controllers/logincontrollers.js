@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const ShopingCart = require("../models/cartModel");
 const Product = require("../models/productModel");
+const Category = require("../models/categoryModel")
 const OrderSchema = require("../models/oderModel");
 const Address = require("../models/addressModel");
 const Razorpay = require("razorpay");
@@ -602,5 +603,20 @@ module.exports = {
       console.log(error);
       
     }
-  }
+  },
+  
+  getShop: (req, res) => {
+    try {
+      Product.find({ Delete: false }).then((result) => {
+        Category.find().then((categories) => {
+          res.render("user/Shop", {
+            Products: result,
+            Categories: categories,
+          });
+        });
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  },
 };

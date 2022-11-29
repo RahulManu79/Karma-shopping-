@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon ./bin/www",
-    "develop": "node app.js"
+    "start": "node ./app.js",
+    "develop": "nodemon ./app.js"
   },
   "keywords": [],
   "author": "",
@@ -19,11 +19,13 @@
     "express-session": "^1.17.3",
     "joi": "^17.7.0",
     "mongoose": "^6.7.1",
-    "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "nodemon": "^2.0.20",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "razorpay": "^2.8.3"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.20"
   }
 }

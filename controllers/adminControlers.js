@@ -337,7 +337,7 @@ module.exports = {
       const Banner = new BannerSchema({
         Title: req.body.Title,
         Description: req.body.Description,
-        Image:req.file.fieldname,
+        Image:req.file.filename,
         route:req.body.route
       });
       Banner.save().then((result)=>{})
@@ -362,6 +362,8 @@ module.exports = {
     }
 
 
-  }
+  },
+
+
 
 };

@@ -1,4 +1,5 @@
 const multer = require('multer')
+const path = require('path')
 
 
 try {
@@ -7,10 +8,10 @@ try {
         cb(null, './public/BannerImages/')
       },
       filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now())
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
       }
       })
-    const storeBanner = multer({ BannerStorage: BannerStorage })
+    const storeBanner = multer({ storage: BannerStorage })
     
     module.exports = storeBanner;
 } catch (error) {

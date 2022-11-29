@@ -17,6 +17,7 @@
           </thead>
           <tbody>
             <% products.forEach(e=> { %>
+              
             <tr>
               <td>
                 <div class="media">
@@ -24,7 +25,8 @@
                     <img
                       height="100px"
                       width="100px"
-                      src="productImages/<%=e.image%>"
+                      src="productImages/<%= e.image[0] %>"
+                      <% console.log(e); %> 
                       alt=""
                     />
                   </div>

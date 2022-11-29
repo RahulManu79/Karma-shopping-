@@ -76,6 +76,6 @@ router.get('/cancelOrder',loginController.sessionchek,loginController.getCancelO
 
 router.post('/returnOrder',loginController.sessionchek,loginController.returnOrder)
 
-
+router.get('/shope',loginController.sessionchek,loginController.getShop)
 
 module.exports=router
