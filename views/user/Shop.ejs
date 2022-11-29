@@ -67,7 +67,7 @@
                                     </div>
                                     <div class="prd-bottom">
     
-                                        <a href="/addToCart/?productId=<%=Product._id%>" class="social-info">
+                                        <a href="/cart/<%=Product._id %>" class="social-info">
                                             <span class="ti-bag"></span>
                                             <p class="hover-text">add to bag</p>
                                         </a>
@@ -75,7 +75,7 @@
                                             <span class="lnr lnr-heart"></span>
                                             <p class="hover-text">Wishlist</p>
                                         </a>
-                                        <a href="/viewProduct/?id=<%=Product._id%>" class="social-info">
+                                        <a href="/productDetails/<%=Product._id %>" class="social-info">
                                             <span class="lnr lnr-move"></span>
                                             <p class="hover-text">view more</p>
                                         </a>
@@ -137,23 +137,23 @@
                 if(html==null){
                     html=`<div class="col-lg-4 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.Images[0]}" alt="">
+                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.image[0]}" alt="">
                             <div class="product-details">
-                                <h6>${element.Name}</h6>
+                                <h6>${element.name}</h6>
                                 <div class="price">
-                                    <h6>Rs.${element.SellingPrize}</h6>
-                                    <h6 class="l-through">Rs.${element.CostPrize}</h6>
+                                    <h6>Rs.${element.price}</h6>
+                                    // <h6 class="l-through">Rs.${element.CostPrize}</h6>
                                 </div>
                                 <div class="prd-bottom">
-                                    <a href="/addToCart/?productId=${element._id}&productName=${element.Name}&price=${element.SellingPrize}&images=${element.Images[0]}" class="social-info">
+                                    <a href="/cart/<%=Product._id %>" class="social-info" class="social-info">
                                         <span class="ti-bag"></span>
                                         <p class="hover-text">add to bag</p>
                                     </a>
-                                    <a href="/addToWishlist/?productId=${element._id}&productName=${element.Name}&price=${element.SellingPrize}&images=${element.Images[0]}" class="social-info">
+                                    <a href="/addToWishlist/?id=<%=Product._id%>" class="social-info">
                                         <span class="lnr lnr-heart"></span>
                                         <p class="hover-text">Wishlist</p>
                                     </a>
-                                    <a href="/viewProduct/?id=${element._id}" class="social-info">
+                                    <a href="/productDetails/<%=Product._id %>" class="social-info">
                                         <span class="lnr lnr-move"></span>
                                         <p class="hover-text">view more</p>
                                     </a>
@@ -164,23 +164,23 @@
                 }else{
                     html+=`<div class="col-lg-4 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.Images[0]}" alt="">
+                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.image[0]}" alt="">
                             <div class="product-details">
-                                <h6>Rs.${element.Name}</h6>
+                                <h6>${element.name}</h6>
                                 <div class="price">
-                                    <h6>Rs.<span>${element.SellingPrize}</span></h6>
-                                    <h6 class="l-through"><span>${element.CostPrize}</span></h6>
+                                    <h6>Rs.${element.price}</h6>
+                                    // <h6 class="l-through">Rs.${element.CostPrize}</h6>
                                 </div>
                                 <div class="prd-bottom">
-                                    <a href="/addToCart/?productId=${element._id}&productName=${element.Name}&price=${element.SellingPrize}&images=${element.Images[0]}" class="social-info">
+                                    <a href="/cart/<%=Product._id %>" class="social-info" class="social-info">
                                         <span class="ti-bag"></span>
                                         <p class="hover-text">add to bag</p>
                                     </a>
-                                    <a href="/addToWishlist/?productId=${element._id}&productName=${element.Name}&price=${element.SellingPrize}&images=${element.Images[0]}" class="social-info">
+                                    <a href="/addToWishlist/?id=<%=Product._id%>" class="social-info">
                                         <span class="lnr lnr-heart"></span>
                                         <p class="hover-text">Wishlist</p>
                                     </a>
-                                    <a href="/viewProduct/?id=${element._id}" class="social-info">
+                                    <a href="/productDetails/<%=Product._id %>" class="social-info">
                                         <span class="lnr lnr-move"></span>
                                         <p class="hover-text">view more</p>
                                     </a>
@@ -214,23 +214,23 @@
                 if(html==null){
                     html=`<div class="col-lg-4 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.Images[0]}" alt="">
+                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.image[0]}" alt="">
                             <div class="product-details">
-                                <h6>${element.Name}</h6>
+                                <h6>${element.name}</h6>
                                 <div class="price">
-                                    <h6>Rs.${element.SellingPrize}</h6>
-                                    <h6 class="l-through">Rs.${element.CostPrize}</h6>
+                                    <h6>Rs.${element.price}</h6>
+                                    // <h6 class="l-through">Rs.${element.CostPrize}</h6>
                                 </div>
                                 <div class="prd-bottom">
-                                    <a href="/addToCart/?productId=${element._id}&productName=${element.Name}&price=${element.SellingPrize}&images=${element.Images[0]}" class="social-info">
+                                    <a href="/cart/<%=Product._id %>" class="social-info" class="social-info">
                                         <span class="ti-bag"></span>
                                         <p class="hover-text">add to bag</p>
                                     </a>
-                                    <a href="/addToWishlist/?productId=${element._id}&productName=${element.Name}&price=${element.SellingPrize}&images=${element.Images[0]}" class="social-info">
+                                    <a href="/addToWishlist/?id=<%=Product._id%>" class="social-info">
                                         <span class="lnr lnr-heart"></span>
                                         <p class="hover-text">Wishlist</p>
                                     </a>
-                                    <a href="/viewProduct/?id=${element._id}" class="social-info">
+                                    <a href="/productDetails/<%=Product._id %>" class="social-info">
                                         <span class="lnr lnr-move"></span>
                                         <p class="hover-text">view more</p>
                                     </a>
@@ -241,23 +241,23 @@
                 }else{
                     html+=`<div class="col-lg-4 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.Images[0]}" alt="">
+                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.image[0]}" alt="">
                             <div class="product-details">
-                                <h6>Rs.${element.Name}</h6>
+                                <h6>${element.name}</h6>
                                 <div class="price">
-                                    <h6>Rs.<span>Rs.${element.SellingPrize}</span></h6>
-                                    <h6 class="l-through">RS.<span>${element.CostPrize}</span></h6>
+                                    <h6>Rs.${element.price}</h6>
+                                    // <h6 class="l-through">Rs.${element.CostPrize}</h6>
                                 </div>
                                 <div class="prd-bottom">
-                                    <a href="/addToCart/?productId=${element._id}&productName=${element.Name}&price=${element.SellingPrize}&images=${element.Images[0]}" class="social-info">
+                                    <a href="/cart/<%=Product._id %>" class="social-info" class="social-info">
                                         <span class="ti-bag"></span>
                                         <p class="hover-text">add to bag</p>
                                     </a>
-                                    <a href="/addToWishlist/?productId=${element._id}&productName=${element.Name}&price=${element.SellingPrize}&images=${element.Images[0]}" class="social-info">
+                                    <a href="/addToWishlist/?id=<%=Product._id%>" class="social-info">
                                         <span class="lnr lnr-heart"></span>
                                         <p class="hover-text">Wishlist</p>
                                     </a>
-                                    <a href="/viewProduct/?id=${element._id}" class="social-info">
+                                    <a href="/productDetails/<%=Product._id %>" class="social-info">
                                         <span class="lnr lnr-move"></span>
                                         <p class="hover-text">view more</p>
                                     </a>

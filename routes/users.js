@@ -78,4 +78,8 @@ router.post('/returnOrder',loginController.sessionchek,loginController.returnOrd
 
 router.get('/shope',loginController.sessionchek,loginController.getShop)
 
+router.get('/CategoryFilter',loginController.sessionchek,loginController.getCategoryFilter)
+
+router.get('/CategoryAll',loginController.sessionchek,loginController.getAllCategory)
+
 module.exports=router

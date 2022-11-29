@@ -124,7 +124,7 @@ module.exports = {
       image.push(file.filename);
     }
     const {name,brand,quantity,category,price,description}=req.body;
-    const status =true;
+    const status =false;
 
     const product = new Product({
       name,

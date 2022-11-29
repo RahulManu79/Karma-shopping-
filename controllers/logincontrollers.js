@@ -607,13 +607,48 @@ module.exports = {
   
   getShop: (req, res) => {
     try {
+      let user=req.session.user
       Product.find({ Delete: false }).then((result) => {
         Category.find().then((categories) => {
           res.render("user/Shop", {
             Products: result,
             Categories: categories,
+            user
           });
         });
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  getCategoryFilter:(req,res)=>{
+    try {
+      let tags = req.query.tags;
+      let filterkey = tags.split(",")
+      console.log(filterkey);
+      Product.aggregate([
+        {
+
+          $match:{
+            status:false,
+            category:{$in: filterkey}
+          },
+        },
+      ]).then((result)=>{
+        let response={
+          Products: result
+        }
+        res.json(response)
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getAllCategory: (req, res) => {
+    try {
+      Product.find({ status: false }).then((result) => {
+        res.json(result);
       });
     } catch (err) {
       console.log(err);
