@@ -76,7 +76,7 @@ $(document).ready(function(){
     ==================================*/
     $(".s_Product_carousel").owlCarousel({
       items:1,
-      autoplay:false,
+      autoplay:true,
       autoplayTimeout: 5000,
       loop:true,
       nav:false,

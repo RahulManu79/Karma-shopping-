@@ -42,7 +42,7 @@ module.exports = {
         const banner = Banner.find()
           // const ashan = result;
 
-          res.render("user/home", { result , banner });
+          res.render("user/home", { result , banner , cartNum});
         });
     }
   },
@@ -235,8 +235,8 @@ module.exports = {
                 let user = req.session.user;
                 cartNum = req.session.cartNum;
                 // ashan = result;
-
-                res.render("user/home", { user, result, cartNum });
+                 res.redirect('/home')
+                // res.render("user/home", { user, result, cartNum });
               });
           } else {
             console.log("Login Failed");
@@ -361,10 +361,10 @@ module.exports = {
 
       let result = await Product.find({ _id: proId });
 
-      Users = req.session.user;
+      user = req.session.user;
       cartNum = req.session.cartNum;
 
-      res.render("user/productDetails", { result, Users, cartNum });
+      res.render("user/productDetails", { result, user, cartNum });
     } else {
       res.redirect("/login");
     }
@@ -419,89 +419,96 @@ module.exports = {
   },
 
   postCheckOut: async (req, res) => {
-    let user = req.session.user;
-    let userId = user._id;
-    let address = await Address.findById(req.body.Address)
 
-    let Cart = await ShopingCart.findById(req.params.CartId);
-    if (req.body.paymentMethod === "Cash On Delivery") {
-  
-    
-      const paymentMethod = req.body.paymentMethod;
-    
-  
+    try {
+      
 
-      const newOrder = new OrderSchema({
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString(),
-        userId: userId,
-        products: Cart.products,
-        quantity: Cart.quantity,
-        total: Cart.total,
-        address,
-        paymentMethod,
-        paymentStatus: "Payment Pending",
-        orderStatus: "Order Placed",
-        track:"orderconfirmed"
-      });
-      newOrder.save().then((result) => {
-        req.session.orderId = result._id;
-
-        ShopingCart.findOneAndRemove({ userId: result.userId }).then(
-          (result) => {
-            res.json({ cashOnDelivery: true });
-          }
-        );
-      });
-    
-    } else if (req.body.paymentMethod === "Online Payment") {
-      const date = new Date().toLocaleDateString();
-      const time = new Date().toLocaleTimeString();
-      const userId = Cart.userId;
-      const products = Cart.products;
-      const total = Cart.total;
-      const paymentMethod = req.body.paymentMethod;
+      let user = req.session.user;
+      let userId = user._id;
       let address = await Address.findById(req.body.Address)
-        const track = "Shipped"
-        const paymentStatus = "Payment Completed";
-        const orderStatus = "Order Pending";
+  
+      let Cart = await ShopingCart.findById(req.params.CartId);
+      if (req.body.paymentMethod === "Cash On Delivery") {
+    
+      
+        const paymentMethod = req.body.paymentMethod;
+      
+    
+  
         const newOrder = new OrderSchema({
-          date,
-          time,
-          userId,
-          products,
-          total,
+          date: new Date().toLocaleDateString(),
+          time: new Date().toLocaleTimeString(),
+          userId: userId,
+          products: Cart.products,
+          quantity: Cart.quantity,
+          total: Cart.total,
           address,
           paymentMethod,
-          paymentStatus,
-          orderStatus,
-          track,
+          paymentStatus: "Payment Pending",
+          orderStatus: "orderconfirmed",
+          track:"orderconfirmed"
         });
         newOrder.save().then((result) => {
-          let userOrderData = result;
-          
-          id = result._id.toString();
-          instance.orders.create(
-            {
-              amount: result.total * 100,
-              currency: "INR",
-              receipt: id,
-            },
-            (err, order) => {
-              console.log(err);
-              let response = {
-                onlinePayment: true,
-                razorpayOrderData: order,
-                userOrderData: userOrderData,
-              };
-              res.json(response);
-            }
-          );
+          req.session.orderId = result._id;
+  
           ShopingCart.findOneAndRemove({ userId: result.userId }).then(
-            (result) => {}
+            (result) => {
+              res.json({ cashOnDelivery: true });
+            }
           );
         });
       
+      } else if (req.body.paymentMethod === "Online Payment") {
+        const date = new Date().toLocaleDateString();
+        const time = new Date().toLocaleTimeString();
+        const userId = Cart.userId;
+        const products = Cart.products;
+        const total = Cart.total;
+        const paymentMethod = req.body.paymentMethod;
+        let address = await Address.findById(req.body.Address)
+          const track = "Shipped"
+          const paymentStatus = "Payment Completed";
+          const orderStatus = "orderconfirmed";
+          const newOrder = new OrderSchema({
+            date,
+            time,
+            userId,
+            products,
+            total,
+            address,
+            paymentMethod,
+            paymentStatus,
+            orderStatus,
+            track,
+          });
+          newOrder.save().then((result) => {
+            let userOrderData = result;
+            
+            id = result._id.toString();
+            instance.orders.create(
+              {
+                amount: result.total * 100,
+                currency: "INR",
+                receipt: id,
+              },
+              (err, order) => {
+                console.log(err);
+                let response = {
+                  onlinePayment: true,
+                  razorpayOrderData: order,
+                  userOrderData: userOrderData,
+                };
+                res.json(response);
+              }
+            );
+            ShopingCart.findOneAndRemove({ userId: result.userId }).then(
+              (result) => {}
+            );
+          });
+        
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
 
@@ -551,15 +558,19 @@ module.exports = {
   },
 
   postOderSuccess:async (req, res) => {
-    
-    let user = req.session.user;
-    req.session.orderId = req.query.id;
-    let result = await OrderSchema.findById(req.query.id).populate("address").populate("products")
-    // result.products.map(result.products)
-    let address= Address.findById(req.query.id)
-
-
-    res.render("user/orderSummary", { id:result ,address,session:req.session,user});
+    try {
+      
+      let user = req.session.user;
+      req.session.orderId = req.query.id;
+      let result = await OrderSchema.findById(req.query.id).populate("address").populate("products")
+      // result.products.map(result.products)
+      let address= Address.findById(req.query.id)
+  
+  
+      res.render("user/orderSummary", { id:result ,address,session:req.session,user});
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   getMyOrders:async(req,res)=>{

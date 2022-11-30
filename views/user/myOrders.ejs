@@ -6,7 +6,7 @@
         <h2>My Orders</h2>
         <div class="cart_inner">
             <div class="table-responsive">
-                <% if(Orders) { %>
+                <% if(Orders.length>0) { %>
                 <table class="table">
                     <thead>
                         <tr>
@@ -57,7 +57,19 @@
                 </table>
                 <hr>
                 <% }else{ %>
-                    <p>No Orders</p>
+                    <div class="container">
+                        <div class="row text-center">
+                          <div class="col-md-12 mt-5">
+                            <div>
+                              <img src="/productImages/678caef6068a976e4a0d94bbdba6b660.webp" alt="" width="50%" />
+                              <p style="color: red">No Order yet </p>
+                            </div>
+                            <div>
+                              <a class="btn btn-success my-3" href="/">Start Shopping</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                  <% } %>
             </div>
         </div>
