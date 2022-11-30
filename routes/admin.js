@@ -50,10 +50,19 @@ router.get('/addBanner',adminControlers.adminSessionCheck,adminControlers.getAdd
 
 router.post('/addBanner',adminControlers.adminSessionCheck,Bannerstorage.single('BannerImages'),adminControlers.postAddBanner)
 
-router.delete('/removeBanner/:id',adminControlers.deletBanner)
+router.delete('/removeBanner/:id',adminControlers.adminSessionCheck,adminControlers.deletBanner)
 
+router.get('/couponList',adminControlers.adminSessionCheck,adminControlers.getCouponList)
 
+router.get('/addcoupon',adminControlers.adminSessionCheck,adminControlers.getAddCoupon)
 
+router.post('/addcoupon',adminControlers.adminSessionCheck,adminControlers.postAddCoupon)
+
+router.get('/couponActivate',adminControlers.adminSessionCheck,adminControlers.CouponActive)
+
+router.get('/couponBlock',adminControlers.adminSessionCheck,adminControlers.blockCoupon)
+
+router.get('/couponDelete',adminControlers.adminSessionCheck,adminControlers.deleteCoupon)
 
 module.exports = router ;
 

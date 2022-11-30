@@ -1,0 +1,86 @@
+<%- include('includes/header.ejs') %>
+
+<div class="text-center mx-auto mt-2 w-50"></div>
+
+<div class="container mt-3" style="min-height: 33rem;">
+  <h2 class="text-center text-white">Coupons</h2>
+  <div class="d-flex justify-content-between">
+    
+    <div><a href="/admin/addcoupon"><button class="btn btn-warning btn-sm mt-1"><i class="fas fa-plus mr-2"></i>Add Coupon</button></a></div>
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Coupon Code</th>
+        <th>Cut-Off</th>
+        <th>Coupon Left</th>
+        <th>Expiry Date</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody id="myTable">
+      <% for( let i = 0; i < result.length; i++ ) { %>
+      
+      
+     
+
+      <tr style="height: 50px !important;" class="text-wrap">
+        <th scope="row"> <%= result[i].CODE %> </th>
+        <% if(result[i].couponType=='Percentage') {%>
+            <td class="align-middle"><%=result[i].cutOff%>%</td>
+            <% }else{ %>
+            <td class="align-middle">Rs.<%=result[i].cutOff%></td>
+            <% } %>
+        <td><%= result[i].generateCount %> </td>
+        
+        <% if(result.expireDate < Date.now()) { %>
+          <td class="text-danger">Expired</td>
+        <% }else{ %>
+          <td class="text-primary"><%=result[i].expireDate.toLocaleDateString()%></td>
+        <%  } %>
+        <td class="align-middle">
+            <% if (result[i].status=='BLOCK') { %>
+                <a class="btn btn-outline-warning" href="/admin/couponActivate?id=<%=result[i]._id%>">Activate</a>
+            <% }else{ %>
+                <a class="btn btn-outline-danger" href="/admin/couponBlock?id=<%=result[i]._id%>">Block</a>
+            <% } %>
+        <td>
+          <div class=""><a href="/admin/couponDelete/?id=<%=result[i]._id%>"  data-target="">
+            <i class="fas fa-trash-alt text-danger ml-2"></i></a>
+          </div> 
+        </td>
+      </tr>
+
+      <div class="modal fade" id="modal{{coupon.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Coupon?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body text-left">
+              Are you sure to delete coupon: <b>cfx</b>?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              <a href=""  type="button" class="btn btn-primary">Yes</a>
+            </div>
+          </div>
+        </div>
+      </div>
+        
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+
+<%- include('includes/footer.ejs') %>

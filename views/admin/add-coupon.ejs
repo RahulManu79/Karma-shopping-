@@ -1,0 +1,140 @@
+
+<%- include('includes/header.ejs') %>
+
+<div class="text-center mx-auto mt-2 w-50"></div>
+
+<div class="container mt-3" style="min-height: 33rem;">
+  <h2 class="text-center text-white">Add Coupon</h2>
+  <form action="/admin/addcoupon" onsubmit="return validate()" method="post">
+    <div class="row">
+      <div class="col-6">
+        <div class="mb-3">
+          <label for="exampleFormControlInput1 " class="form-label text-white"
+            >CODE</label>
+          
+          <input
+            name="Code"
+            type="text"
+            class="form-control"
+            id="CodeInput"
+            placeholder=""
+          />
+          <p id="CodeError" class="text-danger"></p>
+          <span class="text-danger"><%= //couponExistErr %></span>
+        
+        </div>
+        <label for="exampleFormControlInput1" class="form-label text-white"
+            >Choose coupon type</label>
+        <div class="mb-4">
+            <input onclick="changeType('Percentage')" class="me-2" id="type" name="CouponType" type="radio" value="Percentage" checked><label class="form-label" style="color: white;" for="">Percentage</label><br>
+            <input onclick="changeType('Amount')" class="me-2" id="type" name="CouponType" type="radio" value="Amount"><label class="form-label" style="color: white;" for="">Amount</label>
+        </div>
+        <div>
+          <label for="exampleFormControlInput1" id="typeAmount" hidden class="form-label text-white">CUT-OFF Amount</label>
+          <label for="exampleFormControlInput1" id="typePercentage" class="form-label  text-white">CUT-OFF Percentage</label>
+        
+        <input
+          name="CutOff"
+          type="number"
+          class="form-control"
+          id="CutOffInput"
+          placeholder=""
+        />
+      </div>
+      <p id="cutOffError" class="text-danger mt-2"></p>
+      <div id="Min-Amount" class="mt-4">
+        <label for="exampleFormControlInput1" class="form-label  text-white">Min. Amount of Cart</label>
+        
+        <input
+          name="minAmount"
+          type="number"
+          class="form-control"
+          id="minAmountInput"
+          placeholder=""
+        />
+      </div>
+      <div id="Max-Amount" class="mt-4">
+        <label for="exampleFormControlInput1" class="form-label  text-white">Max. Redeem Amount</label>
+        
+        <input
+          name="maxAmount"
+          type="number"
+          class="form-control"
+          id="maxAmountInput"
+          placeholder=""
+        />
+      </div>
+      <div id="generateCount" class="mt-4">
+        <label for="exampleFormControlInput1" class="form-label  text-white">No. of coupons to genetate</label>
+        
+        <input
+          name="generateCount"
+          type="number"
+          class="form-control"
+          id="generateCountInput"
+          placeholder=""
+        />
+      </div>
+      <div class="mt-4">
+        <label class="form-label  text-white me-4" for="expireDate">Valid upto </label><input type="date" id="expireDate" name="expireDate">
+      </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col me-4 col-md-auto d-flex align-items-end justify-content-end">
+      <div class="btn-group ms-1 w-100 w-md-auto">
+        <button
+          type="submit"
+          class="btn btn-outline-warning btn-icon btn-icon-start w-100"
+        >
+          <i data-acorn-icon="save"></i>
+          <span>Save</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+  function validate(){
+  let Code = document.getElementById('CodeInput').value
+  let cutOff = document.getElementById('CutOffInput').value
+
+  if (Code == "") {
+    document.getElementById('CodeError').innerHTML='Fill This Field'
+    valid1=false
+  }else if(Code.length<3){
+    document.getElementById('CodeError').innerHTML='Atleast 3 characters required'
+    valid1=false
+  }else{
+    document.getElementById('CodeError').innerHTML=''
+    valid1=true
+  }
+
+  if(cutOff==''){
+    document.getElementById('cutOffError').innerHTML='Fill This Field'
+    valid6=false
+  }else{
+    document.getElementById('cutOffError').innerHTML=''
+    valid6=true
+  }
+
+  
+
+  if(valid1&&valid6){
+    return true
+  }else{
+    return false
+  }
+  }
+  function changeType(type){
+    if(type == 'Amount'){
+      document.getElementById('typeAmount').hidden=false
+      document.getElementById('typePercentage').hidden=true
+    }else if(type == 'Percentage'){
+      document.getElementById('typeAmount').hidden=true
+      document.getElementById('typePercentage').hidden=false
+    }
+  }
+</script>
+<%- include('includes/footer.ejs') %>

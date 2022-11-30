@@ -8,6 +8,7 @@ const Product = require("../models/productModel");
 const Order = require("../models/oderModel")
 const Address =require("../models/addressModel");
 const BannerSchema = require("../models/bannerMOdel")
+const CouponSchema = require("../models/CouponModel")
 const { response } = require("express");
 const { override } = require("joi");
 
@@ -364,6 +365,113 @@ module.exports = {
 
   },
 
+  getCouponList:(req,res)=>{
+    try {
+      CouponSchema.find().then((result)=>{
+        
+        res.render('admin/coupon',{result})
+      })
+
+
+    } catch (error) {
+      
+    }
+  },
+
+  getAddCoupon:(req,res)=>{
+    try {
+      res.render('admin/add-coupon')
+    } catch (error) {
+      
+    }
+  },
+
+  postAddCoupon:async(req,res)=>{
+    try {
+      let Code = req.body.Code;
+      let CutOff = req.body.CutOff;
+      let couponType = req.body.CouponType
+      let minCartAmount = req.body.minAmount
+      let maxRedeemAmount = req.body.maxAmount
+      let generateCount = req.body.generateCount
+      let expireDate = req.body.expireDate
+      Code = Code.toUpperCase();
+console.log(couponType);
+      CouponSchema.find({CODE: Code}).then((result)=>{
+        if(result.length == 0){
+          const Coupon = new CouponSchema({
+            CODE: Code,
+            cutOff: CutOff,
+            couponType:couponType,
+            minCartAmount:minCartAmount,
+            maxRedeemAmount:maxRedeemAmount,
+            generateCount:generateCount,
+            expireDate:expireDate
+          })
+          Coupon.save().then((result)=>{
+            res.redirect('/admin/couponList')
+          })
+        }else{
+          couponExistErr = "Coupon Already Exist"
+          res.redirect("/admin/addcoupon")
+
+        }
+      })
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  CouponActive:async(req,res)=>{
+
+    try {
+      
+      proId = req.query.id
+      console.log(proId);
+  
+     await CouponSchema.updateOne(
+        {_id:proId},
+       {$set:{status:"ACTIVE"}} 
+       ).then((result)=>{
+        res.redirect('/admin/couponList')
+       })
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  blockCoupon:async(req,res)=>{
+    try{
+    proId = req.query.id
+      console.log(proId);
+  
+     await CouponSchema.updateOne(
+        {_id:proId},
+       {$set:{status:"BLOCK"}} 
+       ).then((result)=>{
+        res.redirect('/admin/couponList')
+       })
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  deleteCoupon:(req,res)=>{
+    try {
+      proId = req.query.id
+      CouponSchema.findByIdAndDelete(proId).then((result)=>{
+        res.redirect('/admin/couponList')
+      })
+    } catch (error) {
+      
+    }
+  },
+
+
+  
+
 
 
 };
+

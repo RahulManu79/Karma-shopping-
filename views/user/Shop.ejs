@@ -58,7 +58,7 @@
                     <% for(Product of Products) { %>
                         <div class="col-lg-4 col-md-6">
                             <div class="single-product">
-                                <img class="img-fluid" style="height: 350px;" src="/productImages/<%=Product.image[0]%>" alt="">
+                                <img class="img-fluid" style="height: 250px;" src="/productImages/<%=Product.image[0]%>" alt="">
                                 <div class="product-details">
                                     <h6><%=Product.name%></h6>
                                     <div class="price">
@@ -137,12 +137,12 @@
                 if(html==null){
                     html=`<div class="col-lg-4 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.image[0]}" alt="">
+                            <img class="img-fluid" style="height: 250px;" src="/productImages/${element.image[0]}" alt="">
                             <div class="product-details">
                                 <h6>${element.name}</h6>
                                 <div class="price">
                                     <h6>Rs.${element.price}</h6>
-                                    // <h6 class="l-through">Rs.${element.CostPrize}</h6>
+                                     <h6 class="l-through">Rs.${element.CostPrize}</h6>
                                 </div>
                                 <div class="prd-bottom">
                                     <a href="/cart/<%=Product._id %>" class="social-info" class="social-info">
@@ -164,7 +164,7 @@
                 }else{
                     html+=`<div class="col-lg-4 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.image[0]}" alt="">
+                            <img class="img-fluid" style="height: 250px;" src="/productImages/${element.image[0]}" alt="">
                             <div class="product-details">
                                 <h6>${element.name}</h6>
                                 <div class="price">
@@ -214,7 +214,7 @@
                 if(html==null){
                     html=`<div class="col-lg-4 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.image[0]}" alt="">
+                            <img class="img-fluid" style="height: 250px;" src="/productImages/${element.image[0]}" alt="">
                             <div class="product-details">
                                 <h6>${element.name}</h6>
                                 <div class="price">
@@ -241,7 +241,7 @@
                 }else{
                     html+=`<div class="col-lg-4 col-md-6">
                         <div class="single-product">
-                            <img class="img-fluid" style="height: 350px;" src="/productImages/${element.image[0]}" alt="">
+                            <img class="img-fluid" style="height: 250px;" src="/productImages/${element.image[0]}" alt="">
                             <div class="product-details">
                                 <h6>${element.name}</h6>
                                 <div class="price">

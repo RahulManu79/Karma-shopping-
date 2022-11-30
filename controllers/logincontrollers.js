@@ -12,6 +12,7 @@ var {
 } = require("../node_modules/razorpay/dist/utils/razorpay-utils");
 const { trusted } = require("mongoose");
 const { default: mongoose } = require("mongoose");
+const Banner = require("../models/bannerMOdel");
 let loginErr = null;
 
 var instance = new Razorpay({
@@ -34,13 +35,14 @@ module.exports = {
       res.redirect("/home");
     } else {
       Product.find({})
-        .limit(8)
-        .then((result) => {
-          let user = req.session.user;
-          cartNum = req.session.cartNum;
+      .limit(8)
+      .then((result) => {
+        let user = req.session.user;
+        cartNum = req.session.cartNum;
+        const banner = Banner.find()
           // const ashan = result;
 
-          res.render("user/home", { result });
+          res.render("user/home", { result , banner });
         });
     }
   },
@@ -114,6 +116,8 @@ module.exports = {
     if (req.session.loggedIn) {
      
       const userId = req.session.user._id;
+      const banner = await Banner.find()
+      console.log(banner,"///////////");
       const viewcart = await ShopingCart.findOne({ userId: userId })
         .populate("products.productId")
         .exec();
@@ -128,7 +132,7 @@ module.exports = {
           cartNum = req.session.cartNum;
           // ashan = result;
 
-          res.render("user/home", { user, result, cartNum });
+          res.render("user/home", { user, result, cartNum ,banner});
         })
         .catch((err) => {
           console.log(err);
