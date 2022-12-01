@@ -116,7 +116,7 @@
               </td>
             </tr> -->
             <tr>
-              <td></td>
+              <td><p class="text-danger" id="stockCheck"></p></td>
               <td></td>
               <td>
                 <h5>Subtotal</h5>
@@ -132,7 +132,8 @@
               <td>
                 <div class="checkout_btn_inner d-flex align-items-center">
                   <a class="gray_btn" href="/">Continue Shopping</a>
-                  <a class="primary-btn" href="/checkout"
+                  <a class="primary-btn" href="/checkout" onclick="checkStock(event)"
+                 
                     >Proceed to checkout</a
                   >
                 </div>
@@ -174,6 +175,43 @@
   </div>
 </div>
 <% } %>
+
+
+<script>
+  function checkStock(event) {
+    event.preventDefault()
+    console.log("ok 1");
+    $.ajax({
+      url: "/checkStock",
+      method: "get",
+      success: (response) => {
+        console.log("ok 2");
+        if(response.result){
+          console.log(response,";;;;;;;;;;;;;");
+            alerts = response.result.results;
+        console.log(alerts);
+        if (alerts.length != 0) {
+          
+          let text = ''
+          for(i=0;i<alerts.length;i++){
+          text+= ` ${alerts[i]} <br>`
+          }
+          document.getElementById('stockCheck').innerHTML=text
+          
+        }
+        
+        }
+        else if(response.state==true){
+            console.log('ok 3');
+            window.location.href = '/checkout'
+            
+        }
+      },
+    });
+  }
+</script>
+
+
 <script>
   function QuantityInc(ProductId) {
     $.ajax({

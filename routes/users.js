@@ -38,9 +38,9 @@ router.post('/editAddress',loginController.sessionchek,loginController.postEditA
 
 router.get("/deleteAddress",loginController.sessionchek,loginController.deleteAdress)
 
-router.get('/cart',loginController.cartView)
+router.get('/cart',loginController.sessionchek,loginController.cartView)
 
-router.get('/cart/:proId',loginController.addToCart)
+router.get('/cart/:proId',loginController.sessionchek,loginController.addToCart)
 
 router.get('/quantityDec/:proid',loginController.QuantityDec)
 
@@ -81,5 +81,9 @@ router.get('/shope',loginController.sessionchek,loginController.getShop)
 router.get('/CategoryFilter',loginController.sessionchek,loginController.getCategoryFilter)
 
 router.get('/CategoryAll',loginController.sessionchek,loginController.getAllCategory)
+
+router.post('/verifyCoupon',loginController.sessionchek,loginController.verifyCoupon)
+
+router.get('/checkStock',loginController.sessionchek,loginController.checkStock)
 
 module.exports=router

@@ -76,7 +76,7 @@
                   />
                   <button
                     class="col-3 genric-btn primary"
-                    onclick="applyCoupon('<%=Cart.total%>t')"
+                    onclick="applyCoupon('<%=Cart.total%>')"
                     type="button"
                     id="applyBtn"
                   >
@@ -90,10 +90,10 @@
               <div class="order_box">
                 <h2>Your Order</h2>
                 <ul class="list">
-                  <li>
+                  <!-- <li>
                     <a href="#">Products <span>Total</span></a>
                   </li>
-                  
+                   -->
                   <% for(Product of Cart.products){ %>
                   <li>
                     <a href="#"
@@ -182,6 +182,9 @@
   </div>
 </section>
 
+
+
+
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
   integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
@@ -192,6 +195,43 @@
 <!-- sweet alert -->
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+  <script>
+  function applyCoupon(subtotal) {
+    let CouponCode = document.getElementById("couponInput").value;
+    let total = subtotal;
+    if (CouponCode == "") {
+      document.getElementById("CouponError").style.color = "red";
+      document.getElementById("CouponError").innerHTML = "Enter a Coupon Code";
+    } else {
+      $.ajax({
+        url: "/verifyCoupon",
+        method: "post",
+        data: {
+          CouponCode,
+          total,
+        },
+        success: (response) => {
+          if (response.status == true) {
+            document.getElementById("CouponError").style.color = "green";
+            document.getElementById("CouponError").innerHTML = "Coupon Applied";
+            document.getElementById("discountAmount").innerHTML =
+              "Rs." + response.CutOff;
+            document.getElementById("grandTotalAmount").innerHTML =
+              response.grandtotal;
+            document.getElementById("applyBtn").disabled = true;
+          } else {
+            document.getElementById("CouponError").style.color = "red";
+            document.getElementById("CouponError").innerHTML =
+              response.couponMsg;
+          }
+        },
+      });
+    }
+  }
+</script>
+
 
 <script>
   let userOrderData

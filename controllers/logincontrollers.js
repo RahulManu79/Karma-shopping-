@@ -6,6 +6,7 @@ const Product = require("../models/productModel");
 const Category = require("../models/categoryModel")
 const OrderSchema = require("../models/oderModel");
 const Address = require("../models/addressModel");
+const CouponSchema = require("../models/CouponModel")
 const Razorpay = require("razorpay");
 var {
   validatePaymentVerification,
@@ -117,7 +118,7 @@ module.exports = {
      
       const userId = req.session.user._id;
       const banner = await Banner.find()
-      console.log(banner,"///////////");
+      
       const viewcart = await ShopingCart.findOne({ userId: userId })
         .populate("products.productId")
         .exec();
@@ -277,7 +278,8 @@ module.exports = {
 
   //add to cart
   addToCart: async (req, res) => {
-    if (req.session.loggedIn) {
+    try {
+      
       let User = req.session.user;
       let quantity = 1;
 
@@ -316,8 +318,9 @@ module.exports = {
         await cart.save();
         res.redirect("/cart");
       }
-    } else {
-      res.redirect("/login");
+ 
+    } catch (error) {
+      
     }
   },
 
@@ -384,7 +387,7 @@ module.exports = {
         userCart.total =
           userCart.total - productItem.price * productItem.quantity;
         userCart.products.splice(productIndex, 1);
-        userCart.save();
+       await userCart.save();
         res.redirect("/cart");
       } else {
         res.redirect("/home");
@@ -669,4 +672,121 @@ module.exports = {
       console.log(err);
     }
   },
+  
+  verifyCoupon:async(req,res)=>{
+    try {
+      let couponcode = req.body.CouponCode;
+      let total = req.body.total;
+      let grandtotal
+      let couponMsg
+      
+      let result = await CouponSchema.find({CODE:couponcode, status: "ACTIVE" })
+      console.log(result);
+         if(result.length == 0){
+          couponMsg = "Coupon Invalid";
+            res.json({ status: false, couponMsg });
+         }else{
+          let couponType = result[0].couponType;
+          let cutOff = parseInt(result[0].cutOff);
+          let maxRedeemAmount = parseInt(result[0].maxRedeemAmount);
+          let minCartAmount = parseInt(result[0].minCartAmount);
+          let generateCount = parseInt(result[0].generateCount); if (generateCount != 0) {
+            if (couponType == "Amount") {
+              if (total < minCartAmount) {
+                couponMsg =
+                  "Minimum Rs." +
+                  minCartAmount +
+                  " need to Apply this Coupon";
+                res.json({ status: false, couponMsg });
+              } else {
+                grandtotal = Math.round(total - cutOff);
+                let response = {
+                  status: true,
+                  grandtotal: grandtotal,
+                  couponMsg,
+                  CutOff: cutOff,
+                };
+                res.json(response);
+              }
+            } else if ((couponType = "Percentage")) {
+              if (total < minCartAmount) {
+                couponMsg =
+                  "Minimum Rs." +
+                  minCartAmount +
+                  " need to Apply this Coupon";
+                res.json({ status: false, couponMsg });
+              } else {
+                let reduceAmount = Math.round((total * cutOff) / 100);
+                if (reduceAmount > maxRedeemAmount) {
+                  grandtotal = Math.round(total - maxRedeemAmount);
+                  let response = {
+                    status: true,
+                    grandtotal: grandtotal,
+                    couponMsg,
+                    CutOff: maxRedeemAmount,
+                  };
+                  res.json(response);
+                } else {
+                  grandtotal = Math.round(total - reduceAmount);
+                  let response = {
+                    status: true,
+                    grandtotal: grandtotal,
+                    couponMsg,
+                    CutOff: reduceAmount,
+                  };
+                  res.json(response);
+                }
+              }
+            }
+          } else {
+            couponMsg = "Coupon limit Exceeded";
+            res.json({ status: false, couponMsg });
+          }
+        }
+
+         
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  checkStock:async(req,res)=>{
+    try {
+      let cart = await ShopingCart.find({ userId: req.session.user._id });
+      let result = { results: [] };
+      let productStatus = [];
+      for (i = 0; i < cart[0].products.length; i++) {
+        let product = await Product.findById(
+          cart[0].products[i].productId
+          );
+          console.log(product,"?/////////");
+          if (product.quantity == 0) {
+          console.log(product.quantity,"gfugfgjgv");
+          productStatus.push("out of stock");
+          let output = product.name + " is out of stock";
+          result.results.push(output);
+        } else if (product.quantity < cart[0].products[i].quantity) {
+          console.log(product.quantity,"gfugfgjgv>>>>>>>>");
+
+          let output =
+            "Only " + product.quantity + " stocks left of " + product.name;
+          result.results.push(output);
+          productStatus.push(product.quantity + " stock left");
+        } else {
+          console.log(product.quantity,"gfugfgjgv>>>>>>>>>>???????");
+
+          productStatus.push("instock");
+        }
+      }
+      const isInstockAll = (productStatus) => productStatus == "instock";
+      if (productStatus.every(isInstockAll)) {
+        res.json({ state: true });
+      } else {
+        res.json({ result });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
 };
