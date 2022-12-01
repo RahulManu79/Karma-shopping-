@@ -1,126 +1,120 @@
-const User = require("../models/user");
-const bcrypt = require("bcryptjs");
-const passport = require("passport");
-const ShopingCart = require("../models/cartModel");
-const Product = require("../models/productModel");
-const Category = require("../models/categoryModel")
-const OrderSchema = require("../models/oderModel");
-const Address = require("../models/addressModel");
-const CouponSchema = require("../models/CouponModel")
-const Razorpay = require("razorpay");
+const User = require('../models/user');
+const bcrypt = require('bcryptjs');
+const passport = require('passport');
+const ShopingCart = require('../models/cartModel');
+const Product = require('../models/productModel');
+const Category = require('../models/categoryModel');
+const OrderSchema = require('../models/oderModel');
+const Address = require('../models/addressModel');
+const CouponSchema = require('../models/CouponModel');
+const Razorpay = require('razorpay');
 var {
   validatePaymentVerification,
-} = require("../node_modules/razorpay/dist/utils/razorpay-utils");
-const { trusted } = require("mongoose");
-const { default: mongoose } = require("mongoose");
-const Banner = require("../models/bannerMOdel");
+} = require('../node_modules/razorpay/dist/utils/razorpay-utils');
+const { trusted } = require('mongoose');
+const { default: mongoose } = require('mongoose');
+const Banner = require('../models/bannerMOdel');
 let loginErr = null;
 
 var instance = new Razorpay({
-  key_secret: "zvcqB1phsfyXySVAZoHzObDB",
-  key_id: "rzp_test_EsWfdOrXZua8KY",
+  key_secret: 'zvcqB1phsfyXySVAZoHzObDB',
+  key_id: 'rzp_test_EsWfdOrXZua8KY',
 });
 
 module.exports = {
   registerView: (req, res) => {
     if (req.session.user) {
-      res.redirect("/home");
+      res.redirect('/home');
     } else {
-      res.render("user/register");
+      res.render('user/register');
     }
   },
 
   //nouser home view
   homeView: (req, res) => {
     if (req.session.loggedIn) {
-      res.redirect("/home");
+      res.redirect('/home');
     } else {
       Product.find({})
-      .limit(8)
-      .then((result) => {
-        let user = req.session.user;
-        cartNum = req.session.cartNum;
-        const banner = Banner.find()
+        .limit(8)
+        .then((result) => {
+          let user = req.session.user;
+          cartNum = req.session.cartNum;
+          const banner = Banner.find();
           // const ashan = result;
 
-          res.render("user/home", { result , banner , cartNum});
+          res.render('user/home', { result, banner, cartNum });
         });
     }
   },
 
   //register view
   createView: (req, res) => {
-    res.redirect("/register");
+    res.redirect('/register');
   },
 
   //showing user profile
   userprofile: (req, res) => {
-      try {
-        let user = req.session.user;
-        Address
-          .find({ userId: req.session.user._id })
-          .then((result) => {
-            res.render("user/userProfile", {user,
-              session: req.session,
-              addresses: result,
-            });
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    
-  },
-
-  getEditAdress:(req,res)=>{
     try {
       let user = req.session.user;
-      res.render("user/addAdress", {user ,session: req.session });
-      
+      Address.find({ userId: req.session.user._id }).then((result) => {
+        res.render('user/userProfile', {
+          user,
+          session: req.session,
+          addresses: result,
+        });
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  getEditAdress: (req, res) => {
+    try {
+      let user = req.session.user;
+      res.render('user/addAdress', { user, session: req.session });
     } catch (error) {
       console.log(error);
     }
   },
 
-  postEditAdress:async(req,res)=>{
-   try {
-    const address = await Address({
-      firstName:req.body.firstName,
-      lastName:req.body.lastName,
-      number:req.body.number,
-      email:req.body.email,
-      houseName:req.body.houseName,
-      homeaddress:req.body.homeaddress,
-      city:req.body.city,
-      district:req.body.district,
-      state:req.body.state,
-      country:req.body.country,
-      zipcode:req.body.zipcode,
-      userId:req.session.user._id
-    })
-    address.save().then((result)=>{})
-    res.redirect('/userProfile')
-   } catch (error) {
-    console.log(error);
-   }
-
+  postEditAdress: async (req, res) => {
+    try {
+      const address = await Address({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        number: req.body.number,
+        email: req.body.email,
+        houseName: req.body.houseName,
+        homeaddress: req.body.homeaddress,
+        city: req.body.city,
+        district: req.body.district,
+        state: req.body.state,
+        country: req.body.country,
+        zipcode: req.body.zipcode,
+        userId: req.session.user._id,
+      });
+      address.save().then((result) => {});
+      res.redirect('/userProfile');
+    } catch (error) {
+      console.log(error);
+    }
   },
 
-  deleteAdress:async(req,res)=>{
-   
-    Address.deleteOne({_id : req.query.id}).then((response)=>{
-      res.redirect('/userProfile')
-    })
+  deleteAdress: async (req, res) => {
+    Address.deleteOne({ _id: req.query.id }).then((response) => {
+      res.redirect('/userProfile');
+    });
   },
 
   //logged in home view
   login: async (req, res) => {
     if (req.session.loggedIn) {
-     
       const userId = req.session.user._id;
-      const banner = await Banner.find()
-      
+      const banner = await Banner.find();
+
       const viewcart = await ShopingCart.findOne({ userId: userId })
-        .populate("products.productId")
+        .populate('products.productId')
         .exec();
       if (viewcart) {
         req.session.cartNum = viewcart.products.length;
@@ -133,36 +127,36 @@ module.exports = {
           cartNum = req.session.cartNum;
           // ashan = result;
 
-          res.render("user/home", { user, result, cartNum ,banner});
+          res.render('user/home', { user, result, cartNum, banner });
         })
         .catch((err) => {
           console.log(err);
         });
     } else {
-      res.redirect("/");
+      res.redirect('/');
     }
   },
 
   //login page
   loginbtnView: (req, res) => {
     if (req.session.loggedIn) {
-      res.redirect("/home");
+      res.redirect('/home');
     } else {
-      res.render("user/login", { loginErr });
+      res.render('user/login', { loginErr });
     }
   },
 
   //logout
   logoutView: (req, res) => {
     req.session.destroy();
-    res.redirect("/");
+    res.redirect('/');
   },
 
   sessionchek: (req, res, next) => {
     if (req.session.loggedIn) {
       next();
     } else {
-      res.redirect("/login");
+      res.redirect('/login');
     }
   },
 
@@ -181,11 +175,11 @@ module.exports = {
     let { password } = req.body;
     //comfirm passowrd
     if (password !== confirm) {
-      console.log("pasword must be same");
+      console.log('pasword must be same');
     } else {
       const user = await User.findOne({ email: email });
       if (user) {
-        console.log("email exists");
+        console.log('email exists');
       } else {
         const salt = await bcrypt.genSalt(10);
         password = await bcrypt.hash(password, salt);
@@ -196,7 +190,7 @@ module.exports = {
           password,
         });
 
-        res.render("user/login", {});
+        res.render('user/login', {});
       }
     }
   },
@@ -225,7 +219,7 @@ module.exports = {
       if (user.access === true) {
         bcrypt.compare(req.body.password, user.password).then((data) => {
           if (data) {
-            console.log("Login Success");
+            console.log('Login Success');
             req.session.user = user;
             req.session.loggedIn = true;
             res.locals.user = user || null;
@@ -235,26 +229,26 @@ module.exports = {
               .then((result) => {
                 let user = req.session.user;
                 cartNum = req.session.cartNum;
-                // ashan = result;
-                 res.redirect('/home')
-                // res.render("user/home", { user, result, cartNum });
+                
+                res.redirect('/home');
+              
               });
           } else {
-            console.log("Login Failed");
-            loginErr = "Invalid password";
-            
-            res.redirect("/login");
+            console.log('Login Failed');
+            loginErr = 'Invalid password';
+
+            res.redirect('/login');
           }
         });
       } else {
-        console.log("blocked user");
-        loginErr = "You have been restricted by the admin";
-        res.redirect("/login");
+        console.log('blocked user');
+        loginErr = 'You have been restricted by the admin';
+        res.redirect('/login');
       }
     } else {
-      console.log("Login failed");
-      loginErr = "Invalid email";
-      res.redirect("/login");
+      console.log('Login failed');
+      loginErr = 'Invalid email';
+      res.redirect('/login');
     }
   },
 
@@ -264,29 +258,28 @@ module.exports = {
       let user = req.session.user;
       const userId = req.session.user._id;
       const cartView = await ShopingCart.findOne({ userId: userId })
-        .populate("products.productId")
+        .populate('products.productId')
         .exec();
       if (cartView) {
         req.session.cartNum = cartView.products.length;
       }
       cartNum = req.session.cartNum;
-      res.render("user/cart", { user, cartNum, cartProducts: cartView });
+      res.render('user/cart', { user, cartNum, cartProducts: cartView });
     } else {
-      res.redirect("/login");
+      res.redirect('/login');
     }
   },
 
   //add to cart
   addToCart: async (req, res) => {
     try {
-      
       let User = req.session.user;
       let quantity = 1;
 
       const productId = req.params.proId;
-      
+
       const findProduct = await Product.findById(productId);
-      
+
       const price = findProduct.price;
       const name = findProduct.name;
       const userId = req.session.user._id;
@@ -307,7 +300,7 @@ module.exports = {
           return acc + curr.quantity * curr.price;
         }, 0);
         await cart.save();
-        res.redirect("/cart");
+        res.redirect('/cart');
       } else {
         const total = quantity * price;
         cart = new ShopingCart({
@@ -316,12 +309,9 @@ module.exports = {
           total: total,
         });
         await cart.save();
-        res.redirect("/cart");
+        res.redirect('/cart');
       }
- 
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   },
 
   QuantityDec: async (req, res) => {
@@ -329,9 +319,9 @@ module.exports = {
     let ProductIndex = userCart.products.findIndex(
       (Product) => Product._id == req.params.proid
     );
-    
+
     let arr = [...userCart.products];
-    
+
     let productItem = arr[ProductIndex];
     userCart.total = userCart.total - productItem.price * productItem.quantity;
     productItem.quantity = productItem.quantity - 1;
@@ -367,9 +357,9 @@ module.exports = {
       user = req.session.user;
       cartNum = req.session.cartNum;
 
-      res.render("user/productDetails", { result, user, cartNum });
+      res.render('user/productDetails', { result, user, cartNum });
     } else {
-      res.redirect("/login");
+      res.redirect('/login');
     }
   },
 
@@ -387,57 +377,50 @@ module.exports = {
         userCart.total =
           userCart.total - productItem.price * productItem.quantity;
         userCart.products.splice(productIndex, 1);
-       await userCart.save();
-        res.redirect("/cart");
+        await userCart.save();
+        res.redirect('/cart');
       } else {
-        res.redirect("/home");
+        res.redirect('/home');
       }
     } else {
-      res.redirect("/login");
+      res.redirect('/login');
     }
   },
 
   getCheckOut: async (req, res) => {
     if (req.session.user) {
-     let user = req.session.user;
+      let user = req.session.user;
       let addresses = await Address.find({
         userId: req.session.user._id,
-      })
+      });
       ShopingCart.find({ userId: req.session.user._id })
-        .populate("products.productId")
+        .populate('products.productId')
         .exec()
         .then((result) => {
           cartNum = req.session.cartNum;
-          res.render("user/checkout", {
+          res.render('user/checkout', {
             user,
             cartNum,
             addresses,
             session: req.session,
             Cart: result[0],
           });
-        }); 
+        });
     } else {
-      res.redirect("/login");
+      res.redirect('/login');
     }
   },
 
   postCheckOut: async (req, res) => {
-
     try {
-      
-
       let user = req.session.user;
       let userId = user._id;
-      let address = await Address.findById(req.body.Address)
-  
+      let address = await Address.findById(req.body.Address);
+
       let Cart = await ShopingCart.findById(req.params.CartId);
-      if (req.body.paymentMethod === "Cash On Delivery") {
-    
-      
+      if (req.body.paymentMethod === 'Cash On Delivery') {
         const paymentMethod = req.body.paymentMethod;
-      
-    
-  
+
         const newOrder = new OrderSchema({
           date: new Date().toLocaleDateString(),
           time: new Date().toLocaleTimeString(),
@@ -447,68 +430,66 @@ module.exports = {
           total: Cart.total,
           address,
           paymentMethod,
-          paymentStatus: "Payment Pending",
-          orderStatus: "orderconfirmed",
-          track:"orderconfirmed"
+          paymentStatus: 'Payment Pending',
+          orderStatus: 'orderconfirmed',
+          track: 'orderconfirmed',
         });
         newOrder.save().then((result) => {
           req.session.orderId = result._id;
-  
+
           ShopingCart.findOneAndRemove({ userId: result.userId }).then(
             (result) => {
               res.json({ cashOnDelivery: true });
             }
           );
         });
-      
-      } else if (req.body.paymentMethod === "Online Payment") {
+      } else if (req.body.paymentMethod === 'Online Payment') {
         const date = new Date().toLocaleDateString();
         const time = new Date().toLocaleTimeString();
         const userId = Cart.userId;
         const products = Cart.products;
         const total = Cart.total;
         const paymentMethod = req.body.paymentMethod;
-        let address = await Address.findById(req.body.Address)
-          const track = "Shipped"
-          const paymentStatus = "Payment Completed";
-          const orderStatus = "orderconfirmed";
-          const newOrder = new OrderSchema({
-            date,
-            time,
-            userId,
-            products,
-            total,
-            address,
-            paymentMethod,
-            paymentStatus,
-            orderStatus,
-            track,
-          });
-          newOrder.save().then((result) => {
-            let userOrderData = result;
-            
-            id = result._id.toString();
-            instance.orders.create(
-              {
-                amount: result.total * 100,
-                currency: "INR",
-                receipt: id,
-              },
-              (err, order) => {
-                console.log(err);
-                let response = {
-                  onlinePayment: true,
-                  razorpayOrderData: order,
-                  userOrderData: userOrderData,
-                };
-                res.json(response);
-              }
-            );
-            ShopingCart.findOneAndRemove({ userId: result.userId }).then(
-              (result) => {}
-            );
-          });
-        
+        let address = await Address.findById(req.body.Address);
+        const track = 'Shipped';
+        const paymentStatus = 'Payment Completed';
+        const orderStatus = 'orderconfirmed';
+        const newOrder = new OrderSchema({
+          date,
+          time,
+          userId,
+          products,
+          total,
+          address,
+          paymentMethod,
+          paymentStatus,
+          orderStatus,
+          track,
+        });
+        newOrder.save().then((result) => {
+          let userOrderData = result;
+
+          id = result._id.toString();
+          instance.orders.create(
+            {
+              amount: result.total * 100,
+              currency: 'INR',
+              receipt: id,
+            },
+            (err, order) => {
+              console.log(err);
+              let response = {
+                onlinePayment: true,
+                razorpayOrderData: order,
+                userOrderData: userOrderData,
+              };
+              res.json(response);
+            }
+          );
+          ShopingCart.findOneAndRemove({ userId: result.userId }).then(
+            (result) => {}
+          );
+        });
       }
     } catch (error) {
       console.log(error);
@@ -519,36 +500,35 @@ module.exports = {
     if (req.session.user) {
       let user = req.session.user;
       let cartNum = req.session.cartNum;
-      res.render("user/confirmation", {
+      res.render('user/confirmation', {
         user,
         cartNum,
         orderId: req.session.orderId,
       });
     } else {
-      res.redirect("/login");
+      res.redirect('/login');
     }
   },
 
   postverifyPayment: async (req, res) => {
-    let razorpayOrderDataId = req.body["payment[razorpay_order_id]"];
+    let razorpayOrderDataId = req.body['payment[razorpay_order_id]'];
 
-    let paymentId = req.body["payment[razorpay_payment_id]"];
+    let paymentId = req.body['payment[razorpay_payment_id]'];
 
-    let paymentSignature = req.body["payment[razorpay_signature]"];
+    let paymentSignature = req.body['payment[razorpay_signature]'];
 
-    let userOrderDataId = req.body["userOrderData[_id]"];
+    let userOrderDataId = req.body['userOrderData[_id]'];
 
     validate = validatePaymentVerification(
       { order_id: razorpayOrderDataId, payment_id: paymentId },
       paymentSignature,
-      "zvcqB1phsfyXySVAZoHzObDB"
+      'zvcqB1phsfyXySVAZoHzObDB'
     );
- 
+
     if (validate) {
-      
       let order = await OrderSchema.findById(userOrderDataId);
-      orderStatus = "Order Placed";
-      paymentStatus = "Payment Completed";
+      orderStatus = 'Order Placed';
+      paymentStatus = 'Payment Completed';
       order.save().then((result) => {
         res.json({ status: true });
       });
@@ -556,82 +536,93 @@ module.exports = {
   },
 
   postPaymentFailed: (req, res) => {
-  
     res.json({ status: true });
   },
 
-  postOderSuccess:async (req, res) => {
+  postOderSuccess: async (req, res) => {
     try {
-      
       let user = req.session.user;
       req.session.orderId = req.query.id;
-      let result = await OrderSchema.findById(req.query.id).populate("address").populate("products")
+      let result = await OrderSchema.findById(req.query.id)
+        .populate('address')
+        .populate('products');
       // result.products.map(result.products)
-      let address= Address.findById(req.query.id)
-  
-  
-      res.render("user/orderSummary", { id:result ,address,session:req.session,user});
+      let address = Address.findById(req.query.id);
+
+      res.render('user/orderSummary', {
+        id: result,
+        address,
+        session: req.session,
+        user,
+      });
     } catch (error) {
       console.log(error);
     }
   },
 
-  getMyOrders:async(req,res)=>{
-    if(req.session.loggedIn){
-      try{
+  getMyOrders: async (req, res) => {
+    if (req.session.loggedIn) {
+      try {
         let user = req.session.user;
-       let result = await OrderSchema.find({Cart:req.session.user.id}).sort({date:-1})
-        res.render('user/myOrders',{ user,session:req.session,Orders:result})
-       
-      }catch(err){
+        let result = await OrderSchema.find({ Cart: req.session.user.id }).sort(
+          { date: -1 }
+        );
+        res.render('user/myOrders', {
+          user,
+          session: req.session,
+          Orders: result,
+        });
+      } catch (err) {
         console.log(err);
       }
-
-    }else{
-      res.redirect('/login')
+    } else {
+      res.redirect('/login');
     }
   },
 
-  getCancelOrder:async(req,res)=>{
-    if(req.session.loggedIn){
+  getCancelOrder: async (req, res) => {
+    if (req.session.loggedIn) {
       try {
-       let orderId=req.query.id;
-       
-        let order = await OrderSchema.findByIdAndUpdate(orderId,{orderStatus:"Cancellede", track:"Cancellede"});
-        
+        let orderId = req.query.id;
+
+        let order = await OrderSchema.findByIdAndUpdate(orderId, {
+          orderStatus: 'Cancellede',
+          track: 'Cancellede',
+        });
       } catch (error) {
         console.log(error);
-        
       }
     }
   },
 
-  returnOrder:async(req,res)=>{
+  returnOrder: async (req, res) => {
     try {
-      oid=  mongoose.Types.ObjectId(req.body.oid.trim())
-      value= req.body.value
+      oid = mongoose.Types.ObjectId(req.body.oid.trim());
+      value = req.body.value;
 
-      console.log(oid,"///////////////");
-      
-      await OrderSchema.findByIdAndUpdate(oid,{track:"Returnd",orderStatus:"Returnd",returnreason:value}).then((response)=>{
-        res.json({status:true})
-      })
+      console.log(oid, '///////////////');
+
+      await OrderSchema.findByIdAndUpdate(oid, {
+        track: 'Returnd',
+        orderStatus: 'Returnd',
+        returnreason: value,
+      }).then((response) => {
+        res.json({ status: true });
+      });
     } catch (error) {
-
       console.log(error);
-      
     }
   },
-  
+
   getShop: (req, res) => {
     try {
-      let user=req.session.user
+      let user = req.session.user;
       Product.find({ Delete: false }).then((result) => {
         Category.find().then((categories) => {
-          res.render("user/Shop", {
+          res.render('user/Shop', {
             Products: result,
             Categories: categories,
-            user
+            user,
           });
         });
       });
@@ -640,25 +631,24 @@ module.exports = {
     }
   },
 
-  getCategoryFilter:(req,res)=>{
+  getCategoryFilter: (req, res) => {
     try {
       let tags = req.query.tags;
-      let filterkey = tags.split(",")
+      let filterkey = tags.split(',');
       console.log(filterkey);
       Product.aggregate([
         {
-
-          $match:{
-            status:false,
-            category:{$in: filterkey}
+          $match: {
+            status: false,
+            category: { $in: filterkey },
           },
         },
-      ]).then((result)=>{
-        let response={
-          Products: result
-        }
-        res.json(response)
-      })
+      ]).then((result) => {
+        let response = {
+          Products: result,
+        };
+        res.json(response);
+      });
     } catch (error) {
       console.log(error);
     }
@@ -672,113 +662,109 @@ module.exports = {
       console.log(err);
     }
   },
-  
-  verifyCoupon:async(req,res)=>{
+
+  verifyCoupon: async (req, res) => {
     try {
       let couponcode = req.body.CouponCode;
       let total = req.body.total;
-      let grandtotal
-      let couponMsg
-      
-      let result = await CouponSchema.find({CODE:couponcode, status: "ACTIVE" })
+      let grandtotal;
+      let couponMsg;
+
+      let result = await CouponSchema.find({
+        CODE: couponcode,
+        status: 'ACTIVE',
+      });
       console.log(result);
-         if(result.length == 0){
-          couponMsg = "Coupon Invalid";
-            res.json({ status: false, couponMsg });
-         }else{
-          let couponType = result[0].couponType;
-          let cutOff = parseInt(result[0].cutOff);
-          let maxRedeemAmount = parseInt(result[0].maxRedeemAmount);
-          let minCartAmount = parseInt(result[0].minCartAmount);
-          let generateCount = parseInt(result[0].generateCount); if (generateCount != 0) {
-            if (couponType == "Amount") {
-              if (total < minCartAmount) {
-                couponMsg =
-                  "Minimum Rs." +
-                  minCartAmount +
-                  " need to Apply this Coupon";
-                res.json({ status: false, couponMsg });
-              } else {
-                grandtotal = Math.round(total - cutOff);
+      if (result.length == 0) {
+        couponMsg = 'Coupon Invalid';
+        res.json({ status: false, couponMsg });
+      } else {
+        let couponType = result[0].couponType;
+        let cutOff = parseInt(result[0].cutOff);
+        let maxRedeemAmount = parseInt(result[0].maxRedeemAmount);
+        let minCartAmount = parseInt(result[0].minCartAmount);
+        let generateCount = parseInt(result[0].generateCount);
+        if (generateCount != 0) {
+          if (couponType == 'Amount') {
+            if (total < minCartAmount) {
+              couponMsg =
+                'Minimum Rs.' + minCartAmount + ' need to Apply this Coupon';
+              res.json({ status: false, couponMsg });
+            } else {
+              grandtotal = Math.round(total - cutOff);
+              let response = {
+                status: true,
+                grandtotal: grandtotal,
+                couponMsg,
+                CutOff: cutOff,
+              };
+              res.json(response);
+            }
+          } else if ((couponType = 'Percentage')) {
+            if (total < minCartAmount) {
+              couponMsg =
+                'Minimum Rs.' + minCartAmount + ' need to Apply this Coupon';
+              res.json({ status: false, couponMsg });
+            } else {
+              let reduceAmount = Math.round((total * cutOff) / 100);
+              if (reduceAmount > maxRedeemAmount) {
+                grandtotal = Math.round(total - maxRedeemAmount);
                 let response = {
                   status: true,
                   grandtotal: grandtotal,
                   couponMsg,
-                  CutOff: cutOff,
+                  CutOff: maxRedeemAmount,
+                };
+                res.json(response);
+              } else {
+                grandtotal = Math.round(total - reduceAmount);
+                let response = {
+                  status: true,
+                  grandtotal: grandtotal,
+                  couponMsg,
+                  CutOff: reduceAmount,
                 };
                 res.json(response);
               }
-            } else if ((couponType = "Percentage")) {
-              if (total < minCartAmount) {
-                couponMsg =
-                  "Minimum Rs." +
-                  minCartAmount +
-                  " need to Apply this Coupon";
-                res.json({ status: false, couponMsg });
-              } else {
-                let reduceAmount = Math.round((total * cutOff) / 100);
-                if (reduceAmount > maxRedeemAmount) {
-                  grandtotal = Math.round(total - maxRedeemAmount);
-                  let response = {
-                    status: true,
-                    grandtotal: grandtotal,
-                    couponMsg,
-                    CutOff: maxRedeemAmount,
-                  };
-                  res.json(response);
-                } else {
-                  grandtotal = Math.round(total - reduceAmount);
-                  let response = {
-                    status: true,
-                    grandtotal: grandtotal,
-                    couponMsg,
-                    CutOff: reduceAmount,
-                  };
-                  res.json(response);
-                }
-              }
             }
-          } else {
-            couponMsg = "Coupon limit Exceeded";
-            res.json({ status: false, couponMsg });
           }
+        } else {
+          couponMsg = 'Coupon limit Exceeded';
+          res.json({ status: false, couponMsg });
         }
-
-         
+      }
     } catch (error) {
       console.log(error);
     }
   },
 
-  checkStock:async(req,res)=>{
+  checkStock: async (req, res) => {
     try {
       let cart = await ShopingCart.find({ userId: req.session.user._id });
       let result = { results: [] };
       let productStatus = [];
       for (i = 0; i < cart[0].products.length; i++) {
-        let product = await Product.findById(
-          cart[0].products[i].productId
-          );
-          console.log(product,"?/////////");
-          if (product.quantity == 0) {
-          console.log(product.quantity,"gfugfgjgv");
-          productStatus.push("out of stock");
-          let output = product.name + " is out of stock";
+        let product = await Product.findById(cart[0].products[i].productId);
+        console.log(product, '?/////////');
+        if (product.quantity == 0) {
+          console.log(product.quantity, 'gfugfgjgv');
+          productStatus.push('out of stock');
+          let output = product.name + ' is out of stock';
           result.results.push(output);
         } else if (product.quantity < cart[0].products[i].quantity) {
-          console.log(product.quantity,"gfugfgjgv>>>>>>>>");
+          console.log(product.quantity, 'gfugfgjgv>>>>>>>>');
 
           let output =
-            "Only " + product.quantity + " stocks left of " + product.name;
+            'Only ' + product.quantity + ' stocks left of ' + product.name;
           result.results.push(output);
-          productStatus.push(product.quantity + " stock left");
+          productStatus.push(product.quantity + ' stock left');
         } else {
-          console.log(product.quantity,"gfugfgjgv>>>>>>>>>>???????");
+          console.log(product.quantity, 'gfugfgjgv>>>>>>>>>>???????');
 
-          productStatus.push("instock");
+          productStatus.push('instock');
         }
       }
-      const isInstockAll = (productStatus) => productStatus == "instock";
+      const isInstockAll = (productStatus) => productStatus == 'instock';
       if (productStatus.every(isInstockAll)) {
         res.json({ state: true });
       } else {
@@ -787,6 +773,5 @@ module.exports = {
     } catch (err) {
       console.log(err);
     }
-  }
-
+  },
 };
