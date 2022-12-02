@@ -1,0 +1,80 @@
+ <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Order ID</th>
+        <th>Name</th>
+        <!-- <th>Email</th> -->
+        <th>Amount</th>
+        <th>Payment Mode</th>
+        <th>paymentStatus</th>
+        <!-- <th>Status</th> -->
+        <th>Track</th>
+         
+        <th></th>
+        <th>Details</th>
+
+      </tr>
+    </thead>
+    <tbody id="myTable">
+      
+      <% for(result of result) { %>
+             
+       
+   
+      <tr style="height: 50px !important;" class="text-wrap">
+        <th scope="row"><%= result._id %> </th>
+        <td><%= result.address.firstName %> </td>
+        <td>₹ <%= result.total %> </td>
+        <td><%= result.paymentMethod %> </td>
+        <td><%= result.paymentStatus %> </td>
+        <!-- <td>
+          
+          <label class="badge badge-success">Delivered</label>
+          
+          <label class="badge badge-danger">Cancelled</label>
+          
+          <label class="badge badge-warning" type="button"  data-toggle="modal" data-target="#myModal{{order.id}}" id="Modal_button">Change</button>
+            
+          </td> -->
+          <td>
+            <select style="background-color: yellow ; text-size-adjust: 12px; "data-oid="<%= result._id %>"  name="track" id="track">     
+                  <option value=""><%= result.track %> </option>
+              <option value="Cancellede">Cancellede</option>
+              <option value="orderconfirmed" >orderconfirmed</option>
+            <option value="Shipped"  >Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Out For Delivery">Out For Delivery</option>
+          </select>
+          </td>
+        <td>
+        
+          
+          <button type="button" id="changetrack" class="btn btn-primary btn-sm" onclick="orderStatus(this)">
+            Change
+          </button>         
+
+          
+        </td>
+      
+        <td>
+          <button class="btn btn-primary btn-sm" type="button">veiw Details</button>
+        </td>
+
+        <td>
+
+        </td>
+
+      </tr>
+
+
+    </div>
+  </div>
+</div>
+
+
+          
+    
+          <% } %> 
+        
+    </tbody>
+  </table>

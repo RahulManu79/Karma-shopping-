@@ -8,6 +8,7 @@ const Address = require('../models/addressModel');
 const BannerSchema = require('../models/bannerMOdel');
 const CouponSchema = require('../models/CouponModel');
 const { response } = require('express');
+const bcrypt = require('bcryptjs');
 
 let errMsg;
 
@@ -276,7 +277,11 @@ module.exports = {
 
   getOrderlist: async (req, res) => {
     try {
-      let result = await Order.find({}).sort({ Date: -1 });
+    // let  page=req.query.page
+    //  let limit=req.query.limit
+
+    //  let startIndex = (page-1)*limit
+      let result = await Order.find({}).sort({ Date: -1 })
       Object.values(result);
       res.render('admin/orders', { result });
     } catch (error) {
