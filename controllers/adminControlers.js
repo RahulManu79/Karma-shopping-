@@ -9,6 +9,8 @@ const BannerSchema = require('../models/bannerMOdel');
 const CouponSchema = require('../models/CouponModel');
 const { response } = require('express');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+const { count } = require('../models/admin');
 
 let errMsg;
 
@@ -30,9 +32,205 @@ module.exports = {
     }
   },
 
-  dashbordView: (req, res) => {
-    res.render('admin/index');
-  },
+  dashbordView: async (req, res) => {
+    try {
+      let orderCount = 0;
+      let userCount = 0;
+      let totalEarnings = 0;
+      let shippedCount = 0;
+      let deliveredCount = 0;
+      let pendingCount = 0;
+
+      let orders = await Order.find();
+      let user = await User.find();
+
+      orderCount = orders.length;
+      userCount = user.length;
+
+      await Order.aggregate([
+        {
+          $match: {
+            paymentStatus: 'Payment Completed',
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            Amount: { $sum: '$total' },
+          },
+        },
+      ]).then((result) => {
+        if (result.length != 0) {
+          totalEarnings = result[0].Amount;
+        }
+      });
+      await Order.aggregate([
+        {
+          $match: {
+            orderStatus: 'Shipped',
+          },
+        },
+        {
+          $count: 'Count',
+        },
+      ]).then((result) => {
+        if (result.length != 0) {
+          shippedCount = result[0].Count;
+        }
+      });
+      await Order.aggregate([
+        {
+          $match: {
+            orderStatus: 'Delivered',
+          },
+        },
+        {
+          $count: 'Count',
+        },
+      ]).then((result) => {
+        if (result.length != 0) {
+          deliveredCount = result[0].Count;
+        }
+      });
+      await Order.aggregate([
+        {
+          $match: {
+            orderStatus: 'orderconfirmed',
+          },
+        },
+        {
+          $count: 'Count',
+        },
+      ]).then((result) => {
+        if (result.length != 0) {
+          pendingCount = result[0].Count;
+        }
+      });
+
+      let graphOrderCompleteData = await Order.aggregate([
+        {
+          $project: {
+            Date: { $dateToString: { format: '%d-%m-%Y', date: '$createdAt' } },
+            OrderStatus: '$orderStatus',
+          },
+        },
+        {
+          $match: {
+            OrderStatus: 'Delivered',
+          },
+        },
+        {
+          $group: {
+            _id: '$Date',
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+        { $limit: 7 },
+      ]);
+    
+      console.log(graphOrderCompleteData,"qwertyu");
+
+      let graphOrdercancelledData = await Order.aggregate([
+        {
+          $project: {
+            Date: { $dateToString: { format: '%d-%m-%Y', date: '$createdAt' } },
+            OrderStatus: '$orderStatus',
+          },
+        },
+        {
+          $match: {
+            OrderStatus: 'Cancellede',
+          },
+        },
+        {
+          $group: {
+            _id: '$Date',
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+        { $limit: 7 },
+      ]);
+     
+      var DateSpan = [];
+      for (let i = 0; i < 7; i++) {
+        var currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - i);
+        var $dd = currentDate.getDate();
+        var $mm = currentDate.getMonth() + 1; //January is 0!
+        var $yyyy = currentDate.getFullYear();
+        if ($dd < 10) {
+          $dd = "0" + $dd;
+        }
+        if ($mm < 10) {
+          $mm = "0" + $mm;
+        }
+        currentDate = $dd + "-" + $mm + "-" + $yyyy;
+        DateSpan.push(currentDate);
+      }
+    
+      let finalOrderCompletdata = [];
+      for (let i = 0; i < graphOrderCompleteData.length; i++) {
+        for(let j =0 ; j< DateSpan.length; j++){
+          if (graphOrderCompleteData[i] != undefined) {
+            if (DateSpan[j] == graphOrderCompleteData[i]._id) {
+              console.log("hjjjjj");
+              finalOrderCompletdata.push(graphOrderCompleteData[i].count);
+              i++;
+            } else {
+              finalOrderCompletdata.push(0);
+            }
+          } else {
+            finalOrderCompletdata.push(0);
+          }
+      }
+    }
+
+      let finalOrdercanceldata = [];
+      for (i = 0; i < graphOrdercancelledData.length; i++) {
+        for (j = 0; j < DateSpan.length; j++) {
+          if (graphOrdercancelledData[i] != undefined) {
+            if (DateSpan[j] == graphOrdercancelledData[i]._id) {
+              finalOrdercanceldata.push(graphOrdercancelledData[i].count);
+              i++;
+            } else {
+              finalOrdercanceldata.push(0);
+            }
+          } else {
+            finalOrdercanceldata.push(0);
+          }
+        }
+      }
+      let ordersList = await Order.find().sort({ Date: -1 }).limit(10);
+      console.log(finalOrderCompletdata,"ooooooooooo");
+      console.log(finalOrdercanceldata)
+      res.render('admin/index',{
+        orderCount,
+        userCount,
+        totalEarnings,
+        pendingCount,
+        shippedCount,
+        deliveredCount,
+        DateSpan,
+        finalOrderCompletdata,
+        finalOrdercanceldata,
+        ordersList,
+      });
+    
+  } catch (error) {
+    console.log(error);
+    }
+  }
+  ,
 
   productList: async (req, res) => {
     if (req.session.adminloggedIn) {
@@ -277,11 +475,11 @@ module.exports = {
 
   getOrderlist: async (req, res) => {
     try {
-    // let  page=req.query.page
-    //  let limit=req.query.limit
+      // let  page=req.query.page
+      //  let limit=req.query.limit
 
-    //  let startIndex = (page-1)*limit
-      let result = await Order.find({}).sort({ Date: -1 })
+      //  let startIndex = (page-1)*limit
+      let result = await Order.find({}).sort({ Date: -1 });
       Object.values(result);
       res.render('admin/orders', { result });
     } catch (error) {
@@ -294,10 +492,38 @@ module.exports = {
       oid = req.body.oid;
       value = req.body.value;
 
-      await Order.findByIdAndUpdate(oid, {
-        track: value,
-        orderStatus: value,
-      }).then((response) => {});
+      console.log(oid, value, 'lllll');
+
+      if (value == 'Delivered') {
+        await Order.updateOne(
+          {
+            _id: oid,
+          },
+          {
+            $set: {
+              track: value,
+              orderStatus: value,
+              paymentStatus: 'Payment Completed',
+            },
+          }
+        ).then((res) => {
+          console.log(res);
+        });
+      } else {
+        await Order.updateOne(
+          {
+            _id: oid,
+          },
+          {
+            $set: {
+              track: value,
+              orderStatus: value,
+            },
+          }
+        ).then((res) => {
+          console.log(res);
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -430,6 +656,32 @@ module.exports = {
       proId = req.query.id;
       CouponSchema.findByIdAndDelete(proId).then((result) => {
         res.redirect('/admin/couponList');
+      });
+    } catch (error) {}
+  },
+
+  getreport: async (req, res) => {
+    try {
+      await Order.aggregate([
+        {
+          $match: {
+            paymentStatus: 'Payment Completed',
+            orderStatus: 'Delivered',
+          },
+        },
+        {
+          $project: {
+            date: { $dateToString: { format: '%d/%m/%Y', date: '$createdAt' } },
+            paymentStatus: '$paymentStatus',
+            paymentMethod: '$paymentMethod',
+            address: '$address',
+            total: '$total',
+            orderStatus: '$orderStatus',
+          },
+        },
+      ]).then((result) => {
+        console.log(result, 'vuyfucukc7xr');
+        res.render('admin/salesreport', { result });
       });
     } catch (error) {}
   },

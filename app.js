@@ -1,14 +1,14 @@
 //js
 const express = require('express');
+const dotenv = require("dotenv");
 var session = require('express-session')
 const morgan = require('morgan')
 const app = express();
 const path = require('path');
+require ("dotenv").config();
 const adminRouter = require('./routes/admin');
 const usersRouter = require('./routes/users');
 const mongoose = require('mongoose');
-const dotenv = require("dotenv");
-dotenv.config();
 const passport = require("passport");
 const {loginCheck,adminLoginCheck} = require("./routes/auth/passport");
 loginCheck(passport);

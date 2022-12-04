@@ -34,7 +34,7 @@
                     <h4>Order Info</h4>
                     <ul class="list">
                         <li><a href="#"><span>Order number</span> : 60235</a></li>
-                        <li><a href="#"><span>Date</span> : <%= id.date %></a></li>
+                        <li><a href="#"><span>Date</span> : <%= id.createdAt.toLocaleDateString() %></a></li>
                         <li><a href="#"><span>Total</span> : Rs<%= id.total %></a></li>
                         <li><a href="#"><span>Payment method</span> : <%= id.paymentMethod %></a></li>
                     </ul>

@@ -2,14 +2,7 @@ const { string } = require("joi");
 const mongoose = require("mongoose");
 
 const oderSchema = new mongoose.Schema({
-  date: {
-    type: String,
-    required: true,
-  },
-  time: {
-    type: String,
-    required: true,
-  },
+ 
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
@@ -49,7 +42,7 @@ const oderSchema = new mongoose.Schema({
     trpe:String,
   }
 
-});
+},{timestamps:true});
 
 const OrderSchema = mongoose.model("oder", oderSchema);
 

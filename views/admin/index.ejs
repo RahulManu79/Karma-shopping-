@@ -1,184 +1,527 @@
+<link rel="stylesheet"  type="text/css" href="css/datatable.css">
+<link rel="stylesheet" type="text/css"href="css/addu.css">
+<link rel="stylesheet" type="text/css" href="css/ash.css">
+
 <%- include('includes/header.ejs') %>
 
-<div class="container">
+<main>
+  <div class="container">
+    <div class="page-title-container">
+      <div class="row">
+        <div class="col-12 col-md-7 mb-3">
+          <a class="muted-link pb-2 d-inline-block hidden" href="#">
+            <span class="align-middle lh-1 text-small">&nbsp;</span>
+          </a>
+          <h4 class="mb-0 pb-0 display-5 text-white" id="title">Welcome,Admin</h4>
+        </div>
+      </div>
+    </div>
     <div class="row">
-        <div class="col">
-            <p class="text-white mt-5 mb-5">Welcome back, <b>Admin</b></p>
-        </div>
-    </div>
-    <!-- row -->
-    <div class="row tm-content-row">
-        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
-            <div class="tm-bg-primary-dark tm-block">
-                <h2 class="tm-block-title">Latest Hits</h2>
-                <canvas id="lineChart"></canvas>
+      <div class="col-12">
+        <div class="d-flex">
+          <div
+            class="dropdown-as-select me-3"
+            data-setactive="false"
+            data-childselector="span"
+          >
+            <a
+              class="pe-0 pt-0 align-top lh-1 dropdown-toggle"
+              href="#"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              <span class="small-title"></span>
+            </a>
+            <div class="dropdown-menu font-standard">
+              <div class="nav flex-column" role="tablist">
+                <a
+                  class="active dropdown-item text-medium"
+                  href="#"
+                  aria-selected="true"
+                  role="tab"
+                  >Today's</a
+                >
+                <a
+                  class="dropdown-item text-medium"
+                  href="#"
+                  aria-selected="false"
+                  role="tab"
+                  >Weekly</a
+                >
+                <a
+                  class="dropdown-item text-medium"
+                  href="#"
+                  aria-selected="false"
+                  role="tab"
+                  >Monthly</a
+                >
+                <a
+                  class="dropdown-item text-medium"
+                  href="#"
+                  aria-selected="false"
+                  role="tab"
+                  >Yearly</a
+                >
+              </div>
             </div>
+          </div>
+          <h5 class="small-title text-white">status</h5>
         </div>
-        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
-            <div class="tm-bg-primary-dark tm-block">
-                <h2 class="tm-block-title">Performance</h2>
-                <canvas id="barChart"></canvas>
+        <div class="mb-5">
+          <div class="row g-2">
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="card h-100 hover-scale-up cursor-pointer text-white" style="background-color:rgb(51 69 86);" >
+                <div class="card-body d-flex flex-column align-items-center ">
+                  <div
+                    class="sw-6 sh-6 rounded-xl d-flex justify-content-center align-items-center  -primary mb-4"
+                  >
+                  <i class="fa-sharp fa-solid fa-dollar-sign"></i>
+                  </div>
+                  <div
+                    class="mb-1 d-flex align-items-center text-alternate text-small lh-1-25"
+                  >
+                    EARNINGS
+                  </div>
+                  <div class=" text-white cta-4">Rs. <%=totalEarnings%></div>
+                </div>
+              </div>
             </div>
-        </div>
-        
-                
-                <div id="pieChartContainer">
-                    <canvas id="pieChart" class="chartjs-render-monitor" width="200" height="18"></canvas>
-                </div>                        
-          
-                <div class="col-12 tm-block-col">
-            <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
-                <h2 class="tm-block-title">Orders List</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">ORDER NO.</th>
-                            <th scope="col">STATUS</th>
-                            <th scope="col">OPERATORS</th>
-                            <th scope="col">LOCATION</th>
-                            <th scope="col">DISTANCE</th>
-                            <th scope="col">START DATE</th>
-                            <th scope="col">EST DELIVERY DUE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row"><b>#122349</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Oliver Trag</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>485 km</b></td>
-                            <td>16:00, 12 NOV 2018</td>
-                            <td>08:00, 18 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122348</b></th>
-                            <td>
-                                <div class="tm-status-circle pending">
-                                </div>Pending
-                            </td>
-                            <td><b>Jacob Miller</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>360 km</b></td>
-                            <td>11:00, 10 NOV 2018</td>
-                            <td>04:00, 14 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122347</b></th>
-                            <td>
-                                <div class="tm-status-circle cancelled">
-                                </div>Cancelled
-                            </td>
-                            <td><b>George Wilson</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>340 km</b></td>
-                            <td>12:00, 22 NOV 2018</td>
-                            <td>06:00, 28 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122346</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>William Aung</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>218 km</b></td>
-                            <td>15:00, 10 NOV 2018</td>
-                            <td>09:00, 14 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122345</b></th>
-                            <td>
-                                <div class="tm-status-circle pending">
-                                </div>Pending
-                            </td>
-                            <td><b>Harry Ryan</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>280 km</b></td>
-                            <td>15:00, 11 NOV 2018</td>
-                            <td>09:00, 17 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122344</b></th>
-                            <td>
-                                <div class="tm-status-circle pending">
-                                </div>Pending
-                            </td>
-                            <td><b>Michael Jones</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>218 km</b></td>
-                            <td>18:00, 12 OCT 2018</td>
-                            <td>06:00, 18 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122343</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Timmy Davis</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>218 km</b></td>
-                            <td>12:00, 10 OCT 2018</td>
-                            <td>08:00, 18 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122342</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Oscar Phyo</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>420 km</b></td>
-                            <td>15:30, 06 OCT 2018</td>
-                            <td>09:30, 16 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122341</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Charlie Brown</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>300 km</b></td>
-                            <td>11:00, 10 OCT 2018</td>
-                            <td>03:00, 14 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122340</b></th>
-                            <td>
-                                <div class="tm-status-circle cancelled">
-                                </div>Cancelled
-                            </td>
-                            <td><b>Wilson Cookies</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>218 km</b></td>
-                            <td>17:30, 12 OCT 2018</td>
-                            <td>08:30, 22 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122339</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Richard Clamon</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>150 km</b></td>
-                            <td>15:00, 12 OCT 2018</td>
-                            <td>09:20, 26 OCT 2018</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="card h-100 hover-scale-up cursor-pointer text-white" style="background-color:rgb(51 69 86);">
+                <div class="card-body d-flex flex-column align-items-center">
+                  <div
+                    class="sw-6 sh-6 rounded-xl d-flex justify-content-center align-items-center mb-4"
+                  >
+                  <i class="fa-solid fa-user"></i>
+                  </div>
+                  <div
+                    class="mb-1 d-flex align-items-center text-alternate text-white text-small lh-1-25"
+                  >
+                    USERS
+                  </div>
+                  <div class="text-white cta-4"><%=userCount%></div>
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
 
-  <%- include('includes/footer.ejs') %>
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="card h-100 hover-scale-up cursor-pointer text-white" style="background-color:rgb(51 69 86);">
+                <div class="card-body d-flex flex-column align-items-center">
+                  <div
+                    class="sw-6 sh-6 rounded-xl d-flex justify-content-center align-items-center  mb-4"
+                  >
+                  <i class="fa-solid fa-boxes-stacked"></i>
+                  </div>
+                  <div
+                    class="mb-1 d-flex align-items-center text-alternate text-small lh-1-25"
+                  >
+                    ORDERS
+                  </div>
+                  <div class="text-white cta-4"><%=orderCount%></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="card h-100 hover-scale-up cursor-pointer text-white" style="background-color:rgb(51 69 86);">
+                <div class="card-body d-flex flex-column align-items-center">
+                  <div
+                    class="sw-6 sh-6 rounded-xl d-flex justify-content-center align-items-center mb-4"
+                  >
+                  <i class="fa-solid fa-truck-fast"></i>
+                  </div>
+                  <div
+                    class="mb-1 d-flex align-items-center text-alternate text-small lh-1-25"
+                  >
+                    SHIPPED
+                  </div>
+                  <div class="text-white cta-4"><%=shippedCount%></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="card h-100 hover-scale-up cursor-pointer text-white" style="background-color:rgb(51 69 86);">
+                <div class="card-body d-flex flex-column align-items-center">
+                  <div
+                    class="sw-6 sh-6 rounded-xl d-flex justify-content-center align-items-center  mb-4"
+                  >
+                  <i class="fa-solid fa-gift"></i>
+                  </div>
+                  <div
+                    class="mb-1 d-flex align-items-center text-alternate text-small lh-1-25"
+                  >
+                    DELIVERED
+                  </div>
+                  <div class="text-white cta-4"><%=deliveredCount%></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="card h-100 hover-scale-up cursor-pointer text-white" style="background-color:rgb(51 69 86);"> 
+                <div class="card-body d-flex flex-column align-items-center">
+                  <div
+                    class="sw-6 sh-6 rounded-xl d-flex justify-content-center align-items-center  mb-4"
+                  >
+                   
+<i class="fa fa-clock-o" aria-hidden="true"></i>
+                  </div>
+                  <div
+                    class="mb-1 d-flex align-items-center text-alternate text-white text-small lh-1-25"
+                  >
+                    PENDING
+                  </div>
+                  <div class="text-white cta-4"><%=pendingCount%></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" >
+      <div class="col-xl-6 mb-5">
+        <h2 class="small-title text-white">Recent Orders</h2>
+        <div class="mb-n2 scroll-out">
+          <div class="scroll-by-count" data-count="6">
+            <% for (order of ordersList) { %>
+            <div class="card mb-2 sh-15 sh-md-6" style="background-color: rgb(51 69 86);">
+              <div class="card-body pt-0 pb-0 h-100">
+                <div class="row g-0 h-100 align-content-center">
+                  <div
+                    class="col-10 col-md-4 d-flex align-items-center mb-3 mb-md-0 h-md-100"
+                  >
+                    <a
+                      href="/admin/orderSummary/?id=<%=order._id%>"
+                      class="body-link stretched-link"
+                      style="
+                        display: block;
+                        white-space: nowrap;
+                        width: 12em;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        color: #ffff;
+                      "
+                      ><%=order._id%></a
+                    >
+                  </div>
+                  <div
+                    class="col-2 col-md-3 d-flex align-items-center text-muted mb-1 mb-md-0 justify-content-end justify-content-md-start"
+                  >
+                    <% if(order.orderStatus=='Order Pending'){ %>
+                    <span class="badge bg-outline-warning me-1"
+                      ><%=order.orderStatus%></span
+                    >
+                    <% }else if(order.orderStatus=='Delivered') {%>
+                    <span class="badge bg-outline-primary me-1"
+                      ><%=order.orderStatus%></span
+                    >
+                    <% }else if(order.orderStatus=='Cancelled') {%>
+                    <span class="badge bg-outline-danger me-1"
+                      ><%=order.orderStatus%></span
+                    >
+                    <% }else{ %>
+                    <span class="badge bg-outline-info me-1"
+                      ><%=order.orderStatus%></span
+                    >
+                    <% } %>
+                  </div>
+                  <div
+                    class="col-12 col-md-2 d-flex align-items-center mb-1 mb-md-0 text-white"
+                  >
+                    <span>
+                      <span class="text-small">Rs.</span>
+                      <%=order.total%>
+                    </span>
+                  </div>
+                  <div
+                    class="col-12 col-md-3 d-flex align-items-center justify-content-md-end mb-1 mb-md-0 text-white"
+                  >
+                    <% if (order.paymentStatus=='Payment Completed') { %>
+                    <span class="badge bg-outline-primary me-1"
+                      ><%=order.paymentStatus %></span
+                    >
+                    <%} else {%>
+                    <span class="badge bg-outline-warning me-1"
+                      ><%=order.paymentStatus %></span
+                    >
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6 mb-5">
+        <div class="d-flex">
+          <div
+            class="dropdown-as-select me-3"
+            data-setactive="false"
+            data-childselector="span"
+          >
+            <a
+              class="pe-0 pt-0 align-top lh-1 dropdown-toggle"
+              href="#"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              <span class="small-title"></span>
+            </a>
+            <div class="dropdown-menu font-standard">
+              <div class="nav flex-column" role="tablist">
+                <a
+                  class="dropdown-item text-medium"
+                  href="#"
+                  aria-selected="true"
+                  role="tab"
+                  >Today's</a
+                >
+                <a
+                  class="active dropdown-item text-medium"
+                  href="#"
+                  aria-selected="false"
+                  role="tab"
+                  >Weekly</a
+                >
+                <a
+                  class="dropdown-item text-medium"
+                  href="#"
+                  aria-selected="false"
+                  role="tab"
+                  >Monthly</a
+                >
+                <a
+                  class="dropdown-item text-medium"
+                  href="#"
+                  aria-selected="false"
+                  role="tab"
+                  >Yearly</a
+                >
+              </div>
+            </div>
+          </div>
+          <h2 class="small-title">Performance</h2>
+        </div>
+        <div class="card sh-45 h-xl-100-card">
+          <div class="card-body h-100">
+            <div class="h-100">
+              <h1 id="DateSpan" style="display: none"><%=DateSpan%></h1>
+              <h1 id="OrderCompletedata" style="display: none">
+                <%=finalOrderCompletdata%>
+              </h1>
+              <h1 id="Ordercanceldata" style="display: none">
+                <%=finalOrdercanceldata%>
+              </h1>
+              <canvas id="horizontalTooltipChart"></canvas>
+              <div
+                class="custom-tooltip position-absolute bg-foreground rounded-md border border-separator pe-none p-3 d-flex z-index-1 align-items-center opacity-0 basic-transform-transition"
+              >
+                <div
+                  class="icon-container border d-flex align-middle align-items-center justify-content-center align-self-center rounded-xl sh-5 sw-5 rounded-xl me-3"
+                >
+                  <span class="icon"></span>
+                </div>
+                <div>
+                  <span
+                    class="text d-flex align-middle text-white align-items-center text-small"
+                  ></span>
+                  <span
+                    class="value d-flex align-middle text-body align-items-center cta-4"
+                  ></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <canvas id="myChart"></canvas>
+    </div>
+
+    <script src="js/graph.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+      integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+      class Dashboard {
+        constructor() {
+          (this._horizontalTooltipChart = null),
+            'undefined' != typeof Chart && 'undefined' != typeof ChartsExtend
+              ? this._initCustomTooltipBar()
+              : console.error('[CS] ChartsExtend is undefined.'),
+            jQuery().barrating
+              ? this._initBarrating()
+              : console.error('[CS] jQuery().barrating is undefined.'),
+            this._initEvents();
+        }
+
+        _initCustomTooltipBar() {
+          var DateSpan = document.getElementById('DateSpan').innerHTML;
+          DateSpan = DateSpan.split(',');
+          var OrderCompletedata =
+            document.getElementById('OrderCompletedata').innerHTML;
+          OrderCompletedata = OrderCompletedata.split(',').map((e) =>
+            parseInt(e)
+          );
+          var Ordercanceldata =
+            document.getElementById('Ordercanceldata').innerHTML;
+          Ordercanceldata = Ordercanceldata.split(',').map((e) => parseInt(e));
+
+          if (document.getElementById('horizontalTooltipChart')) {
+            const t = document
+              .getElementById('horizontalTooltipChart')
+              .getContext('2d');
+
+            //get min , max , avg
+            let tempArray = OrderCompletedata.concat(Ordercanceldata);
+            let max = Math.max(...tempArray);
+            let min = Math.min(...tempArray);
+            let avg = Math.round(((max + min) * 10) / 100);
+            //
+
+            this._horizontalTooltipChart = new Chart(t, {
+              type: 'bar',
+              data: {
+                labels: DateSpan,
+                datasets: [
+                  {
+                    label: 'Completed',
+                    icon: 'check',
+                    borderColor: Globals.primary,
+                    backgroundColor: 'rgba(' + Globals.primaryrgb + ',0.1)',
+                    data: OrderCompletedata,
+                    borderWidth: 2,
+                  },
+                  {
+                    label: 'Cancelled',
+                    icon: 'close',
+                    borderColor: Globals.danger,
+                    backgroundColor: 'rgba(' + Globals.secondaryrgb + ',0.1)',
+                    data: Ordercanceldata,
+                    borderWidth: 2,
+                  },
+                ],
+              },
+              options: {
+                cornerRadius: parseInt(Globals.borderRadiusMd),
+                plugins: { crosshair: !1, datalabels: { display: !1 } },
+                responsive: !0,
+                maintainAspectRatio: !1,
+                legend: {
+                  position: 'bottom',
+                  labels: ChartsExtend.LegendLabels(),
+                },
+                scales: {
+                  yAxes: [
+                    {
+                      gridLines: {
+                        display: !0,
+                        lineWidth: 1,
+                        color: Globals.separator,
+                        drawBorder: !1,
+                      },
+                      ticks: {
+                        beginAtZero: !0,
+                        stepSize: avg,
+                        min: min,
+                        max: max,
+                        padding: 20,
+                      },
+                    },
+                  ],
+                  xAxes: [{ gridLines: { display: !1 } }],
+                },
+                tooltips: {
+                  enabled: !1,
+                  custom: function (t) {
+                    const a =
+                      this._chart.canvas.parentElement.querySelector(
+                        '.custom-tooltip'
+                      );
+                    if (0 === t.opacity) return void (a.style.opacity = 0);
+                    if (
+                      (a.classList.remove('above', 'below', 'no-transform'),
+                      t.yAlign
+                        ? a.classList.add(t.yAlign)
+                        : a.classList.add('no-transform'),
+                      t.body)
+                    ) {
+                      const o = this,
+                        e = t.dataPoints[0].index,
+                        r = t.dataPoints[0].datasetIndex,
+                        i = a.querySelector('.icon');
+                      (a.querySelector('.icon-container').style =
+                        'border-color: ' +
+                        t.labelColors[0].borderColor +
+                        '!important'),
+                        (i.style =
+                          'color: ' + t.labelColors[0].borderColor + ';'),
+                        i.setAttribute(
+                          'data-acorn-icon',
+                          o._data.datasets[r].icon
+                        ),
+                        new AcornIcons().replace(),
+                        (a.querySelector('.text').innerHTML =
+                          o._data.datasets[r].label.toLocaleUpperCase()),
+                        (a.querySelector('.value').innerHTML =
+                          o._data.datasets[r].data[e]);
+                    }
+                    const o = this._chart.canvas.offsetTop,
+                      e = this._chart.canvas.offsetLeft;
+                    (a.style.opacity = 1),
+                      (a.style.left = e + t.dataPoints[0].x - 75 + 'px'),
+                      (a.style.top = o + t.caretY + 'px');
+                  },
+                },
+              },
+            });
+          }
+        }
+        _initBarrating() {
+          jQuery('.rating').each(function () {
+            const t = jQuery(this).data('initialRating'),
+              a = jQuery(this).data('readonly'),
+              o = jQuery(this).data('showSelectedRating'),
+              e = jQuery(this).data('showValues');
+            jQuery(this).barrating({
+              initialRating: t,
+              readonly: a,
+              showValues: e,
+              showSelectedRating: o,
+              onSelect: function (t, a) {},
+              onClear: function (t, a) {},
+            });
+          });
+        }
+        _initEvents() {
+          document.documentElement.addEventListener(
+            Globals.colorAttributeChange,
+            (t) => {
+              this._horizontalTooltipChart &&
+                this._horizontalTooltipChart.destroy(),
+                this._initCustomTooltipBar();
+            }
+          );
+        }
+      }
+    </script>
+  </div>
+</main>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.min.js"
+  integrity="sha512-tQYZBKe34uzoeOjY9jr3MX7R/mo7n25vnqbnrkskGr4D6YOoPYSpyafUAzQVjV6xAozAqUFIEFsCO4z8mnVBXA=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<%- include('includes/footer.ejs') %>

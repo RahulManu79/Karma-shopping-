@@ -1,194 +1,153 @@
-const width_threshold = 480;
+class Dashboard {
+  constructor() {
+    (this._horizontalTooltipChart = null),
+      "undefined" != typeof Chart && "undefined" != typeof ChartsExtend
+        ? this._initCustomTooltipBar()
+        : console.error("[CS] ChartsExtend is undefined."),
+      jQuery().barrating
+        ? this._initBarrating()
+        : console.error("[CS] jQuery().barrating is undefined."),
+      this._initEvents();
+  }
+  
+  _initCustomTooltipBar() {
+    var DateSpan = document.getElementById('DateSpan').innerHTML
+    DateSpan=DateSpan.split(',')
+    var OrderCompletedata = document.getElementById('OrderCompletedata').innerHTML
+    OrderCompletedata=OrderCompletedata.split(',').map((e) => parseInt(e));
+    var Ordercanceldata = document.getElementById('Ordercanceldata').innerHTML
+    Ordercanceldata=Ordercanceldata.split(',').map((e) => parseInt(e));
 
-function drawLineChart() {
-  if ($("#lineChart").length) {
 
     
-    ctxLine = document.getElementById("lineChart").getContext("2d");
-    optionsLine = {
-      scales: {
-        yAxes: [
-          {
-            scaleLabel: {
-              display: true,
-              labelString: "Hits"
-            }
-          }
-        ]
-      }
-    };
 
-    // Set aspect ratio based on window width
-    optionsLine.maintainAspectRatio =
-      $(window).width() < width_threshold ? false : true;
+    if (document.getElementById("horizontalTooltipChart")) {
+      const t = document
+        .getElementById("horizontalTooltipChart")
+        .getContext("2d");
+        
 
-    configLine = {
-      type: "line",
-      data: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July"
-        ],
-        datasets: [
-          {
-            label: "Latest Hits",
-            data: [88, 68, 79, 57, 50, 55, 70],
-            fill: false,
-            borderColor: "rgb(75, 192, 192)",
-            cubicInterpolationMode: "monotone",
-            pointRadius: 0
-          },
-          {
-            label: "Popular Hits",
-            data: [33, 45, 37, 21, 55, 74, 69],
-            fill: false,
-            borderColor: "rgba(255,99,132,1)",
-            cubicInterpolationMode: "monotone",
-            pointRadius: 0
-          },
-          {
-            label: "Featured",
-            data: [44, 19, 38, 46, 85, 66, 79],
-            fill: false,
-            borderColor: "rgba(153, 102, 255, 1)",
-            cubicInterpolationMode: "monotone",
-            pointRadius: 0
-          }
-        ]
-      },
-      options: optionsLine
-    };
+        //get min , max , avg
+        let tempArray = OrderCompletedata.concat(Ordercanceldata)
+        let max=(Math.max(...tempArray));
+        let min=(Math.min(...tempArray));
+        let avg=Math.round(((max+min)*10)/100)
+        //
 
-    lineChart = new Chart(ctxLine, configLine);
-  }
-}
-
-function drawBarChart() {
-  if ($("#barChart").length) {
-    ctxBar = document.getElementById("barChart").getContext("2d");
-
-    optionsBar = {
-      responsive: true,
-      scales: {
-        yAxes: [
-          {
-            barPercentage: 0.2,
-            ticks: {
-              beginAtZero: true
+      this._horizontalTooltipChart = new Chart(t, {
+        type: "bar",
+        data: {
+          labels: DateSpan,
+          datasets: [
+            {
+              label: "Completed",
+              icon: "check",
+              borderColor: Globals.primary,
+              backgroundColor: "rgba(" + Globals.primaryrgb + ",0.1)",
+              data: OrderCompletedata,
+              borderWidth: 2,
             },
-            scaleLabel: {
-              display: true,
-              labelString: "Hits"
-            }
-          }
-        ]
-      }
-    };
-
-    optionsBar.maintainAspectRatio =
-      $(window).width() < width_threshold ? false : true;
-
-    /**
-     * COLOR CODES
-     * Red: #F7604D
-     * Aqua: #4ED6B8
-     * Green: #A8D582
-     * Yellow: #D7D768
-     * Purple: #9D66CC
-     * Orange: #DB9C3F
-     * Blue: #3889FC
-     */
-
-    configBar = {
-      type: "horizontalBar",
-      data: {
-        labels: ["Red", "Aqua", "Green", "Yellow", "Purple", "Orange", "Blue"],
-        datasets: [
-          {
-            label: "# of Hits",
-            data: [33, 40, 28, 49, 58, 38, 44],
-            backgroundColor: [
-              "#F7604D",
-              "#4ED6B8",
-              "#A8D582",
-              "#D7D768",
-              "#9D66CC",
-              "#DB9C3F",
-              "#3889FC"
+            {
+              label: "Cancelled",
+              icon: "close",
+              borderColor: Globals.danger,
+              backgroundColor: "rgba(" + Globals.secondaryrgb + ",0.1)",
+              data: Ordercanceldata,
+              borderWidth: 2,
+            },
+          ],
+        },
+        options: {
+          cornerRadius: parseInt(Globals.borderRadiusMd),
+          plugins: { crosshair: !1, datalabels: { display: !1 } },
+          responsive: !0,
+          maintainAspectRatio: !1,
+          legend: { position: "bottom", labels: ChartsExtend.LegendLabels() },
+          scales: {
+            yAxes: [
+              {
+                gridLines: {
+                  display: !0,
+                  lineWidth: 1,
+                  color: Globals.separator,
+                  drawBorder: !1,
+                },
+                ticks: {
+                  beginAtZero: !0,
+                  stepSize: avg,
+                  min: min,
+                  max: max,
+                  padding: 20,
+                },
+              },
             ],
-            borderWidth: 0
-          }
-        ]
-      },
-      options: optionsBar
-    };
-
-    barChart = new Chart(ctxBar, configBar);
+            xAxes: [{ gridLines: { display: !1 } }],
+          },
+          tooltips: {
+            enabled: !1,
+            custom: function (t) {
+              const a =
+                this._chart.canvas.parentElement.querySelector(
+                  ".custom-tooltip"
+                );
+              if (0 === t.opacity) return void (a.style.opacity = 0);
+              if (
+                (a.classList.remove("above", "below", "no-transform"),
+                t.yAlign
+                  ? a.classList.add(t.yAlign)
+                  : a.classList.add("no-transform"),
+                t.body)
+              ) {
+                const o = this,
+                  e = t.dataPoints[0].index,
+                  r = t.dataPoints[0].datasetIndex,
+                  i = a.querySelector(".icon");
+                (a.querySelector(".icon-container").style =
+                  "border-color: " +
+                  t.labelColors[0].borderColor +
+                  "!important"),
+                  (i.style = "color: " + t.labelColors[0].borderColor + ";"),
+                  i.setAttribute("data-acorn-icon", o._data.datasets[r].icon),
+                  new AcornIcons().replace(),
+                  (a.querySelector(".text").innerHTML =
+                    o._data.datasets[r].label.toLocaleUpperCase()),
+                  (a.querySelector(".value").innerHTML =
+                    o._data.datasets[r].data[e]);
+              }
+              const o = this._chart.canvas.offsetTop,
+                e = this._chart.canvas.offsetLeft;
+              (a.style.opacity = 1),
+                (a.style.left = e + t.dataPoints[0].x - 75 + "px"),
+                (a.style.top = o + t.caretY + "px");
+            },
+          },
+        },
+      });
+    }
   }
-}
-
-function drawPieChart() {
-  if ($("#pieChart").length) {
-    var chartHeight = 300;
-
-    $("#pieChartContainer").css("height", chartHeight + "px");
-
-    ctxPie = document.getElementById("pieChart").getContext("2d");
-
-    optionsPie = {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: {
-          left: 10,
-          right: 10,
-          top: 10,
-          bottom: 10
-        }
-      },
-      legend: {
-        position: "top"
+  _initBarrating() {
+    jQuery(".rating").each(function () {
+      const t = jQuery(this).data("initialRating"),
+        a = jQuery(this).data("readonly"),
+        o = jQuery(this).data("showSelectedRating"),
+        e = jQuery(this).data("showValues");
+      jQuery(this).barrating({
+        initialRating: t,
+        readonly: a,
+        showValues: e,
+        showSelectedRating: o,
+        onSelect: function (t, a) {},
+        onClear: function (t, a) {},
+      });
+    });
+  }
+  _initEvents() {
+    document.documentElement.addEventListener(
+      Globals.colorAttributeChange,
+      (t) => {
+        this._horizontalTooltipChart && this._horizontalTooltipChart.destroy(),
+          this._initCustomTooltipBar();
       }
-    };
-
-    configPie = {
-      type: "pie",
-      data: {
-        datasets: [
-          {
-            data: [18.24, 6.5, 9.15],
-            backgroundColor: ["#F7604D", "#4ED6B8", "#A8D582"],
-            label: "Storage"
-          }
-        ],
-        labels: [
-          "Used Storage (18.240GB)",
-          "System Storage (6.500GB)",
-          "Available Storage (9.150GB)"
-        ]
-      },
-      options: optionsPie
-    };
-
-    pieChart = new Chart(ctxPie, configPie);
-  }
-}
-
-function updateLineChart() {
-  if (lineChart) {
-    lineChart.options = optionsLine;
-    lineChart.update();
-  }
-}
-
-function updateBarChart() {
-  if (barChart) {
-    barChart.options = optionsBar;
-    barChart.update();
+    );
   }
 }

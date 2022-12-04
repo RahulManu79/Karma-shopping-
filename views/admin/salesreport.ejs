@@ -1,0 +1,69 @@
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.css"/>
+
+<link rel="stylesheet" href="css/datatable.css">
+ 
+
+
+<%- include('includes/header.ejs') %>
+
+<div class="text-center mx-auto mt-2" style="min-width: 22rem">
+  <div class="container-fluid mt-3" style="min-height: 33rem">
+    <h2 class="text-center text-white">Manage Orders</h2>
+    <table
+      id="sale"
+      class="display nowrap"
+      style="width: 100%"
+    >
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Place</th>
+          <th>Phone No</th>
+          <th>Status</th>
+          <th>paymentMethod</th>
+          <th>Date</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody id="myTable">
+        <% for( let i = 0; i < result.length; i++ ) { %>
+        <tr>
+          <th scope="row"><%= result[i]._id %></th>
+          <td><%= result[i].address.firstName %></td>
+          <td>
+            <%= result[i].address.city %>,<%= result[i].address.district %>
+          </td>
+          <td><%= result[i].address.number %></td>
+          <td><%= result[i].orderStatus %></td>
+          <td><%= result[i].paymentMethod %></td>
+          <td><%= result[i].date %></td>
+          <td>₹<%= result[i].total %></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('includes/footer.ejs') %>
+<script>
+  $(document).ready(function () {
+    $('#sale').DataTable();
+    $('.dataTables_length').addClass('bs-select');
+  });
+</script>
+
+<script>
+$('#myTable').DataTable( {
+    buttons: [
+        'copy', 'excel', 'pdf'
+    ]
+} );
+</script>
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.js"></script>
+
+
+

@@ -3,12 +3,13 @@
   type="text/css"
   href="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.13.1/af-2.5.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/cr-1.6.1/date-1.2.0/fc-4.2.1/fh-3.3.1/kt-2.8.0/r-2.4.0/rg-1.3.0/rr-1.3.1/sc-2.0.7/sb-1.4.0/sp-2.1.0/sl-1.5.0/sr-1.2.0/datatables.min.css"
 />
-
+<link rel="stylesheet" href="css/datatable.css">
+ 
 <%- include('includes/header.ejs') %>
 
 <div class="text-center mx-auto mt-2" style="min-width: 22rem"></div>
-
 <div class="container-fluid mt-3" style="min-height: 33rem">
+
   <h2 class="text-center text-white">Manage Orders</h2>
 
 
@@ -30,22 +31,23 @@
       </tr>
     </thead>
     <tbody id="myTable">
-      <% for(result of result) { %>
+      <% for( let i = 0; i < result.length; i++ ) { %>
+  
       <tr>
-        <th scope="row"><%= result._id %></th>
-        <td><%= result.address.firstName %></td>
-        <td>₹ <%= result.total %></td>
-        <td><%= result.paymentMethod %></td>
-        <td><%= result.paymentStatus %></td>
+        <th scope="row"><%= result[i]._id %></th>
+        <td><%= result[i].address.firstName %></td>
+        <td>₹ <%= result[i].total %></td>
+        <td><%= result[i].paymentMethod %></td>
+        <td><%= result[i].paymentStatus %></td>
 
         <td>
           <select
             style="background-color: yellow; text-size-adjust: 12px"
-            data-oid="<%= result._id %>"
+          
             name="track"
-            id="track"
+            id="track<%= i %>"
           >
-            <option value=""><%= result.track %></option>
+            <option value="<%= result[i].orderStatus %>"  selected  ><%= result[i].track %></option>
             <option value="Cancellede">Cancellede</option>
             <option value="orderconfirmed">orderconfirmed</option>
             <option value="Shipped">Shipped</option>
@@ -58,7 +60,7 @@
             type="button"
             id="changetrack"
             class="btn btn-primary btn-sm"
-            onclick="orderStatus(this)"
+            onclick="orderStatus('<%= result[i]._id %>','<%= i %>')"
           >
             Change
           </button>
@@ -73,16 +75,12 @@
       <% } %>
     </tbody>
   </table>
+</div>
 
  
 
   <%- include('includes/footer.ejs') %>
-  <script>
-    $(document).ready(function () {
-      $('#example').DataTable();
-      $('.dataTables_length').addClass('bs-select');
-    });
-  </script>
+
 
   <script>
     function change(val) {
@@ -97,10 +95,18 @@
     }
   </script>
 
+<script>
+  $(document).ready(function () {
+    $('#example').DataTable();
+    $('.dataTables_length').addClass('bs-select');
+  });
+</script>
+
   <script>
-    function orderStatus(e) {
-      const oid = $('#track').data('oid');
-      const value = $('#track').find(':selected').val();
+    function orderStatus(e,i) {
+      const oid = e
+      const value = $(`#track${i}`).find(':selected').val();
+      console.log(oid,value);
       alert(`oid = ${oid}`);
       alert(`value = ${value}`);
 
@@ -138,4 +144,3 @@
     type="text/javascript"
     src="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.13.1/af-2.5.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/cr-1.6.1/date-1.2.0/fc-4.2.1/fh-3.3.1/kt-2.8.0/r-2.4.0/rg-1.3.0/rr-1.3.1/sc-2.0.7/sb-1.4.0/sp-2.1.0/sl-1.5.0/sr-1.2.0/datatables.min.js"
   ></script>
-</div>

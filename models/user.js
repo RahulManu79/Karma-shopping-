@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const joi = require("joi")
-const { boolean } = require("joi")
+const { boolean, required } = require("joi")
 
 const UserSchema = new mongoose.Schema({
     name:{
@@ -10,6 +10,10 @@ const UserSchema = new mongoose.Schema({
     email:{
         type:String,
         required:true,
+    },
+    number:{
+        type:String,
+        required:true
     },
     password: {
         type:String,

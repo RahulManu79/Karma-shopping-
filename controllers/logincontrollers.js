@@ -14,12 +14,19 @@ var {
 const { trusted } = require('mongoose');
 const { default: mongoose } = require('mongoose');
 const Banner = require('../models/bannerMOdel');
+const { response } = require('express');
+const{sendsms, veryfyotp} = require('../middleware/OTP')
 let loginErr = null;
 
 var instance = new Razorpay({
   key_secret: 'zvcqB1phsfyXySVAZoHzObDB',
   key_id: 'rzp_test_EsWfdOrXZua8KY',
 });
+
+const otp = require('../middleware/OTP')
+
+
+
 
 module.exports = {
   registerView: (req, res) => {
@@ -40,10 +47,13 @@ module.exports = {
         .then((result) => {
           let user = req.session.user;
           cartNum = req.session.cartNum;
-          const banner = Banner.find();
-          // const ashan = result;
+           Banner.find({}).then((response)=>{
 
-          res.render('user/home', { result, banner, cartNum });
+             console.log(response);
+             // const ashan = result;
+   
+             res.render('user/home', { result, response, cartNum });
+           })
         });
     }
   },
@@ -111,8 +121,6 @@ module.exports = {
   login: async (req, res) => {
     if (req.session.loggedIn) {
       const userId = req.session.user._id;
-      const banner = await Banner.find();
-
       const viewcart = await ShopingCart.findOne({ userId: userId })
         .populate('products.productId')
         .exec();
@@ -126,8 +134,11 @@ module.exports = {
           let user = req.session.user;
           cartNum = req.session.cartNum;
           // ashan = result;
+          Banner.find({}).then((response)=>{
+            
+            res.render('user/home', { user, result, cartNum, response });
+          })
 
-          res.render('user/home', { user, result, cartNum, banner });
         })
         .catch((err) => {
           console.log(err);
@@ -171,7 +182,7 @@ module.exports = {
   // post request that handils register
 
   registerUser: async (req, res) => {
-    const { name, email, location, confirm } = req.body;
+    const { name, email, location, confirm , number} = req.body;
     let { password } = req.body;
     //comfirm passowrd
     if (password !== confirm) {
@@ -184,11 +195,15 @@ module.exports = {
         const salt = await bcrypt.genSalt(10);
         password = await bcrypt.hash(password, salt);
         const newUser = await User.create({
+
           name,
           email,
+          number,
           location,
           password,
         });
+
+        req.session.userreg = req.body
 
         res.render('user/login', {});
       }
@@ -215,24 +230,32 @@ module.exports = {
   // },
   loginUser: async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
+
     if (user) {
       if (user.access === true) {
         bcrypt.compare(req.body.password, user.password).then((data) => {
           if (data) {
-            console.log('Login Success');
             req.session.user = user;
-            req.session.loggedIn = true;
-            res.locals.user = user || null;
-
-            Product.find({})
-              .limit(8)
-              .then((result) => {
-                let user = req.session.user;
-                cartNum = req.session.cartNum;
-                
-                res.redirect('/home');
-              
-              });
+         const number = user.number
+         req.session.usernum = number
+         console.log('Login Success');
+     
+         req.session.loggedIn = true;
+         res.locals.user = req.session.user || null;
+   
+         Product.find({})
+           .limit(8)
+           .then((result) => {
+             let user = req.session.user;
+             cartNum = req.session.cartNum;
+        
+             
+           });
+              res.redirect('/home');
+        //  sendsms(number)
+         
+              // res.render('user/VerifyOtp')
+            
           } else {
             console.log('Login Failed');
             loginErr = 'Invalid password';
@@ -250,6 +273,36 @@ module.exports = {
       loginErr = 'Invalid email';
       res.redirect('/login');
     }
+  },
+
+  verifyOtp:async(req,res)=>{
+    
+   const num = req.session.usernum
+   const otp = req.body.OTP
+
+   console.log(num,otp,";;;;;;;;;;;;;;;;")
+  await veryfyotp(num,otp).then((verification_check)=>{
+    if(verification_check.status=="approved"){
+      
+      // console.log('Login Success');
+     
+      // req.session.loggedIn = true;
+      // res.locals.user = req.session.user || null;
+
+      // Product.find({})
+      //   .limit(8)
+      //   .then((result) => {
+      //     let user = req.session.user;
+      //     cartNum = req.session.cartNum;
+     
+          
+      //   });
+      //      res.redirect('/home');
+    }else{
+      res.render('user/VerifyOtp')
+    }
+  })
+
   },
 
   //viewing cart
@@ -422,8 +475,7 @@ module.exports = {
         const paymentMethod = req.body.paymentMethod;
 
         const newOrder = new OrderSchema({
-          date: new Date().toLocaleDateString(),
-          time: new Date().toLocaleTimeString(),
+    
           userId: userId,
           products: Cart.products,
           quantity: Cart.quantity,
@@ -444,19 +496,17 @@ module.exports = {
           );
         });
       } else if (req.body.paymentMethod === 'Online Payment') {
-        const date = new Date().toLocaleDateString();
-        const time = new Date().toLocaleTimeString();
+      
         const userId = Cart.userId;
         const products = Cart.products;
         const total = Cart.total;
         const paymentMethod = req.body.paymentMethod;
         let address = await Address.findById(req.body.Address);
-        const track = 'Shipped';
+        const track = 'orderconfirmed';
         const paymentStatus = 'Payment Completed';
         const orderStatus = 'orderconfirmed';
         const newOrder = new OrderSchema({
-          date,
-          time,
+        
           userId,
           products,
           total,

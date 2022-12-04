@@ -64,5 +64,6 @@ router.get('/couponBlock',adminControlers.adminSessionCheck,adminControlers.bloc
 
 router.get('/couponDelete',adminControlers.adminSessionCheck,adminControlers.deleteCoupon)
 
+router.get('/salesreport',adminControlers.getreport)
 module.exports = router ;
 

@@ -11,6 +11,8 @@ exports.registerSchema = joi
       .lowercase()
       .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "in"] } }),
 
+      number: joi.number().required(),
+
     location: joi.string().required(),
 
     password: joi.string().required(),
