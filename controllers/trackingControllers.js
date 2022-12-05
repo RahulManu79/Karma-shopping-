@@ -10,7 +10,9 @@ module.exports={
             let order = await OrderSchema.findById({_id:orderId})
           res.render('user/orderTraking',{user,order})
         } catch (err) {
-            res.send(err)
+            app.use((req,res)=>{
+                res.status(429).render('admin/error-429')
+              })
         }
     }
 }

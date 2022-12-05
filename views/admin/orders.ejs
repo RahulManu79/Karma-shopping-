@@ -3,15 +3,13 @@
   type="text/css"
   href="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.13.1/af-2.5.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/cr-1.6.1/date-1.2.0/fc-4.2.1/fh-3.3.1/kt-2.8.0/r-2.4.0/rg-1.3.0/rr-1.3.1/sc-2.0.7/sb-1.4.0/sp-2.1.0/sl-1.5.0/sr-1.2.0/datatables.min.css"
 />
-<link rel="stylesheet" href="css/datatable.css">
- 
+<link rel="stylesheet" href="css/datatable.css" />
+
 <%- include('includes/header.ejs') %>
 
 <div class="text-center mx-auto mt-2" style="min-width: 22rem"></div>
 <div class="container-fluid mt-3" style="min-height: 33rem">
-
   <h2 class="text-center text-white">Manage Orders</h2>
-
 
   <table
     id="example"
@@ -32,7 +30,7 @@
     </thead>
     <tbody id="myTable">
       <% for( let i = 0; i < result.length; i++ ) { %>
-  
+
       <tr>
         <th scope="row"><%= result[i]._id %></th>
         <td><%= result[i].address.firstName %></td>
@@ -43,11 +41,12 @@
         <td>
           <select
             style="background-color: yellow; text-size-adjust: 12px"
-          
             name="track"
             id="track<%= i %>"
           >
-            <option value="<%= result[i].orderStatus %>"  selected  ><%= result[i].track %></option>
+            <option value="<%= result[i].orderStatus %>" selected>
+              <%= result[i].track %>
+            </option>
             <option value="Cancellede">Cancellede</option>
             <option value="orderconfirmed">orderconfirmed</option>
             <option value="Shipped">Shipped</option>
@@ -67,9 +66,155 @@
         </td>
 
         <td>
-          <button class="btn btn-primary btn-sm" type="button">
-            veiw Details
+          <!-- Button trigger modal -->
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#exampleModalLong"
+          >
+            View details
           </button>
+
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="exampleModalLong"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLongTitle"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5
+                    class="modal-title"
+                    id="exampleModalLongTitle"
+                    style="color: black"
+                  >
+                    Order Details
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="invoice">
+                  <div class="row order_d_inner">
+                    <div class="col-lg-4">
+                      <div class="details_item" style="color: black">
+                        <h4>Order Info</h4>
+                        <ul class="list">
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>Order number</span> : 60235</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>Date</span> :
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>Total</span> : Rs<%= result[i].total %></a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>Payment method</span> : <%=
+                              result[i].paymentMethod %></a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="details_item" style="color: black">
+                        <h4>Billing Address</h4>
+                        <ul class="list">
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>Street</span> : <%= result[i].address.city
+                              %></a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>City</span> :<%= result[i].address.district
+                              %></a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>Country</span> : <%=
+                              result[i].address.country %></a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>Postcode </span> : <%=
+                              result[i].address.zipcode %></a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="details_item" style="color: black">
+                        <h4>Shipping Address</h4>
+                        <ul class="list">
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>City</span> : <%= result[i].address.city
+                              %></a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>District</span> : <%=
+                              result[i].address.district %></a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>Country</span> : <%=
+                              result[i].address.country %></a
+                            >
+                          </li>
+                          <li>
+                            <a href="#" style="color: black"
+                              ><span>Postcode </span> : <%=
+                              result[i].address.zipcode %></a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                 
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="button" id="download-button" class="btn btn-primary">
+                    save as PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </td>
       </tr>
       <% } %>
@@ -77,23 +222,36 @@
   </table>
 </div>
 
- 
+<%- include('includes/footer.ejs') %>
 
-  <%- include('includes/footer.ejs') %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+  const button = document.getElementById('download-button');
+
+  function generatePDF() {
+    // Choose the element that your content will be rendered to.
+    const element = document.getElementById('invoice');
+    // Choose the element and save the PDF for your user.
+    html2pdf().from(element).save();
+  }
+
+  button.addEventListener('click', generatePDF);
+</script>
 
 
-  <script>
-    function change(val) {
-      let page = document.getElementById('page').textContent;
-      let count = parseInt(page) + val;
-      console.log(count);
-      $.ajax({
-        url: `/admin/orders?page=${count}&limit=10`,
-        method: 'get',
-        success: (response) => {},
-      });
-    }
-  </script>
+<script>
+  function change(val) {
+    let page = document.getElementById('page').textContent;
+    let count = parseInt(page) + val;
+    console.log(count);
+    $.ajax({
+      url: `/admin/orders?page=${count}&limit=10`,
+      method: 'get',
+      success: (response) => {},
+    });
+  }
+</script>
 
 <script>
   $(document).ready(function () {
@@ -102,45 +260,45 @@
   });
 </script>
 
-  <script>
-    function orderStatus(e,i) {
-      const oid = e
-      const value = $(`#track${i}`).find(':selected').val();
-      console.log(oid,value);
-      alert(`oid = ${oid}`);
-      alert(`value = ${value}`);
+<script>
+  function orderStatus(e, i) {
+    const oid = e;
+    const value = $(`#track${i}`).find(':selected').val();
+    console.log(oid, value);
+    alert(`oid = ${oid}`);
+    alert(`value = ${value}`);
 
-      $.ajax({
-        url: '/admin/order-status',
-        data: {
-          oid,
-          value,
-        },
-        method: 'post',
-        success: (response) => {
-          if (response.status) {
-            Swal.fire({
-              position: 'top-end',
-              icon: 'success',
-              title: 'Track statuse has been changed',
-              showConfirmButton: false,
-              timer: 1000,
-            });
-          }
-        },
-      });
-    }
-  </script>
+    $.ajax({
+      url: '/admin/order-status',
+      data: {
+        oid,
+        value,
+      },
+      method: 'post',
+      success: (response) => {
+        if (response.status) {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Track statuse has been changed',
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
+      },
+    });
+  }
+</script>
 
-  <script
-    type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"
-  ></script>
-  <script
-    type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"
-  ></script>
-  <script
-    type="text/javascript"
-    src="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.13.1/af-2.5.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/cr-1.6.1/date-1.2.0/fc-4.2.1/fh-3.3.1/kt-2.8.0/r-2.4.0/rg-1.3.0/rr-1.3.1/sc-2.0.7/sb-1.4.0/sp-2.1.0/sl-1.5.0/sr-1.2.0/datatables.min.js"
-  ></script>
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"
+></script>
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"
+></script>
+<script
+  type="text/javascript"
+  src="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.13.1/af-2.5.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/cr-1.6.1/date-1.2.0/fc-4.2.1/fh-3.3.1/kt-2.8.0/r-2.4.0/rg-1.3.0/rr-1.3.1/sc-2.0.7/sb-1.4.0/sp-2.1.0/sl-1.5.0/sr-1.2.0/datatables.min.js"
+></script>

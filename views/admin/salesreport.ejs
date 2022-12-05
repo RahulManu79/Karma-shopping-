@@ -9,7 +9,11 @@
 
 <div class="text-center mx-auto mt-2" style="min-width: 22rem">
   <div class="container-fluid mt-3" style="min-height: 33rem">
-    <h2 class="text-center text-white">Manage Orders</h2>
+
+
+    <div  id="salesreport">
+    <h2 class="text-center text-white" >Sales Report</h2>
+    <button  type="button" id="download-button">Download as PDF</button>
     <table
       id="sale"
       class="display nowrap"
@@ -27,6 +31,7 @@
           <th>Amount</th>
         </tr>
       </thead>
+      
       <tbody id="myTable">
         <% for( let i = 0; i < result.length; i++ ) { %>
         <tr>
@@ -45,9 +50,26 @@
       </tbody>
     </table>
   </div>
+  </div>
+  
 </div>
 
 <%- include('includes/footer.ejs') %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+  const button = document.getElementById('download-button');
+
+  function generatePDF() {
+    // Choose the element that your content will be rendered to.
+    const element = document.getElementById('salesreport');
+    // Choose the element and save the PDF for your user.
+    html2pdf().from(element).save();
+  }
+
+  button.addEventListener('click', generatePDF);
+</script>
+
 <script>
   $(document).ready(function () {
     $('#sale').DataTable();
@@ -55,14 +77,6 @@
   });
 </script>
 
-<script>
-$('#myTable').DataTable( {
-    buttons: [
-        'copy', 'excel', 'pdf'
-    ]
-} );
-</script>
- 
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.13.1/datatables.min.js"></script>
 
 

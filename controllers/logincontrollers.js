@@ -75,7 +75,9 @@ module.exports = {
         });
       });
     } catch (err) {
-      console.log(err);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -84,7 +86,9 @@ module.exports = {
       let user = req.session.user;
       res.render('user/addAdress', { user, session: req.session });
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -107,7 +111,9 @@ module.exports = {
       address.save().then((result) => {});
       res.redirect('/userProfile');
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -141,7 +147,9 @@ module.exports = {
 
         })
         .catch((err) => {
-          console.log(err);
+          app.use((req,res)=>{
+            res.status(429).render('admin/error-429')
+          })
         });
     } else {
       res.redirect('/');
@@ -364,7 +372,11 @@ module.exports = {
         await cart.save();
         res.redirect('/cart');
       }
-    } catch (error) {}
+    } catch (error) {
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
+    }
   },
 
   QuantityDec: async (req, res) => {
@@ -542,7 +554,9 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -598,7 +612,7 @@ module.exports = {
         .populate('products');
       // result.products.map(result.products)
       let address = Address.findById(req.query.id);
-
+      
       res.render('user/orderSummary', {
         id: result,
         address,
@@ -606,7 +620,9 @@ module.exports = {
         user,
       });
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -623,7 +639,9 @@ module.exports = {
           Orders: result,
         });
       } catch (err) {
-        console.log(err);
+        app.use((req,res)=>{
+          res.status(429).render('admin/error-429')
+        })
       }
     } else {
       res.redirect('/login');
@@ -640,7 +658,9 @@ module.exports = {
           track: 'Cancellede',
         });
       } catch (error) {
-        console.log(error);
+        app.use((req,res)=>{
+          res.status(429).render('admin/error-429')
+        })
       }
     }
   },
@@ -660,7 +680,9 @@ module.exports = {
         res.json({ status: true });
       });
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -677,7 +699,9 @@ module.exports = {
         });
       });
     } catch (err) {
-      console.log(err);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -700,7 +724,9 @@ module.exports = {
         res.json(response);
       });
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
   getAllCategory: (req, res) => {
@@ -709,7 +735,9 @@ module.exports = {
         res.json(result);
       });
     } catch (err) {
-      console.log(err);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -784,7 +812,9 @@ module.exports = {
         }
       }
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -795,33 +825,37 @@ module.exports = {
       let productStatus = [];
       for (i = 0; i < cart[0].products.length; i++) {
         let product = await Product.findById(cart[0].products[i].productId);
-        console.log(product, '?/////////');
+       
         if (product.quantity == 0) {
-          console.log(product.quantity, 'gfugfgjgv');
+          
           productStatus.push('out of stock');
           let output = product.name + ' is out of stock';
           result.results.push(output);
         } else if (product.quantity < cart[0].products[i].quantity) {
-          console.log(product.quantity, 'gfugfgjgv>>>>>>>>');
+          
 
           let output =
             'Only ' + product.quantity + ' stocks left of ' + product.name;
           result.results.push(output);
           productStatus.push(product.quantity + ' stock left');
         } else {
-          console.log(product.quantity, 'gfugfgjgv>>>>>>>>>>???????');
+        
 
           productStatus.push('instock');
+          
         }
       }
       const isInstockAll = (productStatus) => productStatus == 'instock';
       if (productStatus.every(isInstockAll)) {
         res.json({ state: true });
+
       } else {
         res.json({ result });
       }
     } catch (err) {
-      console.log(err);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 };

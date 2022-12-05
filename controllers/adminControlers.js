@@ -40,6 +40,7 @@ module.exports = {
       let shippedCount = 0;
       let deliveredCount = 0;
       let pendingCount = 0;
+      let ordercanceledcount = 0;
 
       let orders = await Order.find();
       let user = await User.find();
@@ -64,6 +65,20 @@ module.exports = {
           totalEarnings = result[0].Amount;
         }
       });
+      await Order.aggregate([
+        {
+          $match:{
+            orderStatus:'Cancellede'
+          }
+        },
+        {
+          $count:'Count'
+        }
+      ]).then((result)=>{
+        if(result.length != 0){
+          ordercanceledcount = result[0].Count
+        }
+      })
       await Order.aggregate([
         {
           $match: {
@@ -110,7 +125,7 @@ module.exports = {
       let graphOrderCompleteData = await Order.aggregate([
         {
           $project: {
-            Date: { $dateToString: { format: '%d-%m-%Y', date: '$createdAt' } },
+            Date: { $dateToString: { format: '%d-%m-%Y', date: '$updatedAt' } },
             OrderStatus: '$orderStatus',
           },
         },
@@ -159,7 +174,7 @@ module.exports = {
           },
         },
         { $limit: 7 },
-      ]);
+      ])
      
       var DateSpan = [];
       for (let i = 0; i < 7; i++) {
@@ -183,7 +198,6 @@ module.exports = {
         for(let j =0 ; j< DateSpan.length; j++){
           if (graphOrderCompleteData[i] != undefined) {
             if (DateSpan[j] == graphOrderCompleteData[i]._id) {
-              console.log("hjjjjj");
               finalOrderCompletdata.push(graphOrderCompleteData[i].count);
               i++;
             } else {
@@ -196,6 +210,7 @@ module.exports = {
     }
 
       let finalOrdercanceldata = [];
+      
       for (i = 0; i < graphOrdercancelledData.length; i++) {
         for (j = 0; j < DateSpan.length; j++) {
           if (graphOrdercancelledData[i] != undefined) {
@@ -212,9 +227,11 @@ module.exports = {
       }
       let ordersList = await Order.find().sort({ Date: -1 }).limit(10);
       console.log(finalOrderCompletdata,"ooooooooooo");
-      console.log(finalOrdercanceldata)
+      let totalcancelorder = finalOrdercanceldata.length
+      
       res.render('admin/index',{
         orderCount,
+        ordercanceledcount,
         userCount,
         totalEarnings,
         pendingCount,
@@ -222,12 +239,14 @@ module.exports = {
         deliveredCount,
         DateSpan,
         finalOrderCompletdata,
-        finalOrdercanceldata,
+        totalcancelorder,
         ordersList,
       });
     
   } catch (error) {
-    console.log(error);
+    app.use((req,res)=>{
+      res.status(429).render('admin/error-429')
+    })
     }
   }
   ,
@@ -339,6 +358,9 @@ module.exports = {
       });
     } catch (error) {
       res.json({ status: false });
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -360,8 +382,10 @@ module.exports = {
         res.redirect('/admin/product');
       })
       .catch((err) => {
-        console.log(err);
-      });
+        app.use((req,res)=>{
+          res.status(429).render('admin/error-429')
+        })     
+       });
   },
 
   getEditProducr: (req, res) => {
@@ -470,6 +494,9 @@ module.exports = {
       });
     } catch (error) {
       next(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -483,7 +510,9 @@ module.exports = {
       Object.values(result);
       res.render('admin/orders', { result });
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -525,7 +554,9 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -534,7 +565,9 @@ module.exports = {
       const result = await BannerSchema.find();
       res.render('admin/banner', { result });
     } catch (err) {
-      res.send(err);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -553,8 +586,9 @@ module.exports = {
       Banner.save().then((result) => {});
       res.redirect('/admin/banners');
     } catch (error) {
-      res.send(error);
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -567,6 +601,9 @@ module.exports = {
       });
     } catch (error) {
       res.json({ status: false });
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -575,13 +612,21 @@ module.exports = {
       CouponSchema.find().then((result) => {
         res.render('admin/coupon', { result });
       });
-    } catch (error) {}
+    } catch (error) {
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
+    }
   },
 
   getAddCoupon: (req, res) => {
     try {
       res.render('admin/add-coupon');
-    } catch (error) {}
+    } catch (error) {
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
+    }
   },
 
   postAddCoupon: async (req, res) => {
@@ -615,7 +660,9 @@ module.exports = {
         }
       });
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -631,7 +678,9 @@ module.exports = {
         res.redirect('/admin/couponList');
       });
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -647,7 +696,9 @@ module.exports = {
         res.redirect('/admin/couponList');
       });
     } catch (error) {
-      console.log(error);
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
     }
   },
 
@@ -657,7 +708,11 @@ module.exports = {
       CouponSchema.findByIdAndDelete(proId).then((result) => {
         res.redirect('/admin/couponList');
       });
-    } catch (error) {}
+    } catch (error) {
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
+    }
   },
 
   getreport: async (req, res) => {
@@ -683,6 +738,10 @@ module.exports = {
         console.log(result, 'vuyfucukc7xr');
         res.render('admin/salesreport', { result });
       });
-    } catch (error) {}
+    } catch (error) {
+      app.use((req,res)=>{
+        res.status(429).render('admin/error-429')
+      })
+    }
   },
 };
