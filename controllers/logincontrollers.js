@@ -75,9 +75,9 @@ module.exports = {
         });
       });
     } catch (err) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 
@@ -86,9 +86,9 @@ module.exports = {
       let user = req.session.user;
       res.render('user/addAdress', { user, session: req.session });
     } catch (error) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 
@@ -111,9 +111,9 @@ module.exports = {
       address.save().then((result) => {});
       res.redirect('/userProfile');
     } catch (error) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 
@@ -147,7 +147,7 @@ module.exports = {
 
         })
         .catch((err) => {
-          app.use((req,res)=>{
+          res.use((req,res)=>{
             res.status(429).render('admin/error-429')
           })
         });
@@ -373,9 +373,9 @@ module.exports = {
         res.redirect('/cart');
       }
     } catch (error) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 
@@ -483,6 +483,8 @@ module.exports = {
       let address = await Address.findById(req.body.Address);
 
       let Cart = await ShopingCart.findById(req.params.CartId);
+        let proId = Cart.products
+        console.log(proId);
       if (req.body.paymentMethod === 'Cash On Delivery') {
         const paymentMethod = req.body.paymentMethod;
 
@@ -500,12 +502,25 @@ module.exports = {
         });
         newOrder.save().then((result) => {
           req.session.orderId = result._id;
+          Product.updateOne({
+            _id:proId
+          },
+          {
+            $inc:{
+              quantity:-1
+            }
+          }
+          ).then((res)=>{
+            console.log(res);
+          })
 
           ShopingCart.findOneAndRemove({ userId: result.userId }).then(
             (result) => {
               res.json({ cashOnDelivery: true });
             }
           );
+
+      
         });
       } else if (req.body.paymentMethod === 'Online Payment') {
       
@@ -554,9 +569,9 @@ module.exports = {
         });
       }
     } catch (error) {
-      app.use((req,res)=>{
-        res.status(429).render('admin/error-429')
-      })
+      console.log(error);
+        res.status(429)
+      
     }
   },
 
@@ -620,9 +635,9 @@ module.exports = {
         user,
       });
     } catch (error) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 
@@ -639,7 +654,7 @@ module.exports = {
           Orders: result,
         });
       } catch (err) {
-        app.use((req,res)=>{
+        res.use((req,res)=>{
           res.status(429).render('admin/error-429')
         })
       }
@@ -658,7 +673,7 @@ module.exports = {
           track: 'Cancellede',
         });
       } catch (error) {
-        app.use((req,res)=>{
+        res.use((req,res)=>{
           res.status(429).render('admin/error-429')
         })
       }
@@ -680,9 +695,9 @@ module.exports = {
         res.json({ status: true });
       });
     } catch (error) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 
@@ -699,9 +714,9 @@ module.exports = {
         });
       });
     } catch (err) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 
@@ -724,9 +739,9 @@ module.exports = {
         res.json(response);
       });
     } catch (error) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
   getAllCategory: (req, res) => {
@@ -735,9 +750,9 @@ module.exports = {
         res.json(result);
       });
     } catch (err) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 
@@ -812,9 +827,9 @@ module.exports = {
         }
       }
     } catch (error) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 
@@ -825,7 +840,7 @@ module.exports = {
       let productStatus = [];
       for (i = 0; i < cart[0].products.length; i++) {
         let product = await Product.findById(cart[0].products[i].productId);
-       
+       let proId = cart[0].products[i].productId
         if (product.quantity == 0) {
           
           productStatus.push('out of stock');
@@ -842,20 +857,24 @@ module.exports = {
         
 
           productStatus.push('instock');
-          
+
+         
         }
       }
       const isInstockAll = (productStatus) => productStatus == 'instock';
       if (productStatus.every(isInstockAll)) {
+
         res.json({ state: true });
+
+        
 
       } else {
         res.json({ result });
       }
     } catch (err) {
-      app.use((req,res)=>{
+      
         res.status(429).render('admin/error-429')
-      })
+      
     }
   },
 };
