@@ -453,25 +453,31 @@ module.exports = {
   },
 
   getCheckOut: async (req, res) => {
-    if (req.session.user) {
-      let user = req.session.user;
-      let addresses = await Address.find({
-        userId: req.session.user._id,
-      });
-      ShopingCart.find({ userId: req.session.user._id })
-        .populate('products.productId')
-        .exec()
-        .then((result) => {
-          cartNum = req.session.cartNum;
-          res.render('user/checkOut', {
-            user,
-            cartNum,
-            addresses,
-            Cart: result[0],
-          });
+    try {
+      
+      if (req.session.user) {
+        let user = req.session.user;
+        let addresses = await Address.find({
+          userId: req.session.user._id,
         });
-    } else {
-      res.redirect('/login');
+        ShopingCart.find({ userId: req.session.user._id })
+          .populate('products.productId')
+          .exec()
+          .then((result) => {
+            cartNum = req.session.cartNum;
+            res.render('user/checkOut', {
+              user,
+              cartNum,
+              addresses,
+              Cart: result[0],
+            });
+          });
+      } else {
+        res.redirect('/login');
+      }
+    } catch (err) {
+      console.error(err)
+      res.status(500)
     }
   },
 
