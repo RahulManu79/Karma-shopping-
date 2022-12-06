@@ -463,11 +463,10 @@ module.exports = {
         .exec()
         .then((result) => {
           cartNum = req.session.cartNum;
-          res.render("user/checkOut", {
+          res.render('user/checkOut', {
             user,
             cartNum,
             addresses,
-            session: req.session,
             Cart: result[0],
           });
         });
