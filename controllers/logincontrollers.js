@@ -561,7 +561,7 @@ module.exports = {
     if (req.session.user) {
       let user = req.session.user;
       let cartNum = req.session.cartNum;
-      console.log(req.session.orderId,"hagasdiyy");
+     
       res.render('user/confirmation', {
         user,
         cartNum,
