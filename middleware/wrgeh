@@ -1,0 +1,26 @@
+const { name, email, location, confirm , number} = req.body;
+    let { password } = req.body;
+    //comfirm passowrd
+    if (password !== confirm) {
+      console.log('pasword must be same');
+    } else {
+      const user = await User.findOne({ email: email });
+      if (user) {
+        console.log('email exists');
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        password = await bcrypt.hash(password, salt);
+        const newUser = await User.create({
+
+          name,
+          email,
+          number,
+          location,
+          password,
+        });
+
+        req.session.userreg = req.body
+
+        res.render('user/login', {});
+      }
+    }

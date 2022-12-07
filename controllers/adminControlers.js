@@ -148,7 +148,6 @@ module.exports = {
         { $limit: 7 },
       ]);
     
-      console.log(graphOrderCompleteData,"qwertyu");
 
       let graphOrdercancelledData = await Order.aggregate([
         {
@@ -226,7 +225,6 @@ module.exports = {
         }
       }
       let ordersList = await Order.find().sort({ Date: -1 }).limit(10);
-      console.log(finalOrderCompletdata,"ooooooooooo");
       let totalcancelorder = finalOrdercanceldata.length
       
       res.render('admin/index',{

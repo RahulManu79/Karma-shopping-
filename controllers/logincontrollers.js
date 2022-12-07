@@ -15,7 +15,7 @@ const {
   validatePaymentVerification,
 } = require('../node_modules/razorpay/dist/utils/razorpay-utils');
 const Banner = require('../models/bannerMOdel');
-const {sendsms, veryfyotp} = require('../middleware/OTP')
+const { sendsms, veryfyotp } = require('../middleware/OTP');
 let loginErr = null;
 
 var instance = new Razorpay({
@@ -23,10 +23,7 @@ var instance = new Razorpay({
   key_id: 'rzp_test_EsWfdOrXZua8KY',
 });
 
-const otp = require('../middleware/OTP')
-
-
-
+const otp = require('../middleware/OTP');
 
 module.exports = {
   registerView: (req, res) => {
@@ -47,12 +44,11 @@ module.exports = {
         .then((result) => {
           let user = req.session.user;
           cartNum = req.session.cartNum;
-           Banner.find({}).then((response)=>{
+          Banner.find({}).then((response) => {
+            // const ashan = result;
 
-             // const ashan = result;
-   
-             res.render('user/home', { result, response, cartNum });
-           })
+            res.render('user/home', { result, response, cartNum });
+          });
         });
     }
   },
@@ -74,9 +70,7 @@ module.exports = {
         });
       });
     } catch (err) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -85,9 +79,7 @@ module.exports = {
       let user = req.session.user;
       res.render('user/addAdress', { user, session: req.session });
     } catch (error) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -110,9 +102,7 @@ module.exports = {
       address.save().then((result) => {});
       res.redirect('/userProfile');
     } catch (error) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -139,16 +129,14 @@ module.exports = {
           let user = req.session.user;
           cartNum = req.session.cartNum;
           // ashan = result;
-          Banner.find({}).then((response)=>{
-            
+          Banner.find({}).then((response) => {
             res.render('user/home', { user, result, cartNum, response });
-          })
-
+          });
         })
         .catch((err) => {
-          res.use((req,res)=>{
-            res.status(429).render('admin/error-429')
-          })
+          res.use((req, res) => {
+            res.status(429).render('admin/error-429');
+          });
         });
     } else {
       res.redirect('/');
@@ -189,32 +177,29 @@ module.exports = {
   // post request that handils register
 
   registerUser: async (req, res) => {
-    const { name, email, location, confirm , number} = req.body;
-    let { password } = req.body;
-    //comfirm passowrd
-    if (password !== confirm) {
-      console.log('pasword must be same');
-    } else {
-      const user = await User.findOne({ email: email });
-      if (user) {
-        console.log('email exists');
-      } else {
-        const salt = await bcrypt.genSalt(10);
-        password = await bcrypt.hash(password, salt);
-        const newUser = await User.create({
+    try {
+      User.findOne({ email: req.body.email }).then((user) => {
+        if (user) {
+          errMsg = 'user Exists';
+          res.redirect('/login');
+        } else {
+          let { password } = req.body;
+          const { confirm } = req.body;
 
-          name,
-          email,
-          number,
-          location,
-          password,
-        });
+          if (password !== confirm) {
+            console.log('pasword must be same');
+          }
+          req.session.userData = req.body;
+          const phone = req.body.number;
+          req.session.usernum = phone;
+          console.log(phone);
 
-        req.session.userreg = req.body
+          sendsms(phone);
 
-        res.render('user/login', {});
-      }
-    }
+          res.render('user/VerifyOtp');
+        }
+      });
+    } catch (err) {}
   },
   //PASPORT AUTHENTICATION
   // loginUser:async (req, res) => {
@@ -243,26 +228,19 @@ module.exports = {
         bcrypt.compare(req.body.password, user.password).then((data) => {
           if (data) {
             req.session.user = user;
-         const number = user.number
-         req.session.usernum = number
-         console.log('Login Success');
-     
-         req.session.loggedIn = true;
-         res.locals.user = req.session.user || null;
-   
-         Product.find({})
-           .limit(8)
-           .then((result) => {
-             let user = req.session.user;
-             cartNum = req.session.cartNum;
-        
-             
-           });
-              res.redirect('/home');
-        //  sendsms(number)
-         
-              // res.render('user/VerifyOtp')
-            
+
+            console.log('Login Success');
+
+            req.session.loggedIn = true;
+            res.locals.user = req.session.user || null;
+
+            Product.find({})
+              .limit(8)
+              .then((result) => {
+                let user = req.session.user;
+                cartNum = req.session.cartNum;
+              });
+            res.redirect('/home');
           } else {
             console.log('Login Failed');
             loginErr = 'Invalid password';
@@ -282,34 +260,40 @@ module.exports = {
     }
   },
 
-  verifyOtp:async(req,res)=>{
-    
-   const num = req.session.usernum
-   const otp = req.body.OTP
+  verifyOtp: async (req, res) => {
+    const { name, email, location, number } = req.session.userData;
+    let { password } = req.session.userData;
+    console.log(req.session.userData);
+    const user = User.findOne({ email: email });
+    const salt =await bcrypt.genSalt(10);
+    password =await bcrypt.hash(password, salt);
 
-   console.log(num,otp,";;;;;;;;;;;;;;;;")
-  await veryfyotp(num,otp).then((verification_check)=>{
-    if(verification_check.status=="approved"){
-      
-      // console.log('Login Success');
-     
-      // req.session.loggedIn = true;
-      // res.locals.user = req.session.user || null;
+    const num = req.session.usernum;
 
-      // Product.find({})
-      //   .limit(8)
-      //   .then((result) => {
-      //     let user = req.session.user;
-      //     cartNum = req.session.cartNum;
-     
-          
-      //   });
-      //      res.redirect('/home');
-    }else{
-      res.render('user/VerifyOtp')
-    }
-  })
+    const otp = req.body.OTP;
 
+    console.log(num, otp, ';;;;;;;;;;;;;;;;');
+    await veryfyotp(num, otp).then((verification_check) => {
+      if (verification_check.status == 'approved') {
+        console.log('veryficaton sucess');
+
+        const newUser = User.create({
+          name,
+          email,
+          number,
+          location,
+          password,
+        });
+
+        req.session.userreg = req.body;
+
+        res.render('user/login');
+        
+      } else {
+        let err = 'OTP not match';
+        res.render('user/VerifyOtp');
+      }
+    });
   },
 
   //viewing cart
@@ -372,9 +356,7 @@ module.exports = {
         res.redirect('/cart');
       }
     } catch (error) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -453,7 +435,6 @@ module.exports = {
 
   getCheckOut: async (req, res) => {
     try {
-      
       if (req.session.user) {
         let user = req.session.user;
         let addresses = await Address.find({
@@ -475,8 +456,8 @@ module.exports = {
         res.redirect('/login');
       }
     } catch (err) {
-      console.error(err)
-      res.status(500)
+      console.error(err);
+      res.status(500);
     }
   },
 
@@ -487,13 +468,12 @@ module.exports = {
       let address = await Address.findById(req.body.Address);
 
       let Cart = await ShopingCart.findById(req.params.CartId);
-        let proId = Cart.products
-        console.log(proId);
+      let proId = Cart.products;
+      console.log(proId);
       if (req.body.paymentMethod === 'Cash On Delivery') {
         const paymentMethod = req.body.paymentMethod;
 
         const newOrder = new OrderSchema({
-    
           userId: userId,
           products: Cart.products,
           quantity: Cart.quantity,
@@ -506,28 +486,26 @@ module.exports = {
         });
         newOrder.save().then((result) => {
           req.session.orderId = result._id;
-          Product.updateOne({
-            _id:proId
-          },
-          {
-            $inc:{
-              quantity:-1
+          Product.updateOne(
+            {
+              _id: proId,
+            },
+            {
+              $inc: {
+                quantity: -1,
+              },
             }
-          }
-          ).then((res)=>{
+          ).then((res) => {
             console.log(res);
-          })
+          });
 
           ShopingCart.findOneAndRemove({ userId: result.userId }).then(
             (result) => {
               res.json({ cashOnDelivery: true });
             }
           );
-
-      
         });
       } else if (req.body.paymentMethod === 'Online Payment') {
-      
         const userId = Cart.userId;
         const products = Cart.products;
         const total = Cart.total;
@@ -537,7 +515,6 @@ module.exports = {
         const paymentStatus = 'Payment Completed';
         const orderStatus = 'orderconfirmed';
         const newOrder = new OrderSchema({
-        
           userId,
           products,
           total,
@@ -574,8 +551,7 @@ module.exports = {
       }
     } catch (error) {
       console.log(error);
-        res.status(429)
-      
+      res.status(429);
     }
   },
 
@@ -631,7 +607,7 @@ module.exports = {
         .populate('products');
       // result.products.map(result.products)
       let address = Address.findById(req.query.id);
-      
+
       res.render('user/orderSummary', {
         id: result,
         address,
@@ -639,9 +615,7 @@ module.exports = {
         user,
       });
     } catch (error) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -658,9 +632,9 @@ module.exports = {
           Orders: result,
         });
       } catch (err) {
-        res.use((req,res)=>{
-          res.status(429).render('admin/error-429')
-        })
+        res.use((req, res) => {
+          res.status(429).render('admin/error-429');
+        });
       }
     } else {
       res.redirect('/login');
@@ -677,9 +651,9 @@ module.exports = {
           track: 'Cancellede',
         });
       } catch (error) {
-        res.use((req,res)=>{
-          res.status(429).render('admin/error-429')
-        })
+        res.use((req, res) => {
+          res.status(429).render('admin/error-429');
+        });
       }
     }
   },
@@ -699,9 +673,7 @@ module.exports = {
         res.json({ status: true });
       });
     } catch (error) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -718,9 +690,7 @@ module.exports = {
         });
       });
     } catch (err) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -743,9 +713,7 @@ module.exports = {
         res.json(response);
       });
     } catch (error) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
   getAllCategory: (req, res) => {
@@ -754,9 +722,7 @@ module.exports = {
         res.json(result);
       });
     } catch (err) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -831,9 +797,7 @@ module.exports = {
         }
       }
     } catch (error) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -844,41 +808,32 @@ module.exports = {
       let productStatus = [];
       for (i = 0; i < cart[0].products.length; i++) {
         let product = await Product.findById(cart[0].products[i].productId);
-       let proId = cart[0].products[i].productId
+        let proId = cart[0].products[i].productId;
         if (product.quantity == 0) {
-          
           productStatus.push('out of stock');
           let output = product.name + ' is out of stock';
           result.results.push(output);
         } else if (product.quantity < cart[0].products[i].quantity) {
-          
-
           let output =
             'Only ' + product.quantity + ' stocks left of ' + product.name;
           result.results.push(output);
           productStatus.push(product.quantity + ' stock left');
         } else {
-        
-
           productStatus.push('instock');
-
-         
         }
       }
       const isInstockAll = (productStatus) => productStatus == 'instock';
       if (productStatus.every(isInstockAll)) {
-
         res.json({ state: true });
-
-        
-
       } else {
         res.json({ result });
       }
     } catch (err) {
-      
-        res.status(429).render('admin/error-429')
-      
+      res.status(429).render('admin/error-429');
     }
   },
+
+  getForgot:(req,res)=>{
+    res.render("user/forgotpass")
+  }
 };

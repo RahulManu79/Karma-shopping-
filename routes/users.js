@@ -87,4 +87,6 @@ router.post('/verifyCoupon',loginController.sessionchek,loginController.verifyCo
 router.get('/checkStock',loginController.sessionchek,loginController.checkStock)
 
 router.post('/verifyOtp',loginController.verifyOtp)
+
+router.get('/changepass',loginController.getForgot)
 module.exports=router
