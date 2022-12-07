@@ -16,8 +16,8 @@ const {
 } = require('../node_modules/razorpay/dist/utils/razorpay-utils');
 const Banner = require('../models/bannerMOdel');
 const { sendsms, veryfyotp } = require('../middleware/OTP');
-let loginErr = null;
-
+var loginErr = null;
+var errMsg = null
 var instance = new Razorpay({
   key_secret: 'zvcqB1phsfyXySVAZoHzObDB',
   key_id: 'rzp_test_EsWfdOrXZua8KY',
@@ -192,7 +192,7 @@ module.exports = {
           req.session.userData = req.body;
           const phone = req.body.number;
           req.session.usernum = phone;
-          console.log(phone);
+         
 
           sendsms(phone);
 
@@ -268,11 +268,11 @@ module.exports = {
     const salt =await bcrypt.genSalt(10);
     password =await bcrypt.hash(password, salt);
 
-    const num = req.session.usernum;
+    const num = req.session.usernum 
 
     const otp = req.body.OTP;
 
-    console.log(num, otp, ';;;;;;;;;;;;;;;;');
+   
     await veryfyotp(num, otp).then((verification_check) => {
       if (verification_check.status == 'approved') {
         console.log('veryficaton sucess');
@@ -834,6 +834,64 @@ module.exports = {
   },
 
   getForgot:(req,res)=>{
-    res.render("user/forgotpass")
+    res.render("user/forgotpass",{errMsg})
+  },
+
+  postForgot:(req,res)=>{
+    let num = req.body.number
+
+    
+   let user =User.findOne({number:num})
+   if(user){
+    req.session.passnum = num
+    sendsms(num);
+    res.render('user/passchangeOTP')
+   }else{
+    errMsg="Number not registerd"
+    res.redirect('/changepass')
+   }
+
+    
+  },
+
+  verifypassOtp:async(req,res)=>{
+   let number = req.session.passnum
+   let otp = req.body.OTP
+
+   await veryfyotp(number, otp).then((verification_check)=>{
+    if (verification_check.status == 'approved') {
+      console.log("mothalalii janja jaga jaga");
+      res.render('user/passresubmission')
+    }else{
+      errMsg = "OTP enterd is wrong"
+      res.redirect('/changepass')
+    }
+    
+
+   })
+  },
+
+  postPasschange:async(req,res)=>{
+    console.log(req.body);
+    let {confirmpass,email}=req.body
+    console.log(email);
+    let password = req.body.password
+    
+    console.log(password);
+
+    if(password = confirmpass ){
+      console.log("vanninn");
+      const salt =await bcrypt.genSalt(10);
+    password =await bcrypt.hash(password, salt);
+       await User.updateOne({email:email},
+        {
+          $set:{
+            password:password
+          }
+        }
+        )
+       res.redirect('/login')
+    }
   }
+  
 };

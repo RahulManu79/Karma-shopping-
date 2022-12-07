@@ -89,4 +89,10 @@ router.get('/checkStock',loginController.sessionchek,loginController.checkStock)
 router.post('/verifyOtp',loginController.verifyOtp)
 
 router.get('/changepass',loginController.getForgot)
+
+router.post('/numverify',loginController.postForgot)
+
+router.post('/verifypassOtp',loginController.verifypassOtp)
+
+router.post('/passchange',loginController.postPasschange)
 module.exports=router

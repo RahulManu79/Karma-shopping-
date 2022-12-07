@@ -1,0 +1,50 @@
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<style>
+  input[type="submit"]:disabled {
+    background-color: red;
+  }
+</style>
+
+<%- include('./includes/header') %>
+
+
+
+<div class="container mt-2">
+    <div class="row" style="    margin-top: 168px;
+    margin-bottom: 168px;">
+      <div class="col-md-4 offset-md-4" style="background-color: lightblue;">
+        <form action="/passchange" id="myForm1" class="needs-validation" method="post" novalidate>
+          <div class="form-group">
+           Enter Your Registerd E-mail<input type="email" name="email" id="emailId" class="form-control"  required>
+            <div class="valid-feedback">Valid</div>
+            <div class="invalid-feedback">Not a valid email address</div>
+          </div>
+          <div class="form-group">
+            Password<input type="text" id="pwdId" class="form-control" pattern="^[a-z]{2,6}$" name="password" required>
+            <div class="valid-feedback">Valid</div>
+            <div class="invalid-feedback">a to z only (2 to 6 long)</div>
+          </div>
+          <div class="form-group">
+            Confirm Password<input type="text" id="cPwdId" class="form-control myCpwdClass" name="confirmpass" pattern="^[a-z]{2,6}$" required>
+            <div id="cPwdValid" class="valid-feedback">Passwords Match</div>
+            <div id="cPwdInvalid" class="invalid-feedback">a to z only (2 to 6 long)</div>
+          </div>
+         
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" id="agreeId" class="custom-control-input form-control" required>
+              <label for="agreeId" id="agreeLabelId" class="custom-control-label">Agree to terms <a href="https://www.youtube.com/watch?v=5_nWGG_TFDM" target="_blank"> (terms & conditions)</a></label>
+              <div id="agreeValid" class="valid-feedback">Valid</div>
+              <div id="agreeInvalid" class="invalid-feedback">Needs to be checked</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <button id="submitBtn" type="submit" class="btn btn-secondary" >Register</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+ 
+<%- include('./includes/footer') %>

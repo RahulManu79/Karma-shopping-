@@ -1,0 +1,36 @@
+<%- include('./includes/header') %>
+
+
+   <!--================Verify Box Area =================-->
+<section class="login_box_area section_gap ">
+    <div class="container align-middle">
+        <div class="row d-flex justify-content-center">
+            
+            <div style="margin-top: 50px;" class="col-lg-6 justify-content-center">
+                <div class="login_form_inner">
+                    <h3>Verify Otp</h3>
+                    
+                        <p class="text-danger">m nkn</p>
+                    
+                    <form class="row login_form" action="/verifypassOtp" method="post" id="contactForm" novalidate="novalidate">
+                        
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="name" name="OTP" placeholder="Enter OTP" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+                        </div>
+                        <div class="col-md-12 form-group">
+                            
+                            <button type="submit" value="submit" class="primary-btn mb-5">verify</button>
+                            
+                                <a href="/resentOtp">Resend OTP</a>
+                          
+                            
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<%- include('./includes/footer') %>
