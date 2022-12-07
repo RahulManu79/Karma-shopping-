@@ -1,21 +1,21 @@
-const User = require('../models/user');
-const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const bcrypt = require('bcryptjs');
+const Razorpay = require('razorpay');
+const { trusted } = require('mongoose');
+const { default: mongoose } = require('mongoose');
+const { response } = require('express');
 const ShopingCart = require('../models/cartModel');
 const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
 const OrderSchema = require('../models/oderModel');
 const Address = require('../models/addressModel');
+const User = require('../models/user');
 const CouponSchema = require('../models/CouponModel');
-const Razorpay = require('razorpay');
-var {
+const {
   validatePaymentVerification,
 } = require('../node_modules/razorpay/dist/utils/razorpay-utils');
-const { trusted } = require('mongoose');
-const { default: mongoose } = require('mongoose');
 const Banner = require('../models/bannerMOdel');
-const { response } = require('express');
-const{sendsms, veryfyotp} = require('../middleware/OTP')
+const {sendsms, veryfyotp} = require('../middleware/OTP')
 let loginErr = null;
 
 var instance = new Razorpay({
@@ -49,7 +49,6 @@ module.exports = {
           cartNum = req.session.cartNum;
            Banner.find({}).then((response)=>{
 
-             console.log(response);
              // const ashan = result;
    
              res.render('user/home', { result, response, cartNum });
