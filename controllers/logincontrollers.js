@@ -485,6 +485,7 @@ module.exports = {
           track: 'orderconfirmed',
         });
         newOrder.save().then((result) => {
+          
           req.session.orderId = result._id;
           Product.updateOne(
             {
@@ -526,7 +527,8 @@ module.exports = {
         });
         newOrder.save().then((result) => {
           let userOrderData = result;
-
+          req.session.orderId = result._id;
+        
           id = result._id.toString();
           instance.orders.create(
             {
@@ -559,6 +561,7 @@ module.exports = {
     if (req.session.user) {
       let user = req.session.user;
       let cartNum = req.session.cartNum;
+      console.log(req.session.orderId,"hagasdiyy");
       res.render('user/confirmation', {
         user,
         cartNum,
