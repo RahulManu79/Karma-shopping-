@@ -3,21 +3,21 @@ const joi = require("joi");
 
 exports.registerSchema = joi
   .object({
-    name: joi.string().trim().min(2).max(64).required(),
+    name: joi.string().trim().min(2).max(64).required().label("name is required"),
 
     email: joi
       .string()
       .trim()
       .lowercase()
-      .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "in"] } }),
+      .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "in"] } }).label("email must be valid"),
 
-      number: joi.number().required(),
+      number: joi.number().required().label("give valid number"),
 
-    location: joi.string().required(),
+    location: joi.string().required().label("location is required"),
 
-    password: joi.string().required(),
+    password: joi.string().required().label("password must be same"),
 
-    confirm: joi.ref("password"),
+    confirm: joi.ref("password")
   })
   .with("password", "confirm");
 

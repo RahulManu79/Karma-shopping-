@@ -2,10 +2,15 @@
 <main>
   <section class="login_box_area section_gap ml-auto">
     <div class="container ">
-      
-        <div class="col-lg-100 ">
-          <div class="login_form_inner">
-            <h3>Register in to enter</h3>
+      <div class="col-lg-100 ">
+        <div class="login_form_inner">
+          <h3>Register in to enter</h3>
+          <% if (message) { %>
+          
+          <h5 class="text-danger"><%= message %> </h5>
+          <% console.log(message); %> 
+           
+          <% } %>
             <form
               class="row login_form"
               action="/register"
@@ -62,7 +67,7 @@
               </div>
               <div class="col-md-12 form-group">
                 <input required
-                  type="text"
+                  type="password"
                   class="form-control"
                   id="name"
                   name="password"
@@ -73,7 +78,7 @@
               </div>
               <div class="col-md-12 form-group">
                 <input required
-                  type="text"
+                  type="password"
                   class="form-control"
                   id="confirm"
                   name="confirm"

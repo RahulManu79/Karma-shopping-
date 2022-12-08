@@ -18,6 +18,7 @@ const Banner = require('../models/bannerMOdel');
 const { sendsms, veryfyotp } = require('../middleware/OTP');
 var loginErr = null;
 var errMsg = null
+var regErr
 var instance = new Razorpay({
   key_secret: 'zvcqB1phsfyXySVAZoHzObDB',
   key_id: 'rzp_test_EsWfdOrXZua8KY',
@@ -30,7 +31,7 @@ module.exports = {
     if (req.session.user) {
       res.redirect('/home');
     } else {
-      res.render('user/register');
+      res.render('user/register',{regErr});
     }
   },
 
@@ -180,7 +181,7 @@ module.exports = {
     try {
       User.findOne({ email: req.body.email }).then((user) => {
         if (user) {
-          errMsg = 'user Exists';
+          regErr = 'user Exists';
           res.redirect('/login');
         } else {
           let { password } = req.body;
@@ -188,6 +189,7 @@ module.exports = {
 
           if (password !== confirm) {
             console.log('pasword must be same');
+            regErr = 'pasword must be same'
           }
           req.session.userData = req.body;
           const phone = req.body.number;
