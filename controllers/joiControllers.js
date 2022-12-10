@@ -1,12 +1,11 @@
 const JoiSchema = require('../models/joiSchema')
-
+let message= null
 exports.validateRegister = (req, res, next) => {
   const result = JoiSchema.registerSchema.validate(req.body);
   if (result.error) {
     console.log(result.error.details);
-    return res.render("user/register", {
-      message: result.error.details[0].message,
-    });
+     message = result.error.details[0].message 
+    return res.render("user/register", { message });
   } else {
     next();
   }

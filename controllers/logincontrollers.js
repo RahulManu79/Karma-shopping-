@@ -31,7 +31,7 @@ module.exports = {
     if (req.session.user) {
       res.redirect('/home');
     } else {
-      res.render('user/register',{regErr});
+      res.render('user/register',{regErr, message:null});
     }
   },
 
