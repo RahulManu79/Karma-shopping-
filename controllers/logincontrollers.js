@@ -28,10 +28,16 @@ const otp = require('../middleware/OTP');
 
 module.exports = {
   registerView: (req, res) => {
-    if (req.session.user) {
-      res.redirect('/home');
-    } else {
-      res.render('user/register',{regErr, message:null});
+    try {
+      
+      if (req.session.user) {
+        res.redirect('/home');
+      } else {
+        res.render('user/register',{regErr, message:null});
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(429).render('admin/error-429');
     }
   },
 
@@ -56,7 +62,12 @@ module.exports = {
 
   //register view
   createView: (req, res) => {
-    res.redirect('/register');
+    try {
+      res.redirect('/register');
+      
+    } catch (error) {
+      res.status(429).render('admin/error-429');
+    }
   },
 
   //showing user profile
@@ -201,7 +212,9 @@ module.exports = {
           res.render('user/VerifyOtp');
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      res.status(429).render('admin/error-429');
+    }
   },
   //PASPORT AUTHENTICATION
   // loginUser:async (req, res) => {
